@@ -3,6 +3,7 @@ ruby '1.9.3'
 
 gem 'rails', '3.2.9'
 gem 'pg'
+gem 'devise'
 
 
 # Gems used only for assets and not required
