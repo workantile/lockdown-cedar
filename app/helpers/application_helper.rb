@@ -35,6 +35,8 @@ module ApplicationHelper
       build_text_field(f, object, attribute, options)
     when 'text_area'
       build_text_area(f, object, attribute, options)
+    when 'date'
+      build_date_field(f, object, attribute, options)
     when 'password'
       f.password_field(attribute)
     when 'select'
@@ -63,6 +65,12 @@ module ApplicationHelper
     end
   end
   
+  def build_date_field(f, object, attribute, options = nil)
+    formatted_date = object.send(attribute).strftime("%m/%d/%Y") if object.send(attribute)
+    f.text_field(attribute, :value => formatted_date, 
+      :placeholder => "mm/dd/yyyy")
+  end
+
   def build_select_box(f, attribute, select_list)
     f.select(attribute, select_list.collect {|item| [item, item]})
   end

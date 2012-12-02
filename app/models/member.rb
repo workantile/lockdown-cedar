@@ -16,6 +16,14 @@ class Member < ActiveRecord::Base
   	[first_name, last_name].join(' ')
   end
 
+  def anniversary_date=(a_date)
+  	if a_date.instance_of?(String)
+  		self[:anniversary_date] = Date.strptime(a_date, "%m/%d/%Y") unless a_date.empty?
+  	else
+  		self[:anniversary_date] = a_date
+  	end
+  end
+
   def set_default_anniversary_date
   	self.anniversary_date ||= Date.today
   end
