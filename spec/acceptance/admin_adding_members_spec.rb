@@ -23,7 +23,7 @@ feature 'Creating members', %q{
     fill_in 'member_first_name',        :with => 'joe'
     fill_in 'member_last_name',         :with => 'blow'
     fill_in 'member_email',             :with => 'jblow@foobar.com'
-    fill_in 'member_anniversary_date',  :with => Date.today
+    fill_in 'member_anniversary_date',  :with => Date.today.strftime("%m/%d/%Y")
     fill_in 'member_rfid',              :with => '1234'
     select 'full',                      :from => 'Member type'
     click_button 'Create member'
@@ -37,7 +37,7 @@ feature 'Creating members', %q{
     fill_in 'member_first_name',        :with => 'joe'
     fill_in 'member_last_name',         :with => 'blow'
     fill_in 'member_email',             :with => ''
-    fill_in 'member_anniversary_date',  :with => Date.today
+    fill_in 'member_anniversary_date',  :with => Date.today.strftime("%m/%d/%Y")
     fill_in 'member_rfid',              :with => '1234'
     select 'full',                      :from => 'Member type'
     click_button 'Create member'

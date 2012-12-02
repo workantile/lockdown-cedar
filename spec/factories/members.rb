@@ -6,7 +6,7 @@ FactoryGirl.define do
   	last_name					"member"
   	sequence(:email)	{ |n| "joe#{n}@foobar.net" }
   	sequence(:rfid) 	{ |n| "#{n}" }
-  	anniversary_date	Date.today
+  	anniversary_date	Date.today.strftime("%m/%d/%Y")
 
   	trait :full do
   		member_type			"full"
