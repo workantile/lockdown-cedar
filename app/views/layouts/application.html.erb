@@ -7,9 +7,24 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-<p class="notice"><%= notice %></p>
-<p class="alert"><%= alert %></p>
-<%= yield %>
-
+	<div class="row">
+		<% if admin_signed_in? %>
+			<div class="span4">
+				<p class="notice"><%= notice %></p>
+				<p class="alert"><%= alert %></p>
+				<ul>
+					<li><%= link_to "admins", admin_admins_url %></li>
+					<li>members</li>
+					<li>usage</li>
+					<li><%= link_to "sign out", destroy_admin_session_path, :method => :delete %></li>
+				</ul>
+			</div>
+			<div class="span8">
+				<%= yield %>
+			</div>
+		<% else %>
+			<%= yield %>
+		<% end %>
+	</div>
 </body>
 </html>
