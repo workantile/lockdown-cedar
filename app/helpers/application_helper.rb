@@ -64,11 +64,7 @@ module ApplicationHelper
   end
   
   def build_select_box(f, attribute, select_list)
-    if select_list.is_a?(Mongoid::Criteria)
-      f.select(attribute, select_list.collect {|item| [item.full_name, item.id]}, {:include_blank => true})
-    else
-      f.select(attribute, select_list.collect {|item| [item, item]})
-    end    
+    f.select(attribute, select_list.collect {|item| [item, item]})
   end
   
   def build_radio_buttons(f, attribute, options)

@@ -3,6 +3,7 @@ LockdownRails::Application.routes.draw do
 
   namespace :admin do
     resources :admins
+    resources :members
   end
 
   root :to => "home#index"

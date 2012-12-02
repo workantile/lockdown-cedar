@@ -1,0 +1,10 @@
+<%= form_for([:admin, @member], :html => {:class => 'form-horizontal'}) do |f| %>
+	<%= build_control(f, @member, nil, :first_name, 'text').html_safe %>
+	<%= build_control(f, @member, nil, :last_name, 'text').html_safe %>
+	<%= build_control(f, @member, nil, :email, 'text').html_safe %>
+	<%= build_control(f, @member, nil, :anniversary_date, 'text').html_safe %>
+	<%= build_control(f, @member, nil, :rfid, 'text').html_safe %>
+	<%= build_control(f, @member, nil, :member_type, 'select', :select_list => Member::MEMBER_TYPES).html_safe %>
+
+	<%= f.submit button_label, :class => 'btn btn-primary' %>
+<% end %>

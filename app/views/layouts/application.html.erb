@@ -14,9 +14,9 @@
 					<p class="notice"><%= notice %></p>
 					<p class="alert"><%= alert %></p>
 					<ul>
+						<li><%= link_to "members", admin_members_url %></li>
 						<li><%= link_to "admins", admin_admins_url %></li>
-						<li>members</li>
-						<li>usage</li>
+						<li>reports</li>
 						<li><%= link_to "sign out", destroy_admin_session_path, :method => :delete %></li>
 					</ul>
 				</div>
