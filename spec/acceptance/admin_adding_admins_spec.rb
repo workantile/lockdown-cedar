@@ -14,7 +14,7 @@ feature 'Creating admins', %q{
     sign_in_as @i_am_an_admin
 
     # When I visit the new admin page
-    visit 'admin/admins/new'
+    visit 'admins/new'
     
   end
   

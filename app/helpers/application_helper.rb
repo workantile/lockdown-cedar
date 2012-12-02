@@ -1,4 +1,16 @@
 module ApplicationHelper
+  def resource_name
+    :admin
+  end
+ 
+  def resource
+    @resource ||= Admin.new
+  end
+ 
+  def devise_mapping
+    @devise_mapping ||= Devise.mappings[:admin]
+  end
+
   def build_control(f, object, help_object, attribute, control_type, options = nil)
     content_tag(:div, :class => "control-group") do
       build_label(f, object, attribute, options) + 

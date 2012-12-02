@@ -17,7 +17,7 @@ feature 'Updating admins', %q{
     @admin_to_update = FactoryGirl.create(:admin, :email => 'newadmin@foo.bar')
     
     # When I visit the update admin page
-    visit 'admin/admins/' + @admin_to_update.id.to_s + '/edit'
+    visit 'admins/' + @admin_to_update.id.to_s + '/edit'
     
   end
 

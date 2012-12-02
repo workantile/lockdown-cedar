@@ -5,6 +5,6 @@ LockdownRails::Application.routes.draw do
     resources :admins
   end
 
-  root :to => redirect("admins/sign_in")
+  root :to => "home#index"
   
 end
