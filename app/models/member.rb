@@ -3,7 +3,7 @@ class Member < ActiveRecord::Base
 
   attr_accessible :first_name, :last_name, :email, :rfid, :member_type, :anniversary_date
 
-  validates_presence_of :first_name, :last_name, :email, :member_type
+  validates_presence_of :first_name, :last_name, :email, :rfid, :member_type
   validates_uniqueness_of :email, :rfid
 
   validates :member_type, :inclusion => {:in => MEMBER_TYPES, :message => "%{value} is not a valid member type"}

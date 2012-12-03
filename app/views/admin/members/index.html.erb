@@ -10,7 +10,7 @@
 		<tr>
 			<td><%= link_to member.full_name, edit_admin_member_path(member) %></td>
 			<td><%= member.member_type %>
-			<td><%= button_to 'Delete', admin_member_path(member), :confirm => 'Are you sure?', :method => :delete, :class => 'btn btn-danger' %></td>
+			<td><%= button_to 'Delete', admin_member_path(member), :method => :delete, :class => 'btn btn-danger' %></td>
 		</tr>
 	<% end %>
 	</tbody>
