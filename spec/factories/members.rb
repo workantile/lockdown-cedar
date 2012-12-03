@@ -24,14 +24,14 @@ FactoryGirl.define do
   		member_type			"student"
   	end
 
-  	trait :key_only do
-  		member_type		"key_only"
+  	trait :non_member do
+  		member_type		"non-member"
   	end
 
   	factory :full_member, :traits => [:full]
   	factory :full_no_work_member, :traits => [:full_no_work]
   	factory :affiliate_member, :traits => [:affiliate]
   	factory :student_member, :traits => [:student]
-  	factory :key_only_member, :traits => [:key_only]
+  	factory :key_only_member, :traits => [:non_member]
   end
 end

@@ -20,6 +20,6 @@ describe Member do
   																											 'full - no work',
   																											 'affiliate',
   																											 'student',
-  																											 'key-only']) }
+  																											 'non-member']) }
 
 end

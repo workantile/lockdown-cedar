@@ -1,5 +1,5 @@
 class Member < ActiveRecord::Base
-	MEMBER_TYPES = ['full','full - no work','affiliate','student','key-only']
+	MEMBER_TYPES = ['full','full - no work','affiliate','student','non-member']
 
   attr_accessible :first_name, :last_name, :email, :rfid, :member_type, :anniversary_date
 
@@ -9,6 +9,13 @@ class Member < ActiveRecord::Base
   validates :member_type, :inclusion => {:in => MEMBER_TYPES, :message => "%{value} is not a valid member type"}
 
   default_scope order("first_name ASC, last_name ASC")
+
+  scope :all_members, where("member_type <> 'non-member'")
+  scope :full_members, where(:member_type => 'full')
+  scope :full_no_work_members, where(:member_type => 'full - no work')
+  scope :affiliate_members, where(:member_type => 'affiliate')
+  scope :student_members, where(:member_type => 'student')
+  scope :non_members, where(:member_type => 'non-member')
 
   before_save :set_default_anniversary_date
 
