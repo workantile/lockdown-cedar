@@ -27,4 +27,10 @@ namespace :data do
       end
     end
   end
+
+  desc 'Set up doors'
+  task :setup_doors => :environment do
+    Door.create!(:name => 'Bank', :address => 'deadbeef01')
+    Door.create!(:name => 'Alley', :address => 'deadbeef00')
+  end
  end
