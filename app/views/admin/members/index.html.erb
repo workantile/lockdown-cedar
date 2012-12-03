@@ -1,7 +1,13 @@
+<h4>Membership totals:</h4>
+<ul>
+	<li>total members: <%= Member.all_members.count %></li>
+	<li>full: <%= Member.full_members.count %></li>
+	<li>full - no work: <%= Member.full_no_work_members.count %></li>
+	<li>affiliate: <%= Member.affiliate_members.count %></li>
+	<li>student: <%= Member.student_members.count %></li>
+	<li>non-members: <%= Member.non_members.count %></li>
+</ul>
 <%= button_to 'Add new member', new_admin_member_url, :method => :get, :class => 'btn btn-success' %>
-<p>total members: <%= Member.all_members.count %>, full: <%= Member.full_members.count %>, 
-	full - no work: <%= Member.full_no_work_members.count %>, affiliate: <%= Member.affiliate_members.count %>, 
-	student: <%= Member.student_members.count %>, non-members: <%= Member.non_members.count %></p>
 <table class="table table-bordered table-condensed table-striped">
 	<thead>
 		<th>member</th>
