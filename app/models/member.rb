@@ -8,6 +8,8 @@ class Member < ActiveRecord::Base
 
   validates :member_type, :inclusion => {:in => MEMBER_TYPES, :message => "%{value} is not a valid member type"}
 
+  after_initialize :set_default_anniversary_date
+
   default_scope order("first_name ASC, last_name ASC")
 
   scope :all_members, where("member_type <> 'non-member'")
@@ -16,8 +18,6 @@ class Member < ActiveRecord::Base
   scope :affiliate_members, where(:member_type => 'affiliate')
   scope :student_members, where(:member_type => 'student')
   scope :non_members, where(:member_type => 'non-member')
-
-  before_save :set_default_anniversary_date
 
   def full_name
   	[first_name, last_name].join(' ')
