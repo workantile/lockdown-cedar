@@ -19,6 +19,8 @@ class Member < ActiveRecord::Base
   scope :student_members, where(:member_type => 'student')
   scope :non_members, where(:member_type => 'non-member')
 
+  has_many :access_logs
+  
   def full_name
   	[first_name, last_name].join(' ')
   end

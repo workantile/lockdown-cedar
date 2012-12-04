@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Door do
   before(:each) do
-    @member = FactoryGirl.create(:door)
-    @member.save
+    @door = FactoryGirl.create(:door)
+    @door.save
   end
 
   it { should respond_to :name }

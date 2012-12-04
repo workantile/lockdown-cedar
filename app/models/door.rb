@@ -4,4 +4,6 @@ class Door < ActiveRecord::Base
   validates_presence_of :address, :name
   validates_uniqueness_of :address, :name
   
+  has_many :access_logs
+  
 end
