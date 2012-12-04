@@ -13,7 +13,7 @@ namespace :data do
 
   desc 'set up initial admin'
   task :setup_initial_admin do
-    Admin.create(:email => 'twbrandt@gmail.com', :password -> 'v&63Q`N%hI_-m8;U],rd',
+    Admin.create(:email => 'twbrandt@gmail.com', :password => 'v&63Q`N%hI_-m8;U],rd',
                 :password_confirmation => 'v&63Q`N%hI_-m8;U],rd')
   end
 
