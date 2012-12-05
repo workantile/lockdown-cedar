@@ -1,5 +1,5 @@
 class AccessLog < ActiveRecord::Base
-  attr_accessible :access_granted, :msg, :member, :door
+  attr_accessible :access_granted, :msg, :member, :door, :member_name, :member_type, :door_name
 
   belongs_to :door
   belongs_to :member

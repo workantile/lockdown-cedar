@@ -37,4 +37,28 @@ class Member < ActiveRecord::Base
   	self.anniversary_date ||= Date.today
   end
   
+  def self.grant_access?(rfid, door_address)
+    member = find_by_rfid(rfid)
+    door = Door.find_by_address(door_address)
+
+    if member && door
+      AccessLog.create(:member => member,
+                       :door => door,
+                       :member_name => member.full_name,
+                       :member_type => member.member_type,
+                       :door_name => door.name,
+                       :access_granted => true)
+      true
+    else
+      AccessLog.create(:member => member,
+                       :door => door,
+                       :member_name => member.try(:full_name),
+                       :member_type => member.try(:member_type),
+                       :door_name => door.try(:name),
+                       :msg => "rfid used was #{rfid}, door address was #{door_address}",
+                       :access_granted => false)
+      false
+    end
+  end
+
 end
