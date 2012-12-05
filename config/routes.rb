@@ -6,6 +6,8 @@ LockdownRails::Application.routes.draw do
   namespace :admin do
     resources :admins
     resources :members
+
+    get "reports" => "reports#index"
   end
 
   root :to => "home#index"

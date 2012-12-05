@@ -1,0 +1,19 @@
+<h4>Access log:</h4>
+<table class="table table-bordered table-condensed table-striped">
+	<thead>
+		<th>date</th>
+		<th>member</th>
+		<th>type</th>
+		<th>message</th>
+	</thead>
+	<tbody>
+	<% @logs.each do |log| %>
+		<tr>
+			<td><%= log.access_date.strftime("%m/%d/%Y") %></td>
+			<td><%= log.member_name %></td>
+			<td><%= log.member_type %></td>
+			<td><%= log.msg %></td>
+		</tr>
+	<% end %>
+	</tbody>
+</table>
