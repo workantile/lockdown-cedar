@@ -1,11 +1,8 @@
 class AccessController < ApplicationController
 	def show
-		begin
-			@member = Member.find_by_rfid!(params[:rfid])
-			@door = Door.find_by_address!(params[:address])
-			AccessLog.create(:member => @member, :door => @door, :access_granted => true)
+		if Member.grant_access?(params[:rfid], params[:address])
 			render :text => 'OK'
-		rescue
+		else
 			render :text => 'ERROR'
 		end
 	end
