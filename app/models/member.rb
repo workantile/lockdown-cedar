@@ -50,13 +50,6 @@ class Member < ActiveRecord::Base
                        :access_granted => true)
       true
     else
-      AccessLog.create(:member => member,
-                       :door => door,
-                       :member_name => member.try(:full_name),
-                       :member_type => member.try(:member_type),
-                       :door_name => door.try(:name),
-                       :msg => "rfid used was #{rfid}, door address was #{door_address}",
-                       :access_granted => false)
       false
     end
   end

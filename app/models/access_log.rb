@@ -4,6 +4,8 @@ class AccessLog < ActiveRecord::Base
   belongs_to :door
   belongs_to :member
 
+	default_scope where(:access_granted => true).order("created_at DESC")
+
   after_initialize :set_date
 
   def set_date

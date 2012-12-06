@@ -42,11 +42,11 @@ describe Member do
       }.to change(AccessLog, :count).by(1)
     end
 
-    it "should log unsuccessful access attempts" do
+    it "should not log unsuccessful access attempts" do
       @member.destroy
       expect {
         Member.grant_access?(@member.rfid, FactoryGirl.create(:door).address)
-      }.to change(AccessLog, :count).by(1)
+      }.to change(AccessLog, :count).by(0)
     end
   end
 
