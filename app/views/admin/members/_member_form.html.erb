@@ -3,9 +3,13 @@
 	<%= build_control(f, @member, nil, :first_name, 'text').html_safe %>
 	<%= build_control(f, @member, nil, :last_name, 'text').html_safe %>
 	<%= build_control(f, @member, nil, :email, 'text').html_safe %>
+	<%= build_control(f, @member, nil, :task, 'text').html_safe %>
+	<%= build_control(f, @member, nil, :pay_simple_customer_id, 'text').html_safe %>
 	<%= build_control(f, @member, nil, :member_type, 'select', :select_list => Member::MEMBER_TYPES).html_safe %>
-	<%= build_control(f, @member, nil, :rfid, 'text').html_safe %>
+	<%= build_control(f, @member, nil, :billing_plan, 'select', :select_list => Member::BILLING_PLANS).html_safe %>
 	<%= build_control(f, @member, nil, :anniversary_date, 'date').html_safe %>
+	<%= build_control(f, @member, nil, :rfid, 'text').html_safe %>
+	<%= build_control(f, @member, nil, :key_enabled, 'radio_buttons', {:label => 'rfid enabled', :values_list => [true, false]}).html_safe %>
 
 	<%= f.submit button_label, :class => 'btn btn-primary' %>
 <% end %>

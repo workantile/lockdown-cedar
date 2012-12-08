@@ -4,6 +4,7 @@
 		<th>date</th>
 		<th>member</th>
 		<th>type</th>
+		<th>plan</th>
 		<th>denied access</th>
 	</thead>
 	<tbody>
@@ -12,6 +13,7 @@
 			<td><%= log.created_at.strftime("%m/%d/%Y %l:%M %P") %></td>
 			<td><%= log.member_name %></td>
 			<td><%= log.member_type %></td>
+			<td><%= log.billing_plan %></td>
 			<td><%= log.msg %></td>
 		</tr>
 	<% end %>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121204223744) do
+ActiveRecord::Schema.define(:version => 20121208172827) do
 
   create_table "access_logs", :force => true do |t|
     t.date     "access_date"
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(:version => 20121204223744) do
     t.string   "member_name"
     t.string   "member_type"
     t.string   "door_name"
+    t.string   "billing_plan"
   end
 
   create_table "admins", :force => true do |t|
@@ -59,8 +60,13 @@ ActiveRecord::Schema.define(:version => 20121204223744) do
     t.string   "rfid"
     t.string   "member_type"
     t.date     "anniversary_date"
-    t.datetime "created_at",       :null => false
-    t.datetime "updated_at",       :null => false
+    t.datetime "created_at",                               :null => false
+    t.datetime "updated_at",                               :null => false
+    t.string   "billing_plan"
+    t.boolean  "key_enabled",            :default => true
+    t.string   "task"
+    t.string   "pay_simple_customer_id"
+    t.date     "termination_date"
   end
 
 end

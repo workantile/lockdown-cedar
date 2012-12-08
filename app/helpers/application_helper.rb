@@ -77,8 +77,17 @@ module ApplicationHelper
   
   def build_radio_buttons(f, attribute, options)
     options[:values_list].inject("") do |control, value|
-      control << content_tag(:label, f.radio_button(attribute, value) + " #{user_friendly_value(value)}", :class => "radio")
+      control << content_tag(:label, f.radio_button(attribute, value) + " #{value}", :class => "radio")
       control
     end
   end
+
+  def user_friendly_value(value)
+    if value.is_a?(Boolean)
+      value ? "Yes" : "No"
+    else
+      value
+    end
+  end
+
 end
