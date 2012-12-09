@@ -17,11 +17,14 @@ class Member < ActiveRecord::Base
 
   default_scope order("first_name ASC, last_name ASC")
 
-  scope :all_members, where(:member_type => 'current')
+  scope :current_members, where(:member_type => 'current')
   scope :full_members, where(:member_type => 'current', :billing_plan => 'full')
   scope :full_no_work_members, where(:member_type => 'current', :billing_plan => 'full - no work')
   scope :affiliate_members, where(:member_type => 'current', :billing_plan => 'affiliate')
   scope :student_members, where(:member_type => 'current', :billing_plan => 'student')
+  scope :supporting_members, where(:member_type =>'current', :billing_plan => 'supporter')
+  scope :former_members, where(:member_type => 'former')
+  scope :courtesy_keys, where(:member_type => 'courtesy key')
   scope :non_members, where("member_type <> 'current'")
 
   has_many :access_logs
@@ -55,6 +58,14 @@ class Member < ActiveRecord::Base
       true
     else
       false
+    end
+  end
+
+  def billing_period_begins
+    if anniversary_date
+      anniversary_date.mday.ordinalize
+    else
+      ""
     end
   end
 

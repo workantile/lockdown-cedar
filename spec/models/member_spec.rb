@@ -52,6 +52,13 @@ describe Member do
     end
   end
 
+  describe ".billing_period_begins" do
+    it "should return the day of the month a member's billing period begins" do
+      @member.anniversary_date = Date.new(2012,5,6)
+      @member.billing_period_begins.should include '6'
+    end
+  end
+
   describe ".grant_access?" do
     before(:each) do
       @door = FactoryGirl.create(:door)
