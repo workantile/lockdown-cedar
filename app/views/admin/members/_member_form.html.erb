@@ -1,15 +1,26 @@
-<h4><%= @member.full_name %></h4>
 <%= form_for([:admin, @member], :html => {:class => 'form-horizontal'}) do |f| %>
-	<%= build_control(f, @member, nil, :first_name, 'text').html_safe %>
-	<%= build_control(f, @member, nil, :last_name, 'text').html_safe %>
-	<%= build_control(f, @member, nil, :email, 'text').html_safe %>
-	<%= build_control(f, @member, nil, :task, 'text').html_safe %>
-	<%= build_control(f, @member, nil, :pay_simple_customer_id, 'text').html_safe %>
-	<%= build_control(f, @member, nil, :member_type, 'select', :select_list => Member::MEMBER_TYPES).html_safe %>
-	<%= build_control(f, @member, nil, :billing_plan, 'select', :select_list => Member::BILLING_PLANS).html_safe %>
-	<%= build_control(f, @member, nil, :anniversary_date, 'date').html_safe %>
-	<%= build_control(f, @member, nil, :rfid, 'text').html_safe %>
-	<%= build_control(f, @member, nil, :key_enabled, 'radio_buttons', {:label => 'rfid enabled', :values_list => [true, false]}).html_safe %>
+<div class="container">
+	<div class="row">
+		<div class="span3">
+			<h4><%= @member.full_name %></h4>
+			<p><%= f.submit button_label, :class => 'btn btn-primary' %></p>
+		</div>
+		<div class="span9">
+			<%= build_control(f, @member, nil, :first_name, 'text').html_safe %>
+			<%= build_control(f, @member, nil, :last_name, 'text').html_safe %>
+			<%= build_control(f, @member, nil, :email, 'text').html_safe %>
+			<%= build_control(f, @member, nil, :task, 'text').html_safe %>
+			<%= build_control(f, @member, nil, :pay_simple_customer_id, 'text').html_safe %>
+			<%= build_control(f, @member, nil, :member_type, 'select', :select_list => Member::MEMBER_TYPES).html_safe %>
+			<%= build_control(f, @member, nil, :billing_plan, 'select', :select_list => Member::BILLING_PLANS).html_safe %>
+			<%= build_control(f, @member, nil, :anniversary_date, 'date').html_safe %>
+			<%= build_control(f, @member, nil, :termination_date, 'date').html_safe %>
+			<%= build_control(f, @member, nil, :rfid, 'text').html_safe %>
+			<%= build_control(f, @member, nil, :key_enabled, 'radio_buttons', {:label => 'rfid enabled', :values_list => [true, false]}).html_safe %>
 
-	<%= f.submit button_label, :class => 'btn btn-primary' %>
+		</div>
+	</div>
+</div>
 <% end %>
+<%= button_to('Delete member', admin_member_path(@member), :confirm => "Are you sure?", 
+:method => :delete, :class => 'btn btn-danger') unless @member.new_record? %>

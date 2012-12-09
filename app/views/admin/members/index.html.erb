@@ -14,7 +14,6 @@
 		<th>type</th>
 		<th>billing plan</th>
 		<th>joined</th>
-		<th>Delete</th>
 	</thead>
 	<tbody>
 	<% @members.each do |member| %>
@@ -23,7 +22,6 @@
 			<td><%= member.member_type %></td>
 			<td><%= member.billing_plan %></td>
 			<td><%= member.anniversary_date.strftime("%m/%d/%Y") %></td>
-			<td><%= button_to 'Delete', admin_member_path(member), :confirm => "Are you sure?", :method => :delete, :class => 'btn btn-danger' %></td>
 		</tr>
 	<% end %>
 	</tbody>

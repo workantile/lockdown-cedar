@@ -28,6 +28,30 @@ describe Member do
 
   # it { should ensure_inclusion_of(:key_enabled).in_array([true, false]) }
 
+  describe ".check_member_type" do
+    it "should set the termination date when a member leaves" do
+      expect {
+        @member.update_attributes(:member_type => 'former')
+      }.to change(@member, :termination_date).from(nil).to(Date.today)
+    end
+
+    it "should change billing plan to 'none' when a member leaves" do
+      expect {
+        @member.update_attributes(:member_type => 'former')
+      }.to change(@member, :billing_plan).from(@member.billing_plan).to('none')
+    end
+
+    it "should not set the termination date or billing plan otherwise" do
+      expect {
+        @member.update_attributes(:task => 'some task')
+      }.not_to change(@member, :termination_date)
+
+      expect {
+        @member.update_attributes(:task => 'some task')
+      }.not_to change(@member, :billing_plan)
+    end
+  end
+
   describe ".grant_access?" do
     before(:each) do
       @door = FactoryGirl.create(:door)
