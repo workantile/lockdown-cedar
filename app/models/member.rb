@@ -17,15 +17,15 @@ class Member < ActiveRecord::Base
 
   default_scope order("first_name ASC, last_name ASC")
 
-  scope :current_members, where(:member_type => 'current')
-  scope :full_members, where(:member_type => 'current', :billing_plan => 'full')
-  scope :full_no_work_members, where(:member_type => 'current', :billing_plan => 'full - no work')
-  scope :affiliate_members, where(:member_type => 'current', :billing_plan => 'affiliate')
-  scope :student_members, where(:member_type => 'current', :billing_plan => 'student')
-  scope :supporting_members, where(:member_type =>'current', :billing_plan => 'supporter')
-  scope :former_members, where(:member_type => 'former')
-  scope :courtesy_keys, where(:member_type => 'courtesy key')
-  scope :non_members, where("member_type <> 'current'")
+  scope :current, where(:member_type => 'current')
+  scope :full, where(:member_type => 'current', :billing_plan => 'full')
+  scope :full_no_work, where(:member_type => 'current', :billing_plan => 'full - no work')
+  scope :affiliate, where(:member_type => 'current', :billing_plan => 'affiliate')
+  scope :student, where(:member_type => 'current', :billing_plan => 'student')
+  scope :supporting, where(:member_type =>'current', :billing_plan => 'supporter')
+  scope :former, where(:member_type => 'former')
+  scope :courtesy_key, where(:member_type => 'courtesy key')
+  scope :none, where("member_type <> 'current'")
 
   has_many :access_logs
   

@@ -1,40 +1,43 @@
-<h4>Current membership totals:</h4>
-<table class="table table-bordered table-condensed table-striped">
-	<thead>
-		<th>total</th>
-		<th>full</th>
-		<th>full - no work</th>
-		<th>affiliate</th>
-		<th>student</th>
-		<th>supporting</th>
-	</thead>
-	<tbody>
-		<tr>
-			<td><%= Member.current_members.count %></td>
-			<td><%= Member.full_members.count %></td>
-			<td><%= Member.full_no_work_members.count %></td>
-			<td><%= Member.affiliate_members.count %></td>
-			<td><%= Member.student_members.count %></td>
-			<td><%= Member.supporting_members.count %></td>
-		</tr>
-	</tbody>
-</table>
-<%= button_to 'Add new member', new_admin_member_url, :method => :get, :class => 'btn btn-success' %>
-<table class="table table-bordered table-condensed table-striped">
-	<thead>
-		<th>member</th>
-		<th>billing plan</th>
-		<th>billing period begins</th>
-		<th>member since</th>
-	</thead>
-	<tbody>
-		<% @members.each do |member| %>
-		<tr>
-			<td><%= link_to member.full_name, edit_admin_member_path(member) %></td>
-			<td><%= member.billing_plan %></td>
-			<td><%= member.billing_period_begins %></td>
-			<td><%= member.anniversary_date.strftime("%m/%d/%Y") %></td>
-		</tr>
-		<% end %>
-	</tbody>
-</table>
+<div class="container">
+	<div class="row">
+		<div class="span3">
+			<%= build_filters %>
+			<h5>Member totals:</h5>
+			<ul>
+				<li>Current: <%= Member.current.count %></li>
+				<li>Full: <%= Member.full.count %></li>
+				<li>Full - no work: <%= Member.full_no_work.count %></li>
+				<li>Affiliate: <%= Member.affiliate.count %></li>
+				<li>Student: <%= Member.student.count %></li>
+				<li>Supporting: <%= Member.supporting.count %></li>
+			</ul>
+			<h5>Non-member totals:</h5>
+			<ul>
+				<li>Courtesy keys: <%= Member.courtesy_key.count %></li>
+				<li>Former: <%= Member.former.count %></li>
+			</ul>
+
+		</div>
+		<div class="span9">
+			<%= button_to 'Add new member', new_admin_member_url, :method => :get, :class => 'btn btn-success' %>
+			<table class="table table-bordered table-condensed table-striped">
+				<thead>
+					<th>member</th>
+					<th>billing plan</th>
+					<th>billing period begins</th>
+					<th>member since</th>
+				</thead>
+				<tbody>
+					<% @members.each do |member| %>
+					<tr>
+						<td><%= link_to member.full_name, edit_admin_member_path(member) %></td>
+						<td><%= member.billing_plan %></td>
+						<td><%= member.billing_period_begins %></td>
+						<td><%= member.anniversary_date.strftime("%m/%d/%Y") %></td>
+					</tr>
+					<% end %>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

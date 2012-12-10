@@ -2,7 +2,18 @@ class Admin::MembersController < ApplicationController
 	before_filter :authenticate_admin!
 
 	def index
-		@members = Member.all
+		params[:type] ||= 'current'
+		params[:plan] ||= 'all'
+		case true
+		when (params[:type] == 'all' && params[:plan] == 'all')
+			@members = Member.all
+		when (params[:type] == 'all' && params[:plan] != 'all')
+			@members = Member.where("billing_plan = ?", params[:plan])
+		when (params[:type] != 'all' && params[:plan] == 'all')
+			@members = Member.where("member_type = ?", params[:type])
+		when (params[:type] != 'all' && params[:plan] != 'all')
+			@members = Member.where("member_type = ? and billing_plan = ?", params[:type], params[:plan])
+		end
 	end
 
 	def new
