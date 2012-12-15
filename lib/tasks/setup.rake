@@ -39,4 +39,23 @@ namespace :data do
     Door.create!(:name => 'Bank', :address => 'deadbeef01')
     Door.create!(:name => 'Alley', :address => 'deadbeef00')
   end
+
+  desc 'Fix up access log'
+  task :fixup_access_log => :environment do
+    @logs = AccessLog.all
+    @logs.each do |log|
+      unless log.member_id.nil?
+        if log.billing_plan.nil?
+          begin
+            member = Member.find(log.member_id)
+            log.member_type = member.member_type
+            log.billing_plan = member.billing_plan
+            log.save!
+          rescue
+            puts log.member_id.to_s + " does not exist"
+          end
+        end
+      end
+    end
+  end
  end
