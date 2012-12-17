@@ -34,4 +34,5 @@ group :test do
 	gem 'database_cleaner'
 	gem 'email_spec'
 	gem 'action_mailer_cache_delivery', '~> 0.3.2'
+  gem 'timecop'
 end

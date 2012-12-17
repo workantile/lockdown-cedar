@@ -69,6 +69,12 @@ class Member < ActiveRecord::Base
     end
   end
 
+  def usage_this_month
+    month_start = Date.new(Date.today.year, Date.today.month, 1)
+    month_end = Date.new(Date.today.year, Date.today.month, -1)
+    self.access_logs.where("access_date >= ? and access_date <= ?", month_start, month_end).count(:access_date, :distinct => true)
+  end
+
   def self.grant_access?(rfid, door_address)
     member = find_by_rfid(rfid)
     door = Door.find_by_address(door_address)

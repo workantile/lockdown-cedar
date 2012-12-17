@@ -28,6 +28,36 @@ describe Member do
 
   # it { should ensure_inclusion_of(:key_enabled).in_array([true, false]) }
 
+  describe ".usage_this_month" do
+    before(:each) do
+      @this_is_now = Timecop.freeze(Date.new(2012, 11, 15))
+      2.times { FactoryGirl.create(:log_success, :access_date => @this_is_now, :member => @member)}
+      1.upto(3) { |i| FactoryGirl.create(:log_success, 
+                                         :access_date => @this_is_now + i.day,
+                                         :member => @member) }
+    end
+
+    it "should count multiple accesses on 1 day as 1 day's usage" do
+      @member.usage_this_month.should equal(4)
+    end
+
+    it "should not count usage from last month" do
+      FactoryGirl.create(:log_success,
+                         :access_date => @this_is_now.prev_month,
+                         :member => @member)
+      @member.usage_this_month.should equal(4)
+    end
+
+    it "should not count usage belonging to another member" do
+      @member2 = FactoryGirl.create(:affiliate_member)
+      FactoryGirl.create(:log_success,
+                         :access_date => @this_is_now,
+                         :member => @member2)
+      @member.usage_this_month.should equal(4)
+      @member2.usage_this_month.should equal(1)
+    end
+  end
+
   describe ".check_member_type" do
     it "should set the termination date when a member leaves" do
       expect {
