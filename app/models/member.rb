@@ -69,10 +69,29 @@ class Member < ActiveRecord::Base
     end
   end
 
+  def current_billing_period
+    boundary_date = Date.new(Date.today.year, Date.today.month, self.anniversary_date.day)
+    if Date.today < boundary_date
+      boundary_date.prev_month..boundary_date.prev_day
+    else
+      boundary_date..boundary_date.next_month.prev_day
+    end
+  end
+
+  def previous_billing_period
+    current_billing_period.first.prev_month..current_billing_period.last.prev_month
+  end
+
   def usage_this_month
     month_start = Date.new(Date.today.year, Date.today.month, 1)
     month_end = Date.new(Date.today.year, Date.today.month, -1)
     self.access_logs.where("access_date >= ? and access_date <= ?", month_start, month_end).count(:access_date, :distinct => true)
+  end
+
+  def usage_this_billing_period
+    month_start = Date.new(Date.today.year, Date.today.month, 1)
+    month_end = Date.new(Date.today.year, Date.today.month, -1)
+    self.access_logs.where(:access_date => self.current_billing_period).count(:access_date, :distinct => true)
   end
 
   def self.grant_access?(rfid, door_address)

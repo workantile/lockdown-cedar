@@ -28,6 +28,80 @@ describe Member do
 
   # it { should ensure_inclusion_of(:key_enabled).in_array([true, false]) }
 
+  describe ".current_billing_period" do
+    before(:each) do
+      @member.update_attributes(:anniversary_date => Date.new(2012, 2, 15))
+    end
+
+    it "should return the current billing period" do
+      Timecop.freeze(Date.new(2012, 11, 10))
+      expected_period = Date.new(2012,10,15)..Date.new(2012,11,14)
+      @member.current_billing_period.should eq(expected_period)
+    end
+
+    it "should not be confused by month or year boundaries" do
+      Timecop.freeze(Date.new(2013, 1, 10))
+      expected_period = Date.new(2012,12,15)..Date.new(2013,1,14)
+      @member.current_billing_period.should eq(expected_period)
+
+      Timecop.freeze(Date.new(2013, 1, 16))
+      expected_period = Date.new(2013,1,15)..Date.new(2013,2,14)
+      @member.current_billing_period.should eq(expected_period)
+    end
+  end
+
+  describe ".previous_billing_period" do
+    before(:each) do
+      @member.update_attributes(:anniversary_date => Date.new(2012, 2, 15))
+    end
+
+    it "should return the current billing period" do
+      Timecop.freeze(Date.new(2012, 11, 10))
+      expected_period = Date.new(2012,9,15)..Date.new(2012,10,14)
+      @member.previous_billing_period.should eq(expected_period)
+    end
+
+    it "should not be confused by month or year boundaries" do
+      Timecop.freeze(Date.new(2013, 2, 10))
+      expected_period = Date.new(2012,12,15)..Date.new(2013,1,14)
+      @member.previous_billing_period.should eq(expected_period)
+
+      Timecop.freeze(Date.new(2013, 2, 16))
+      expected_period = Date.new(2013,1,15)..Date.new(2013,2,14)
+      @member.previous_billing_period.should eq(expected_period)
+    end
+  end
+
+  describe ".usage_this_billing_period" do
+    before(:each) do
+      @member.update_attributes(:anniversary_date => Date.new(2012, 2, 15))
+      2.times { FactoryGirl.create(:log_success, 
+                                   :access_date => Date.new(2012, 11, 18),
+                                   :member => @member)}
+      1.upto(3) { |i| FactoryGirl.create(:log_success, 
+                                         :access_date => Date.new(2012, 11, 18) + i.day,
+                                         :member => @member) }
+    end
+
+    it "should count multipla access on 1 day as 1 day's usage" do
+      Timecop.freeze(Date.new(2012, 11, 30))
+      @member.usage_this_billing_period.should eq(4)
+    end
+
+    it "should not be confused by boundary conditions" do
+      FactoryGirl.create(:log_success, :access_date => Date.new(2012,11,15), :member => @member)
+      FactoryGirl.create(:log_success, :access_date => Date.new(2012,12,14), :member => @member)
+      Timecop.freeze(Date.new(2012,12,14))
+      @member.usage_this_billing_period.should eq(6)
+    end
+
+    it "should not count usage from the previous billing period" do
+      FactoryGirl.create(:log_success, :access_date => Date.new(2012,10,14), :member => @member)
+      Timecop.freeze(Date.new(2012,11,30))
+      @member.usage_this_billing_period.should eq(4)
+    end
+  end
+
   describe ".usage_this_month" do
     before(:each) do
       @this_is_now = Timecop.freeze(Date.new(2012, 11, 15))
@@ -38,14 +112,14 @@ describe Member do
     end
 
     it "should count multiple accesses on 1 day as 1 day's usage" do
-      @member.usage_this_month.should equal(4)
+      @member.usage_this_month.should eq(4)
     end
 
     it "should not count usage from last month" do
       FactoryGirl.create(:log_success,
                          :access_date => @this_is_now.prev_month,
                          :member => @member)
-      @member.usage_this_month.should equal(4)
+      @member.usage_this_month.should eq(4)
     end
 
     it "should not count usage belonging to another member" do
@@ -53,8 +127,8 @@ describe Member do
       FactoryGirl.create(:log_success,
                          :access_date => @this_is_now,
                          :member => @member2)
-      @member.usage_this_month.should equal(4)
-      @member2.usage_this_month.should equal(1)
+      @member.usage_this_month.should eq(4)
+      @member2.usage_this_month.should eq(1)
     end
   end
 

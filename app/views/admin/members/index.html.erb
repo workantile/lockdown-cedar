@@ -24,7 +24,7 @@
 				<thead>
 					<th>member</th>
 					<th>billing plan</th>
-					<th>billing period begins</th>
+					<th>usage current billing period</th>
 					<th>member since</th>
 				</thead>
 				<tbody>
@@ -32,7 +32,7 @@
 					<tr>
 						<td><%= link_to member.full_name, edit_admin_member_path(member) %></td>
 						<td><%= member.billing_plan %></td>
-						<td><%= member.billing_period_begins %></td>
+						<td><%= member.usage_this_billing_period %></td>
 						<td><%= member.anniversary_date.strftime("%m/%d/%Y") %></td>
 					</tr>
 					<% end %>
