@@ -1,4 +1,4 @@
-LockdownRails::Application.routes.draw do
+Openings::Application.routes.draw do
   devise_for :admins
 
   get 'access/:address/:rfid' => 'access#show'

@@ -4,4 +4,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-LockdownRails::Application.load_tasks
+Openings::Application.load_tasks
