@@ -1,6 +1,7 @@
 class Member < ActiveRecord::Base
 	BILLING_PLANS = ['full','full - no work','affiliate','student','supporter', 'none']
   MEMBER_TYPES = ['current', 'former', 'courtesy key']
+  AFFILIATE_FREE_DAY_PASSES = 4
 
   attr_accessible :first_name, :last_name, :email, :rfid, :member_type, :anniversary_date,
                   :billing_plan, :key_enabled, :task, :pay_simple_customer_id, :termination_date
@@ -83,15 +84,31 @@ class Member < ActiveRecord::Base
   end
 
   def usage_this_month
-    month_start = Date.new(Date.today.year, Date.today.month, 1)
-    month_end = Date.new(Date.today.year, Date.today.month, -1)
-    self.access_logs.where("access_date >= ? and access_date <= ?", month_start, month_end).count(:access_date, :distinct => true)
+    this_month = Date.new(Date.today.year, Date.today.month, 1)..Date.new(Date.today.year, Date.today.month, -1)
+    self.access_logs.where(:access_date => this_month).count(:access_date, :distinct => true)
   end
 
   def usage_this_billing_period
-    month_start = Date.new(Date.today.year, Date.today.month, 1)
-    month_end = Date.new(Date.today.year, Date.today.month, -1)
     self.access_logs.where(:access_date => self.current_billing_period).count(:access_date, :distinct => true)
+  end
+
+  def billable_days_this_billing_period
+    if self.usage_this_billing_period > AFFILIATE_FREE_DAY_PASSES
+      self.usage_this_billing_period - AFFILIATE_FREE_DAY_PASSES
+    else
+      0
+    end
+  end
+
+  def send_usage_email
+    if billing_plan == "affiliate" && usage_email_sent != Date.today
+      if self.usage_this_billing_period > AFFILIATE_FREE_DAY_PASSES
+        MemberEmail.delay.billable_day_pass_use(self)
+      else
+        MemberEmail.delay.free_day_pass_use(self)
+      end
+      self.usage_email_sent = Date.today
+    end
   end
 
   def self.grant_access?(rfid, door_address)

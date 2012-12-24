@@ -163,6 +163,93 @@ describe Member do
     end
   end
 
+  describe ".send_usage_email" do
+    before(:each) do
+      Delayed::Worker.delay_jobs = false
+    end
+    
+    it "should send an email to affiliate members" do
+      @affiliate = FactoryGirl.create(:affiliate_member)
+      @affiliate.send_usage_email
+      last_email.to.should include(@affiliate.email)
+    end
+
+    it "should not send an email to a full member" do
+      @member.send_usage_email
+      last_email.should be_nil
+    end
+
+    it "should not send more than one email in one day to a member" do
+      @affiliate = FactoryGirl.create(:affiliate_member)
+      now = Timecop.freeze(Date.today)
+      @affiliate.send_usage_email
+      @affiliate.send_usage_email
+      all_emails.count.should eq(1)
+
+      Timecop.freeze(now + 1.day)
+      @affiliate.send_usage_email
+      @affiliate.send_usage_email
+      all_emails.count.should eq(2)
+    end
+
+    it "should send a free day pass email if period-to-date usage is <= affilate free day passes" do
+      start_date = Timecop.freeze(Date.new(2012,1,1))
+
+      @affiliate = FactoryGirl.create(:affiliate_member, :anniversary_date => start_date)
+      Member::AFFILIATE_FREE_DAY_PASSES.times { 
+        |n| FactoryGirl.create(:log_success, 
+                               :access_date => start_date + n.day,
+                               :member => @affiliate)
+      }
+      
+      MemberEmail.should_receive(:free_day_pass_use).with(@affiliate).and_return(double("mailer", :deliver => true))
+      @affiliate.send_usage_email
+    end
+
+    it "should send a billable day pass email if period-to-date usage is > affilate free day passes" do
+      start_date = Timecop.freeze(Date.new(2012,1,1))
+
+      @affiliate = FactoryGirl.create(:affiliate_member, :anniversary_date => start_date)
+      (Member::AFFILIATE_FREE_DAY_PASSES + 1).times { 
+        |n| FactoryGirl.create(:log_success, 
+                               :access_date => start_date + n.day,
+                               :member => @affiliate)
+      }
+      
+      MemberEmail.should_receive(:billable_day_pass_use).with(@affiliate).and_return(double("mailer", :deliver => true))
+      @affiliate.send_usage_email
+    end
+
+  end
+
+  describe ".billable_days_this_billing_period" do
+    it "should return 0 if the member has not exceeded use of all free day passes" do
+      start_date = Timecop.freeze(Date.new(2012,1,1))
+
+      @affiliate = FactoryGirl.create(:affiliate_member, :anniversary_date => start_date)
+      Member::AFFILIATE_FREE_DAY_PASSES.times { 
+        |n| FactoryGirl.create(:log_success, 
+                               :access_date => start_date + n.day,
+                               :member => @affiliate)
+      }
+
+      @affiliate.billable_days_this_billing_period.should eq(0)
+    end
+
+    it "should return the difference between the total day passes used and allowed number" do
+      start_date = Timecop.freeze(Date.new(2012,1,1))
+
+      @affiliate = FactoryGirl.create(:affiliate_member, :anniversary_date => start_date)
+      (Member::AFFILIATE_FREE_DAY_PASSES + 2).times { 
+        |n| FactoryGirl.create(:log_success, 
+                               :access_date => start_date + n.day,
+                               :member => @affiliate)
+      }
+
+      @affiliate.billable_days_this_billing_period.should eq(2)
+    end
+  end
+
   describe ".grant_access?" do
     before(:each) do
       @door = FactoryGirl.create(:door)

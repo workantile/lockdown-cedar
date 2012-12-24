@@ -1,0 +1,13 @@
+<p>
+	Hi <%= @member.first_name %>,
+</p>
+<p>
+	As of today, you have used <%= @member.usage_this_billing_period.to_s %> of the <%= Member::AFFILIATE_FREE_DAY_PASSES %> day passes included in your billing plan this billing period. Your current billing period runs from <%= @member.current_billing_period.first.strftime("%B %-d, %Y") %> to <%= @member.current_billing_period.last.strftime("%B %-d, %Y") %>.
+</p>
+<p>
+	If you think you should not be charged for this day pass, please fill out this 
+	<a href='https://docs.google.com/spreadsheet/viewform?formkey=dFpVZ0pNOGJSN3VlRzhMV2lWdXk1TFE6MQ#gid=0'>form</a> so we know not to charge you.
+</p>
+<p>
+	If you have any questions, please email Brendan at brendan@themodernfirm.com or Tom at twbrandt@gmail.com.
+</p>
