@@ -55,7 +55,7 @@ describe Member do
       @member.update_attributes(:anniversary_date => Date.new(2012, 2, 15))
     end
 
-    it "should return the current billing period" do
+    it "should return the previous billing period" do
       Timecop.freeze(Date.new(2012, 11, 10))
       expected_period = Date.new(2012,9,15)..Date.new(2012,10,14)
       @member.previous_billing_period.should eq(expected_period)

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121224191859) do
+ActiveRecord::Schema.define(:version => 20121229142601) do
 
   create_table "access_logs", :force => true do |t|
     t.date     "access_date"
@@ -84,6 +84,15 @@ ActiveRecord::Schema.define(:version => 20121224191859) do
     t.string   "pay_simple_customer_id"
     t.date     "termination_date"
     t.date     "usage_email_sent"
+  end
+
+  create_table "snapshots", :force => true do |t|
+    t.string   "category"
+    t.string   "item"
+    t.integer  "count"
+    t.date     "snapshot_date"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
   end
 
 end

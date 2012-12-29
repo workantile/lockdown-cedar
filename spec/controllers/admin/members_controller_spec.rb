@@ -21,7 +21,7 @@ describe Admin::MembersController do
   describe "POST 'create'" do
     describe "success" do
       before(:each) do
-        post(:create, :member => FactoryGirl.attributes_for(:full_member))
+        post(:create, :member => FactoryGirl.attributes_for(:full_member, :anniversary_date => "12/01/2012"))
       end
     
       it "persists a new member with the parameters submitted" do
@@ -35,7 +35,7 @@ describe Admin::MembersController do
   
     describe "failure" do
       before(:each) do
-        post(:create, :member => FactoryGirl.attributes_for(:full_member, :email => ""))
+        post(:create, :member => FactoryGirl.attributes_for(:full_member, :email => "", :anniversary_date => "12/01/2012"))
       end
 
       it "renders the new template again" do
@@ -67,7 +67,7 @@ describe Admin::MembersController do
     describe 'success' do
     	before(:each) do
     		member = FactoryGirl.create(:full_member)
-    		put(:update, :id => member.id, :member => FactoryGirl.attributes_for(:full_member))
+    		put(:update, :id => member.id, :member => FactoryGirl.attributes_for(:full_member, :anniversary_date => "12/01/2012"))
     	end
 
       it "redirects to the index" do
@@ -78,7 +78,7 @@ describe Admin::MembersController do
     describe 'failure' do
     	before(:each) do
     		member = FactoryGirl.create(:full_member)
-    		put(:update, :id => member.id, :member => FactoryGirl.attributes_for(:full_member, :email => ''))
+    		put(:update, :id => member.id, :member => FactoryGirl.attributes_for(:full_member, :email => '', :anniversary_date => "12/01/2012"))
     	end
 
     	it "renders the 'edit' template" do
