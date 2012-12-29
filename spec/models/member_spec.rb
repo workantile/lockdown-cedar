@@ -132,6 +132,36 @@ describe Member do
     end
   end
 
+  describe ".usage_previous_billing_period" do
+    before(:each) do
+      @member.update_attributes(:anniversary_date => Date.new(2012, 2, 15))
+      2.times { FactoryGirl.create(:log_success, 
+                                   :access_date => Date.new(2012, 11, 18),
+                                   :member => @member)}
+      1.upto(3) { |i| FactoryGirl.create(:log_success, 
+                                         :access_date => Date.new(2012, 11, 18) + i.day,
+                                         :member => @member) }
+    end
+
+    it "should count multipla access on 1 day as 1 day's usage" do
+      Timecop.freeze(Date.new(2012, 12, 30))
+      @member.usage_previous_billing_period.should eq(4)
+    end
+
+    it "should not be confused by boundary conditions" do
+      FactoryGirl.create(:log_success, :access_date => Date.new(2012,11,15), :member => @member)
+      FactoryGirl.create(:log_success, :access_date => Date.new(2012,12,14), :member => @member)
+      Timecop.freeze(Date.new(2013,01,14))
+      @member.usage_previous_billing_period.should eq(6)
+    end
+
+    it "should not count usage from the previous billing period" do
+      FactoryGirl.create(:log_success, :access_date => Date.new(2012,10,14), :member => @member)
+      Timecop.freeze(Date.new(2012,12,30))
+      @member.usage_previous_billing_period.should eq(4)
+    end
+  end
+
   describe ".check_member_type" do
     it "should set the termination date when a member leaves" do
       expect {

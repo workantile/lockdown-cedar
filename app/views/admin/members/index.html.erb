@@ -22,18 +22,26 @@
 			<%= button_to 'Add new member', new_admin_member_url, :method => :get, :class => 'btn btn-success' %>
 			<table class="table table-bordered table-condensed table-striped">
 				<thead>
-					<th>member</th>
-					<th>billing plan</th>
-					<th>usage current billing period</th>
-					<th>member since</th>
+					<tr>
+						<th colspan="3"></th>
+						<th colspan="2">usage</th>
+					</tr>
+					<tr>
+						<th>member</th>
+						<th>member since</th>
+						<th>billing plan</th>
+						<th>current billing period</th>
+						<th>previous billing period</th>
+					</tr>
 				</thead>
 				<tbody>
 					<% @members.each do |member| %>
 					<tr>
 						<td><%= link_to member.full_name, edit_admin_member_path(member) %></td>
+						<td><%= member.anniversary_date.strftime("%m/%d/%Y") %></td>
 						<td><%= member.billing_plan %></td>
 						<td><%= member.usage_this_billing_period %></td>
-						<td><%= member.anniversary_date.strftime("%m/%d/%Y") %></td>
+						<td><%= member.usage_previous_billing_period %></td>
 					</tr>
 					<% end %>
 				</tbody>

@@ -92,6 +92,10 @@ class Member < ActiveRecord::Base
     self.access_logs.where(:access_date => self.current_billing_period).count(:access_date, :distinct => true)
   end
 
+  def usage_previous_billing_period
+    self.access_logs.where(:access_date => self.previous_billing_period).count(:access_date, :distinct => true)
+  end
+
   def billable_days_this_billing_period
     if self.usage_this_billing_period > AFFILIATE_FREE_DAY_PASSES
       self.usage_this_billing_period - AFFILIATE_FREE_DAY_PASSES
