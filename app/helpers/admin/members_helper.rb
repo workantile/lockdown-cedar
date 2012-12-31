@@ -6,11 +6,10 @@ module Admin::MembersHelper
 		plan_list << ['all', 'all']
 		form_tag(admin_members_url, :method => 'get') do
 			label_tag(:type, "Filter by member type") +
-			select_tag(:type, options_for_select(type_list, params[:type])) +
+			select_tag(:type, options_for_select(type_list, params[:type]), :"data-url" => admin_members_url) +
 			label_tag(:plan, "Filter by billing plan") +
-			select_tag(:plan, options_for_select(plan_list, params[:plan])) +
-			submit_tag("Filter list", :class => 'btn btn-primary')
+			select_tag(:plan, options_for_select(plan_list, params[:plan]), :"data-url" => admin_members_url)
 		end
-
 	end
+
 end

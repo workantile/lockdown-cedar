@@ -254,7 +254,7 @@ describe Member do
 
   describe ".billable_days_this_billing_period" do
     it "should return 0 if the member has not exceeded use of all free day passes" do
-      start_date = Timecop.freeze(Date.new(2012,1,1))
+      start_date = Timecop.freeze(Date.new(2012,1,1)).to_date
 
       @affiliate = FactoryGirl.create(:affiliate_member, :anniversary_date => start_date)
       Member::AFFILIATE_FREE_DAY_PASSES.times { 
@@ -267,7 +267,7 @@ describe Member do
     end
 
     it "should return the difference between the total day passes used and allowed number" do
-      start_date = Timecop.freeze(Date.new(2012,1,1))
+      start_date = Timecop.freeze(Date.new(2012,1,1)).to_date
 
       @affiliate = FactoryGirl.create(:affiliate_member, :anniversary_date => start_date)
       (Member::AFFILIATE_FREE_DAY_PASSES + 2).times { 

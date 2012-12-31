@@ -1,10 +1,12 @@
 class Admin::MembersController < ApplicationController
 	before_filter :authenticate_admin!
+	respond_to :html, :js
 
 	def index
 		params[:type] ||= 'current'
 		params[:plan] ||= 'all'
 		@members = Member.lookup_type_plan(params[:type], params[:plan])
+		respond_with @members
 	end
 
 	def new
