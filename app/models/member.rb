@@ -132,4 +132,17 @@ class Member < ActiveRecord::Base
     end
   end
 
+  def self.lookup_type_plan(type, plan)
+    case true
+    when (type == 'all' && plan == 'all')
+      Member.all
+    when (type == 'all' && plan != 'all')
+      Member.where("billing_plan = ?", plan)
+    when (type != 'all' && plan == 'all')
+      Member.where("member_type = ?", type)
+    when (type != 'all' && plan != 'all')
+      Member.where("member_type = ? and billing_plan = ?", type, plan)
+    end
+  end
+
 end

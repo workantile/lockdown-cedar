@@ -280,6 +280,25 @@ describe Member do
     end
   end
 
+  describe ".lookup_type_plan" do
+    before(:each) do
+      FactoryGirl.create(:full_member)
+      FactoryGirl.create(:affiliate_member)
+      FactoryGirl.create(:former_member)
+    end
+
+    it "should return plan asked for" do
+      members = Member.lookup_type_plan("current", "all")
+      members.map(&:billing_plan).should include("full", "affiliate")
+    end
+
+    it "should return type askes for" do
+      member = Member.lookup_type_plan("former", "all").first
+      member.member_type.should eq("former")
+    end
+
+  end
+
   describe ".grant_access?" do
     before(:each) do
       @door = FactoryGirl.create(:door)
