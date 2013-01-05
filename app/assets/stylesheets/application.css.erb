@@ -16,3 +16,17 @@
 	color: #B94A48;
 	border-color: #B94A48;
 }
+
+.modal {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .8 ) 
+                url(<%= asset_path 'images/ajax-loader.gif' %>) 
+                50% 50% 
+                no-repeat;
+}
