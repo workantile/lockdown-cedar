@@ -19,7 +19,15 @@
       <a class="brand" href="#">Workantile membership</a>
       <div class="nav-collapse">
         <ul class="nav">
-          <li><%= link_to "members", admin_members_url %></li>
+          <li class="dropdown open">
+            <a id="drop1" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
+              members  <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
+              <li><%= link_to "members", admin_members_url %></li>
+              <li><a href="#">billing</a></li>
+            </ul>
+          </li>
           <li><%= link_to "admins", admin_admins_url %></li>
           <li><%= link_to "reports", admin_reports_url %></li>
           <li><%= link_to "sign out", destroy_admin_session_path, :method => :delete %></li>
