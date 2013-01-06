@@ -20,7 +20,10 @@
 		</div>
 		<div class="span9">
 			<%= button_to 'Add new member', new_admin_member_url, :method => :get, :class => 'btn btn-success' %>
-			<%= render :partial => 'members_table' %>
+			<div id="members-table">
+				<%= render :partial => 'members_table' %>
+			</div>
 		</div>
 	</div>
 </div>
+<div class="modal"></div>
