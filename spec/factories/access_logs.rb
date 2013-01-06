@@ -2,7 +2,6 @@
 
 FactoryGirl.define do
   factory :access_log do
-    access_date Date.today
     association :member, factory: :full_member
 
     trait :success do
