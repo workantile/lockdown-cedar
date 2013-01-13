@@ -64,7 +64,6 @@ namespace :data do
     @logs = AccessLog.all
     @logs.each do |log|
       et = log.created_at.ago(18000)
-      log.created_at = log.updated_at = et
       log.access_date = et.to_date
       log.save
     end
