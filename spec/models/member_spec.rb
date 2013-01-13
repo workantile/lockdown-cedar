@@ -212,11 +212,13 @@ describe Member do
       @affiliate = FactoryGirl.create(:affiliate_member)
       now = Timecop.freeze(Date.today)
       @affiliate.send_usage_email
+      @affiliate.reload
       @affiliate.send_usage_email
       all_emails.count.should eq(1)
 
       Timecop.freeze(now + 1.day)
       @affiliate.send_usage_email
+      @affiliate.reload
       @affiliate.send_usage_email
       all_emails.count.should eq(2)
     end

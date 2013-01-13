@@ -112,6 +112,7 @@ class Member < ActiveRecord::Base
         MemberEmail.delay.free_day_pass_use(self)
       end
       self.usage_email_sent = Date.today
+      self.save
     end
   end
 

@@ -9,6 +9,15 @@ $(document).ready(function () {
 		});
 	});
 
+	$("body").on({
+	    ajaxStart: function() { 
+	        $(this).addClass("loading"); 
+	    },
+	    ajaxStop: function() { 
+	        $(this).removeClass("loading"); 
+	    }    
+	});	
+
 	$('.invoice_button').click(function () {
 		$.ajax({
 			url: $(this).attr('data-url'),
@@ -17,4 +26,5 @@ $(document).ready(function () {
 			dataType: "script"
 		});
 	});
+
 });
