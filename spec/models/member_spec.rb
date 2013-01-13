@@ -6,6 +6,7 @@ describe Member do
   end
 
   it { should respond_to :full_name }
+  it { should respond_to :last_date_invoiced }
   it { should validate_presence_of(:first_name) }
   it { should validate_presence_of(:last_name) }
   it { should validate_presence_of(:email) }
@@ -25,8 +26,6 @@ describe Member do
                                                          'student',
                                                          'supporter',
                                                          'none']) }
-
-  # it { should ensure_inclusion_of(:key_enabled).in_array([true, false]) }
 
   describe ".current_billing_period" do
     before(:each) do
@@ -297,6 +296,68 @@ describe Member do
       member.member_type.should eq("former")
     end
 
+  end
+
+  describe ".needs_invoicing?" do
+    before(:each) do
+      @anniversary_date = Date.new(2012, 1, 1)
+      @affiliate_yes = FactoryGirl.create(:affiliate_member, :anniversary_date => @anniversary_date)
+      (Member::AFFILIATE_FREE_DAY_PASSES + 2).times { 
+        |n| FactoryGirl.create(:log_success, 
+                               :access_date => @anniversary_date + n.day,
+                               :member => @affiliate_yes)
+      }
+      @affiliate_no = FactoryGirl.create(:affiliate_member, :anniversary_date => @anniversary_date)
+      (Member::AFFILIATE_FREE_DAY_PASSES).times { 
+        |n| FactoryGirl.create(:log_success, 
+                               :access_date => @anniversary_date + n.day,
+                               :member => @affiliate_no)
+      }
+      @former = FactoryGirl.create(:former_member, :anniversary_date => @anniversary_date)
+      Timecop.freeze(@anniversary_date.next_month)
+    end
+
+    it "should say yes only to current affiliate members" do
+      @member.needs_invoicing?.should be_false
+      @affiliate_yes.needs_invoicing?.should be_true
+      @former.needs_invoicing?.should be_false
+    end
+
+    it "should say yes only to members with excess uasge in the previous billing period" do
+      @affiliate_yes.needs_invoicing?.should be_true
+      @affiliate_no.needs_invoicing?.should be_false
+    end
+
+    it "should say yes only to members where the last_date_invoiced is blank or prior to the start of the current billing period" do
+      @affiliate_yes.update_attributes(:last_date_invoiced => "")
+      @affiliate_yes.needs_invoicing?.should be_true
+
+      @affiliate_yes.update_attributes(:last_date_invoiced => @affiliate_yes.current_billing_period.first.prev_month)
+      @affiliate_yes.needs_invoicing?.should be_true
+
+      @affiliate_yes.update_attributes(:last_date_invoiced => @affiliate_yes.current_billing_period.first)
+      @affiliate_yes.needs_invoicing?.should be_false
+    end
+  end
+
+  describe ".members_to_invoice" do
+    before(:each) do
+      anniversary_date = Date.new(2012, 1, 1)
+      FactoryGirl.create(:affiliate_member, :anniversary_date => anniversary_date)
+      2.times do 
+        affiliate = FactoryGirl.create(:affiliate_member, :anniversary_date => anniversary_date)
+        (Member::AFFILIATE_FREE_DAY_PASSES + 2).times { 
+          |n| FactoryGirl.create(:log_success, 
+                                 :access_date => anniversary_date + n.day,
+                                 :member => affiliate)
+        }
+      end
+      Timecop.freeze(anniversary_date.next_month)
+    end
+
+    it "should return affiliate members with excess day pass usage in the previous billing period" do
+      Member.members_to_invoice.count.should eq(2)
+    end
   end
 
   describe ".grant_access?" do

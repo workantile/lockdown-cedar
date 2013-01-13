@@ -1,0 +1,1 @@
+$("#member-<%= @member.id.to_s %>").html("<%= escape_javascript(@member.full_name + ' has been invoiced') %>")

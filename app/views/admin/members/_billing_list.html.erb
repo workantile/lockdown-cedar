@@ -1,0 +1,28 @@
+<div id="members-table">
+	<table class="table table-bordered table-condensed table-striped">
+		<thead>
+			<tr>
+				<th>member</th>
+				<th>billing system id</tn>
+				<th>billable usage prev billing period</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<% @members.each do |member| %>
+			<tr>
+				<td><%= member.full_name %></td>
+				<td><%= member.pay_simple_customer_id %></td>
+				<td><%= member.usage_previous_billing_period - Member::AFFILIATE_FREE_DAY_PASSES %></td>
+				<td>
+					<div id="member-<%= member.id.to_s %>">
+						<button type="button" class="btn btn-primary btn-small invoice_button" data-url=<%= invoiced_admin_member_url(member) %> >
+							Mark as invoiced
+						</button>
+					</div>
+				</td>
+			</tr>
+			<% end %>
+		</tbody>
+	</table>
+</div>

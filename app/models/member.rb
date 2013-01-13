@@ -4,7 +4,7 @@ class Member < ActiveRecord::Base
   AFFILIATE_FREE_DAY_PASSES = 4
 
   attr_accessible :first_name, :last_name, :email, :rfid, :member_type, :anniversary_date,
-                  :billing_plan, :key_enabled, :task, :pay_simple_customer_id, :termination_date
+                  :billing_plan, :key_enabled, :task, :pay_simple_customer_id, :termination_date, :last_date_invoiced
 
   validates_presence_of :first_name, :last_name, :email, :member_type, :billing_plan
   validates_uniqueness_of :email, :rfid
@@ -115,6 +115,13 @@ class Member < ActiveRecord::Base
     end
   end
 
+  def needs_invoicing?
+    self.billing_plan == "affiliate" && 
+    self.member_type == "current" &&
+    self.usage_previous_billing_period > Member::AFFILIATE_FREE_DAY_PASSES &&
+    (self.last_date_invoiced.nil? || self.last_date_invoiced < self.current_billing_period.first) ? true :false
+  end
+
   def self.grant_access?(rfid, door_address)
     member = find_by_rfid(rfid)
     door = Door.find_by_address(door_address)
@@ -142,6 +149,14 @@ class Member < ActiveRecord::Base
       Member.where("member_type = ?", type)
     when (type != 'all' && plan != 'all')
       Member.where("member_type = ? and billing_plan = ?", type, plan)
+    end
+  end
+
+  def self.members_to_invoice
+    candidates = Member.where("member_type = 'current' and billing_plan = 'affiliate'")
+    candidates.inject([]) do |members, member|
+      members << member if member.needs_invoicing?
+      members
     end
   end
 

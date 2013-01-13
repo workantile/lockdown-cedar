@@ -58,4 +58,15 @@ namespace :data do
       end
     end
   end
+
+  desc 'set dates/times to local time'
+  task :set_to_local => :environment do
+    @logs = AccessLog.all
+    @logs.each do |log|
+      et = log.created_at.ago(18000)
+      log.created_at = log.updated_at = et
+      log.access_date = et.to_date
+      log.save
+    end
+  end
  end

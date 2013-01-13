@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121229142601) do
+ActiveRecord::Schema.define(:version => 20130111193135) do
 
   create_table "access_logs", :force => true do |t|
     t.date     "access_date"
@@ -84,6 +84,7 @@ ActiveRecord::Schema.define(:version => 20121229142601) do
     t.string   "pay_simple_customer_id"
     t.date     "termination_date"
     t.date     "usage_email_sent"
+    t.date     "last_date_invoiced"
   end
 
   create_table "snapshots", :force => true do |t|

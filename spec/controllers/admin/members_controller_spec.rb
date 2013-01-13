@@ -97,4 +97,36 @@ describe Admin::MembersController do
   		response.should redirect_to(admin_members_url)
   	end
   end
+
+  describe "GET 'billing'" do
+    before(:each) do
+      anniversary_date = Date.new(2012, 1, 1)
+      2.times {
+        affiliate = FactoryGirl.create(:affiliate_member, :anniversary_date => anniversary_date)
+        (Member::AFFILIATE_FREE_DAY_PASSES + 2).times { 
+          |n| FactoryGirl.create(:log_success, 
+                                 :access_date => anniversary_date + n.day,
+                                 :member => affiliate)
+        }
+      }
+      get :billing
+      Timecop.freeze(anniversary_date.next_month)
+    end
+
+    it "assigns to members" do
+      assigns(:members).should be_kind_of(Array)
+    end
+
+    it "renders the 'billing' template" do
+      response.should render_template('billing')
+    end
+  end
+
+  describe "PUT 'invoiced'" do
+    it "updates the member" do
+      affiliate = FactoryGirl.create(:affiliate_member)
+      xhr(:put, :invoiced, :id => affiliate.id)
+    end
+  end
+
 end

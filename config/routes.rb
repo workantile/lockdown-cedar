@@ -5,7 +5,10 @@ Openings::Application.routes.draw do
 
   namespace :admin do
     resources :admins
-    resources :members
+    resources :members do
+    	get 'billing', :on => :collection
+      put 'invoiced', :on => :member
+    end
 
     get "reports" => "reports#index"
   end
