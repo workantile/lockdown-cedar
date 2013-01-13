@@ -399,12 +399,9 @@ describe Member do
       }.to change(AccessLog, :count).by(1)
     end
 
-    it "should log denials" do
-      pending "we need to log denials"
-      @member.update_attributes(:member_type => 'former')
-      expect {
-        Member.grant_access?(@member.rfid, @door.address)
-      }.to change(AccessLog, :count).by(1)
+    it "should handle keys in lower case" do
+      FactoryGirl.create(:full_member, :rfid => '1a2b3c')
+      Member.grant_access?('1A2B3C', @door.address).should be_true
     end
 
     it "should not log unsuccessful access attempts" do

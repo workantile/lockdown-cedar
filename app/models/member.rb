@@ -125,6 +125,7 @@ class Member < ActiveRecord::Base
 
   def self.grant_access?(rfid, door_address)
     member = find_by_rfid(rfid)
+    member ||= find_by_rfid(rfid.downcase)
     door = Door.find_by_address(door_address)
     if member && member.access_enabled? && door
       AccessLog.create(:member => member,
