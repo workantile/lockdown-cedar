@@ -27,6 +27,9 @@ describe Member do
                                                          'supporter',
                                                          'none']) }
 
+  it { should have_many(:access_logs) }
+  it { should have_many(:pending_updates) }
+
   describe ".current_billing_period" do
     before(:each) do
       @member.update_attributes(:anniversary_date => Date.new(2012, 2, 15))
@@ -196,6 +199,9 @@ describe Member do
     before(:each) do
       Delayed::Worker.delay_jobs = false
     end
+    after(:each) do
+      Delayed::Worker.delay_jobs = true
+    end      
     
     it "should send an email to affiliate members" do
       @affiliate = FactoryGirl.create(:affiliate_member)
@@ -253,6 +259,47 @@ describe Member do
 
   end
 
+  describe ".delay_update" do
+    before(:each) do
+      Delayed::Worker.delay_jobs = true  # make sure this fucking thing is always on for these examples
+      @affiliate = FactoryGirl.create(:affiliate_member, :anniversary_date => Date.new(2012,1,1))
+      Timecop.freeze(Date.new(2012,1,15))  
+      @affiliate.delay_update(:member_type, "former")
+      @pending = @affiliate.pending_updates.first
+    end
+
+    it "should create a pending update object" do
+      @pending.should_not be_nil
+    end
+
+    it "should create a delayed job object" do
+      Delayed::Job.exists?(@pending.delayed_job_id).should be_true
+    end
+
+    it "the delayed job should run at the end of the billing period" do
+      Delayed::Job.find(@pending.delayed_job_id).run_at.to_date.should eq(@affiliate.current_billing_period.last)
+    end
+  end
+
+  describe ".destroy_pending_updates" do
+    before(:each) do
+      Delayed::Worker.delay_jobs = true  # make sure this fucking thing is always on for these examples
+      @affiliate = FactoryGirl.create(:affiliate_member, :anniversary_date => Date.new(2012,1,1))
+      Timecop.freeze(Date.new(2012,1,15))  
+      @affiliate.delay_update(:member_type, "former")
+      @pending = @affiliate.pending_updates.first
+      @affiliate.destroy_pending_updates
+    end
+
+    it "should destroy pending update objects" do
+      @affiliate.pending_updates.count.should eq(0)
+    end
+
+    it "should delete associated delayed jobs" do
+      Delayed::Job.exists?(@pending.delayed_job_id).should be_false
+    end
+  end
+  
   describe ".billable_days_this_billing_period" do
     it "should return 0 if the member has not exceeded use of all free day passes" do
       start_date = Timecop.freeze(Date.new(2012,1,1)).to_date
@@ -293,7 +340,7 @@ describe Member do
       members.map(&:billing_plan).should include("full", "affiliate")
     end
 
-    it "should return type askes for" do
+    it "should return type asked for" do
       member = Member.lookup_type_plan("former", "all").first
       member.member_type.should eq("former")
     end

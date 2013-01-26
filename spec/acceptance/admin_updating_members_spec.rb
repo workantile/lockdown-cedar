@@ -17,7 +17,7 @@ feature 'Updating members', %q{
     @member_to_update = FactoryGirl.create(:full_member)
 
     # When I visit the update member page
-    visit 'members/' + @member_to_update.id.to_s + '/edit'
+    visit edit_admin_member_path(@member_to_update)
     
   end
   

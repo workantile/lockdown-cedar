@@ -29,6 +29,7 @@ class Member < ActiveRecord::Base
   scope :none, where("member_type <> 'current'")
 
   has_many :access_logs
+  has_many :pending_updates, :dependent => :destroy
   
   def full_name
   	[first_name, last_name].join(' ')
@@ -121,6 +122,17 @@ class Member < ActiveRecord::Base
     self.member_type == "current" &&
     self.usage_previous_billing_period > Member::AFFILIATE_FREE_DAY_PASSES &&
     (self.last_date_invoiced.nil? || self.last_date_invoiced < self.current_billing_period.first) ? true :false
+  end
+
+  def delay_update(attribute, value)
+    end_of_billing_period = self.current_billing_period.last
+    delay_obj = self.delay(:run_at => end_of_billing_period).update_attributes(attribute => value)
+    self.pending_updates.create(:description => "#{attribute.to_s} will be updated to #{value.to_s} on #{end_of_billing_period.to_s}",
+                               :delayed_job_id => delay_obj.id)
+  end
+
+  def destroy_pending_updates
+    self.pending_updates.each { |pending_update| pending_update.destroy }
   end
 
   def self.grant_access?(rfid, door_address)
