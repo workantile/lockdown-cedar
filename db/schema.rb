@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130111193135) do
+ActiveRecord::Schema.define(:version => 20130119165432) do
 
   create_table "access_logs", :force => true do |t|
     t.date     "access_date"
@@ -85,6 +85,14 @@ ActiveRecord::Schema.define(:version => 20130111193135) do
     t.date     "termination_date"
     t.date     "usage_email_sent"
     t.date     "last_date_invoiced"
+  end
+
+  create_table "pending_updates", :force => true do |t|
+    t.string   "description"
+    t.integer  "delayed_job_id"
+    t.integer  "member_id"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
   end
 
   create_table "snapshots", :force => true do |t|
