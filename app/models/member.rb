@@ -1,3 +1,5 @@
+require 'csv'
+
 class Member < ActiveRecord::Base
 	BILLING_PLANS = ['full','full - no work','affiliate','student','supporter', 'none']
   MEMBER_TYPES = ['current', 'former', 'courtesy key']
@@ -163,6 +165,17 @@ class Member < ActiveRecord::Base
       Member.where("member_type = ?", type)
     when (type != 'all' && plan != 'all')
       Member.where("member_type = ? and billing_plan = ?", type, plan)
+    end
+  end
+
+  def self.export_to_csv(type, plan)
+    members = self.lookup_type_plan(type, plan)
+    headers = members.first.attributes.collect { |attribute| attribute[0] }
+    CSV.generate do |csv|
+      csv << headers
+      members.each do |member|
+        csv << headers.collect { |attribute| member[attribute]}
+      end
     end
   end
 

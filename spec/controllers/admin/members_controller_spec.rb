@@ -177,6 +177,25 @@ describe Admin::MembersController do
   	end
   end
 
+  describe "POST 'export'" do
+    def post_export
+      post(:export, :type => 'current', :plan => 'all')
+    end
+
+    it "calls the members export method" do
+      Member.should_receive(:export_to_csv).with('current', 'all')
+      post_export
+    end
+
+    it "renders the response as text" do
+      expected_return = "'comma', separated', 'values'"
+      Member.should_receive(:export_to_csv).with('current', 'all') { expected_return }
+      post_export
+      response.body.should match(/#{expected_return}/)
+    end
+
+  end
+
   describe "GET 'billing'" do
     before(:each) do
       anniversary_date = Date.new(2012, 1, 1)

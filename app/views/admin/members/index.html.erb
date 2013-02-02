@@ -1,7 +1,10 @@
 <div class="container">
 	<div class="row">
 		<div class="span3">
-			<%= build_filters %>
+			<%= form_tag export_admin_members_url do %>
+				<%= build_filters %>
+				<%= submit_tag "Export members", :class => 'btn btn-primary' %>
+			<% end %>
 			<h5>Member totals:</h5>
 			<ul>
 				<li>Current: <%= Member.current.count %></li>
