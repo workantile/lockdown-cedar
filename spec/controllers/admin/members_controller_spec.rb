@@ -177,6 +177,17 @@ describe Admin::MembersController do
   	end
   end
 
+  describe "POST 'export'" do
+    it "calls the members export method" do
+    end
+
+    it "renders the response as text" do
+    end
+
+    it "redirects to the index" do
+    end
+  end
+
   describe "GET 'billing'" do
     before(:each) do
       anniversary_date = Date.new(2012, 1, 1)
