@@ -62,6 +62,13 @@ class Admin::MembersController < ApplicationController
 		redirect_to admin_members_path
 	end
 
+	def export
+    filename = "members.csv"
+    headers["Content-Type"] = 'text/csv'
+    headers["Content-Disposition"] = "attachment; filename=\"#{filename}\""
+		render :text => Member.export_to_csv(params[:type], params[:plan])
+	end
+
 	def find_delayed_updates
 		if params[:member_type_timing] == 'end_billing_period'
 			@member.delay_update(:member_type, params[:member][:member_type])

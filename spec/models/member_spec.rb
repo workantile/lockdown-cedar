@@ -409,6 +409,21 @@ describe Member do
     end
   end
 
+  describe ".export_to_csv" do 
+    before(:each) do
+      FactoryGirl.create(:full_member)
+      FactoryGirl.create(:affiliate_member)
+      FactoryGirl.create(:former_member)
+    end
+
+    it "should return a comma-separated string containing member types and plans specified" do
+      Member.export_to_csv('current', 'all').should match(/,current/)
+      Member.export_to_csv('current', 'all').should match(/,full/)
+      Member.export_to_csv('current', 'all').should match(/,affiliate/)
+    end
+
+  end
+
   describe ".grant_access?" do
     before(:each) do
       @door = FactoryGirl.create(:door)
