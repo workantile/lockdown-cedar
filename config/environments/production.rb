@@ -68,4 +68,7 @@ Openings::Application.configure do
   # devise requirement:
   config.action_mailer.default_url_options = { :host => 'openings.workantile.com' }
 
+  # use environment variable for the secret token in production.
+  config.secret_token = ENV['SECRET_TOKEN']
+
 end

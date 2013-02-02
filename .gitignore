@@ -11,3 +11,6 @@
 /log/*.log
 /tmp
 db/import
+
+# Don't push secret token to public repositories
+/config/initializers/secret_token.rb
