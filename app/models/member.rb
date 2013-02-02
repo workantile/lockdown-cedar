@@ -128,9 +128,9 @@ class Member < ActiveRecord::Base
   end
 
   def delay_update(attribute, value)
-    end_of_billing_period = self.current_billing_period.last
-    delay_obj = self.delay(:run_at => end_of_billing_period).update_attributes(attribute => value)
-    self.pending_updates.create(:description => "#{attribute.to_s} will be updated to #{value.to_s} on #{end_of_billing_period.to_s}",
+    run_at = self.current_billing_period.last + 1.day
+    delay_obj = self.delay(:run_at => run_at).update_attributes(attribute => value)
+    self.pending_updates.create(:description => "#{attribute.to_s} will be updated to #{value.to_s} on #{run_at.to_s}",
                                :delayed_job_id => delay_obj.id)
   end
 

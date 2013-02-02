@@ -276,8 +276,9 @@ describe Member do
       Delayed::Job.exists?(@pending.delayed_job_id).should be_true
     end
 
-    it "the delayed job should run at the end of the billing period" do
-      Delayed::Job.find(@pending.delayed_job_id).run_at.to_date.should eq(@affiliate.current_billing_period.last)
+    it "the delayed job should run at the beginning of the next billing period" do
+      run_at = @affiliate.current_billing_period.last + 1.day
+      Delayed::Job.find(@pending.delayed_job_id).run_at.to_date.should eq(run_at)
     end
   end
 
