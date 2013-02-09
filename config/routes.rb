@@ -13,6 +13,7 @@ Openings::Application.routes.draw do
     end
 
     get "reports" => "reports#index"
+    post "reports" => "reports#export"
   end
 
   root :to => "home#index"

@@ -1,21 +1,28 @@
-<h4>Access log:</h4>
-<table class="table table-bordered table-condensed table-striped">
-	<thead>
-		<th>date</th>
-		<th>member</th>
-		<th>type</th>
-		<th>plan</th>
-		<th>denied access</th>
-	</thead>
-	<tbody>
-	<% @logs.each do |log| %>
-		<tr>
-			<td><%= log.created_at.strftime("%m/%d/%Y %l:%M %P") %></td>
-			<td><%= log.member_name %></td>
-			<td><%= log.member_type %></td>
-			<td><%= log.billing_plan %></td>
-			<td><%= log.msg %></td>
-		</tr>
-	<% end %>
-	</tbody>
-</table>
+<div class="container">
+	<div class="row">
+		<div class="span3">
+			<%= form_tag admin_reports_url do %>
+				<%= label_tag :start_date, "List access log beginning" %>
+				<%= text_field_tag :start_date, 
+					params[:start_date],
+					:id => 'start-date', 
+					:"data-url" => admin_reports_url
+				%>
+				<%= label_tag :end_date, "ending" %>
+				<%= text_field_tag :end_date, 
+					params[:end_date], 
+					:id => 'end-date',
+					:"data-url" => admin_reports_url
+				%>
+				<button id="apply-dates" class="btn block-display">Apply</button>
+				<%= submit_tag "Export access log", :class => "btn btn-primary" %>
+			<% end %>
+		</div>
+		<div class="span9">
+			<h4>Access log:</h4>
+			<div id="access-logs-table">
+				<%= render :partial => "access_log_table" %>
+			</div>
+		</div>
+	</div>
+</div>

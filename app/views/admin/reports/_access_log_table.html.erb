@@ -1,0 +1,18 @@
+<table class="table table-bordered table-condensed table-striped">
+	<thead>
+		<th>date</th>
+		<th>member</th>
+		<th>type</th>
+		<th>plan</th>
+	</thead>
+	<tbody>
+		<% @logs.each do |log| %>
+		<tr>
+			<td><%= log.created_at.strftime("%m/%d/%Y %l:%M %P") %></td>
+			<td><%= log.member_name %></td>
+			<td><%= log.member_type %></td>
+			<td><%= log.billing_plan %></td>
+		</tr>
+		<% end %>
+	</tbody>
+</table>

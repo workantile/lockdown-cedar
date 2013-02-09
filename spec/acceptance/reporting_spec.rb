@@ -18,8 +18,10 @@ feature 'Running reports', %q{
     
   end
 
-  scenario "running a report" do
-    page.should have_selector('div.container')
+  scenario "reporting access log" do
+    page.should have_content('beginning')
+    page.should have_content('ending')
+    page.should have_content('Access log')
   end
 
 end
