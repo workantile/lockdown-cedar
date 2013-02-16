@@ -10,6 +10,7 @@ class AccessController < ApplicationController
 
 	def send_email
 		member = Member.find_by_rfid(params[:rfid])
+    member ||= Member.find_by_rfid(params[:rfid].downcase)
 		member.send_usage_email
 	end
 

@@ -17,4 +17,11 @@ describe AccessController do
 		get :show, :rfid => rfid, :address => @door.address
 		response.body.should == 'ERROR'
 	end
+
+	it "handles lower case rfid keys" do
+		rfid = "1a2b3c"
+		@member.update_attribute(:rfid, rfid)
+		get :show, :rfid => @member.rfid, :address => @door.address
+		response.body.should == "OK"
+	end
 end
