@@ -148,6 +148,7 @@ class Member < ActiveRecord::Base
                        :member_name => member.full_name,
                        :member_type => member.member_type,
                        :billing_plan => member.billing_plan,
+                       :door_controller_location => door_controller.location,
                        :access_granted => true)
       true
     else
