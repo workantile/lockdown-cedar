@@ -5,6 +5,7 @@ Openings::Application.routes.draw do
 
   namespace :admin do
     resources :admins
+    resources :door_controllers
     resources :members do
     	get 'billing', :on => :collection
       post 'export', :on => :collection

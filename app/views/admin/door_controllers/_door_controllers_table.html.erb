@@ -1,0 +1,20 @@
+	<table class="table table-bordered table-condensed table-striped">
+		<thead>
+			<tr>
+				<th>address</th>
+				<th>location</th>
+				<th>success response</th>
+				<th>error response</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% @door_controllers.each do |door_controller| %>
+			<tr>
+				<td><%= link_to door_controller.address, edit_admin_door_controller_path(door_controller) %></td>
+				<td><%= door_controller.location %></td>
+				<td><%= door_controller.success_response%></td>
+				<td><%= door_controller.error_response %></td>
+			</tr>
+			<% end %>
+		</tbody>
+	</table>

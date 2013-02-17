@@ -8,7 +8,7 @@ feature 'Member opens door', %q{
   
   background do
     # Given the space has a door
-    @door = FactoryGirl.create(:door)
+    @door = FactoryGirl.create(:door_controller)
 
     # Don't queue up the email so this test sees it.
     Delayed::Worker.delay_jobs = false

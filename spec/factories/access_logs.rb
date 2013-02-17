@@ -5,10 +5,10 @@ FactoryGirl.define do
     association :member, factory: :full_member
 
     trait :success do
-        member_name     'Joe Member'
-        member_type     'full'
-        door_name       'alley'
-    	access_granted true
+        member_name                 'Joe Member'
+        member_type                 'full'
+        door_controller_location    'alley'
+    	access_granted              true
     end
 
     trait :failure do

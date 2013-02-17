@@ -1,0 +1,17 @@
+<%= form_for([:admin, @door_controller], :html => {:class => 'form-horizontal'}) do |f| %>
+<div class="container">
+	<div class="row">
+		<div class="span3">
+			<p><%= f.submit button_label, :class => 'btn btn-primary' %></p>
+		</div>
+		<div class="span9">
+			<%= build_control(f, @door_controller, nil, :address, 'text').html_safe %>
+			<%= build_control(f, @door_controller, nil, :location, 'text').html_safe %>
+			<%= build_control(f, @door_controller, nil, :success_response, 'text').html_safe %>
+			<%= build_control(f, @door_controller, nil, :error_response, 'text').html_safe %>
+		</div>
+	</div>
+</div>
+<% end %>
+<%= button_to('Delete door controller', admin_door_controller_path(@door_controller), :confirm => "Are you sure?", 
+:method => :delete, :class => 'btn btn-danger') unless @door_controller.new_record? %>
