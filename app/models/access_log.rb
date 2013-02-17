@@ -1,10 +1,10 @@
 require 'csv'
 
 class AccessLog < ActiveRecord::Base
-  attr_accessible :access_granted, :msg, :member, :door, :member_name, :member_type, 
-  								:billing_plan, :door_name
+  attr_accessible :access_granted, :msg, :member, :door_controller, :member_name, :member_type, 
+  								:billing_plan, :door_controller_location
 
-  belongs_to :door
+  belongs_to :door_controller
   belongs_to :member
 
 	default_scope where(:access_granted => true).order("created_at DESC")

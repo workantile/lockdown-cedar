@@ -1,0 +1,12 @@
+<div class="container">
+	<div class="row">
+		<div class="span3">
+		</div>
+		<div class="span9">
+			<%= button_to 'Add new door controller', new_admin_door_controller_url, :method => :get, :class => 'btn btn-success' %>
+			<div id="members-table">
+				<%= render :partial => 'door_controllers_table' %>
+			</div>
+		</div>
+	</div>
+</div>

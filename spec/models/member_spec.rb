@@ -427,7 +427,7 @@ describe Member do
 
   describe ".grant_access?" do
     before(:each) do
-      @door = FactoryGirl.create(:door)
+      @door_controller = FactoryGirl.create(:door_controller)
     end
 
     scenarios = [{:member_type => 'current', :key_enabled => true, :desired_outcome => true},
@@ -443,34 +443,34 @@ describe Member do
           #{scenario[:key_enabled] ? 'enabled' : 'disabled'}" do
         @member.update_attributes(:member_type => scenario[:member_type], 
                                   :key_enabled => scenario[:key_enabled])
-        Member.grant_access?(@member.rfid, @door.address).should scenario[:desired_outcome] ? be_true : be_false
+        Member.grant_access?(@member.rfid, @door_controller.address).should scenario[:desired_outcome] ? be_true : be_false
       end
     end
 
     it "should not grant access to a non-existant member" do
       @member.destroy
-      Member.grant_access?(@member.rfid, @door.address).should be_false
+      Member.grant_access?(@member.rfid, @door_controller.address).should be_false
     end
 
-    it "should not grant access to a non-existant door" do
-      Member.grant_access?(@member.rfid, 'bad door').should be_false
+    it "should not grant access to a non-existant door_controller" do
+      Member.grant_access?(@member.rfid, 'bad door_controller').should be_false
     end
 
     it "should log successful access attempts" do
       expect {
-        Member.grant_access?(@member.rfid, @door.address)
+        Member.grant_access?(@member.rfid, @door_controller.address)
       }.to change(AccessLog, :count).by(1)
     end
 
     it "should handle keys in lower case" do
       FactoryGirl.create(:full_member, :rfid => '1a2b3c')
-      Member.grant_access?('1A2B3C', @door.address).should be_true
+      Member.grant_access?('1A2B3C', @door_controller.address).should be_true
     end
 
     it "should not log unsuccessful access attempts" do
       @member.destroy
       expect {
-        Member.grant_access?(@member.rfid, @door.address)
+        Member.grant_access?(@member.rfid, @door_controller.address)
       }.to change(AccessLog, :count).by(0)
     end
   end

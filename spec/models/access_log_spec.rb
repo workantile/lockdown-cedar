@@ -12,10 +12,10 @@ describe AccessLog do
 		it { should respond_to :member_name }
 		it { should respond_to :member_type }
 		it { should respond_to :billing_plan }
-		it { should respond_to :door_name }
+		it { should respond_to :door_controller_location }
 
 		it { should belong_to :member }
-		it { should belong_to :door }
+		it { should belong_to :door_controller }
 	end
 
 	it "should save the access_date in local time" do

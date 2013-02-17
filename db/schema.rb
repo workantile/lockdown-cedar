@@ -11,20 +11,20 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130119165432) do
+ActiveRecord::Schema.define(:version => 20130217175640) do
 
   create_table "access_logs", :force => true do |t|
     t.date     "access_date"
     t.boolean  "access_granted"
     t.string   "msg"
     t.integer  "member_id"
-    t.integer  "door_id"
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
+    t.datetime "created_at",               :null => false
+    t.datetime "updated_at",               :null => false
     t.string   "member_name"
     t.string   "member_type"
-    t.string   "door_name"
+    t.string   "door_controller_location"
     t.string   "billing_plan"
+    t.integer  "door_controller_id"
   end
 
   create_table "admins", :force => true do |t|
@@ -60,6 +60,15 @@ ActiveRecord::Schema.define(:version => 20130119165432) do
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
+
+  create_table "door_controllers", :force => true do |t|
+    t.string   "address"
+    t.string   "location"
+    t.string   "success_response"
+    t.string   "error_response"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
 
   create_table "doors", :force => true do |t|
     t.string   "name"
