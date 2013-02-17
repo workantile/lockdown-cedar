@@ -4,23 +4,15 @@ describe AccessController do
 	before(:each) do
 		@member = FactoryGirl.create(:full_member)
 		@door_controller = FactoryGirl.create(:door_controller)
+		get :show, :address => @door_controller.address, :rfid => @member.rfid
 	end
 
-	it "renders 'OK' when a valid member wants access" do
-		get :show, :rfid => @member.rfid, :address => @door_controller.address
-		response.body.should == 'OK'
+	it "assigns to @door_controller" do
+		assigns(:door_controller).should eq(@door_controller)
 	end
 
-	it "renders 'ERROR' when a non-existant member wants access" do
-		rfid = @member.rfid
-		@member.destroy
-		get :show, :rfid => rfid, :address => @door_controller.address
-		response.body.should == 'ERROR'
+	it "renders the show template" do
+		response.should render_template('show')
 	end
 
-	it "handles lower case rfid keys" do
-		@member.update_attribute(:rfid, "1a2b3c")
-		get :show, :rfid => @member.rfid, :address => @door_controller.address
-		response.body.should == "OK"
-	end
 end

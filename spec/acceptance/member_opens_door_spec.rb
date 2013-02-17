@@ -8,7 +8,7 @@ feature 'Member opens door', %q{
   
   background do
     # Given the space has a door
-    @door = FactoryGirl.create(:door_controller)
+    @door_controller = FactoryGirl.create(:door_controller)
 
     # Don't queue up the email so this test sees it.
     Delayed::Worker.delay_jobs = false
@@ -19,10 +19,10 @@ feature 'Member opens door', %q{
     member = FactoryGirl.create(:affiliate_member)
     
     # When I put my rfid next to the reader
-    visit '/access/' + @door.address + "/" + member.rfid
+    visit '/access/' + @door_controller.address + "/" + member.rfid
     
     # Then the door should open.
-    page.should have_content('OK')
+    page.should have_content(@door_controller.success_response)
 
     # And I should receive an email.
     last_email.to.should include(member.email)
@@ -33,10 +33,10 @@ feature 'Member opens door', %q{
     member = FactoryGirl.create(:former_member)
     
     # When I put my rfid next to the reader
-    visit '/access/' + @door.address + "/" + member.rfid
+    visit '/access/' + @door_controller.address + "/" + member.rfid
     
     # Then the door should not open.
-    page.should have_content('ERROR')
+    page.should have_content(@door_controller.error_response)
   end
 
   scenario 'A current member whose key has been disabled opens the door' do
@@ -44,9 +44,9 @@ feature 'Member opens door', %q{
     member = FactoryGirl.create(:former_member, :key_enabled => false)
     
     # When I put my rfid next to the reader
-    visit '/access/' + @door.address + "/" + member.rfid
+    visit '/access/' + @door_controller.address + "/" + member.rfid
     
     # Then the door should not open.
-    page.should have_content('ERROR')
+    page.should have_content(@door_controller.error_response)
   end
 end
