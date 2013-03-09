@@ -23,6 +23,19 @@ describe AccessController do
 		get :show, :address => @door_controller.address, :rfid => @member.rfid
 	end
 
+	it "logs the access" do
+		AccessLog.should_receive(:create).with(
+				:member => @member,
+				:door_controller => @door_controller,
+				:member_name => @member.full_name,
+				:member_type => @member.member_type,
+				:billing_plan => @member.billing_plan,
+				:door_controller_location => @door_controller.location,
+				:access_granted => true
+			)
+		get :show, :address => @door_controller.address, :rfid => @member.rfid
+	end
+
 	it "sees if the member should be sent an email" do
 		@member.should_receive(:send_usage_email)
 		get :show, :address => @door_controller.address, :rfid => @member.rfid
