@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe AccessController do
 	before(:each) do
-		@member = stub_model(Member, :member_type => 'current', :billing_plan => 'full', :rfid => '1234')
+		@member = stub_model(Member, :member_type => 'current', :billing_plan => 'full', :rfid => '1234', :key_enabled => true)
 		Member.stub(:find_by_rfid) { @member }
 		@door_controller = stub_model(DoorController, :address => "abc", :success_response => "OK")
 		DoorController.stub(:find_by_address) { @door_controller }
@@ -20,6 +20,17 @@ describe AccessController do
 
 	it "sees if the member should be granted access" do
 		@member.should_receive(:access_enabled?)
+		get :show, :address => @door_controller.address, :rfid => @member.rfid
+	end
+
+	it "gets door controller's success response if member should be granted access" do
+		@door_controller.should_receive(:success_response)
+		get :show, :address => @door_controller.address, :rfid => @member.rfid
+	end
+
+	it "gets door controller's error response if member should not be granted access" do
+		@member.stub(:access_enabled?) { false }
+		@door_controller.should_receive(:error_response)
 		get :show, :address => @door_controller.address, :rfid => @member.rfid
 	end
 

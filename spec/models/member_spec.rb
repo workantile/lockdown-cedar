@@ -390,6 +390,25 @@ describe Member do
     end
   end
 
+  describe ".access_enabled?" do
+    scenarios = [{:member_type => 'current', :key_enabled => true, :desired_outcome => true},
+                 {:member_type => 'current', :key_enabled => false, :desired_outcome => false},
+                 {:member_type => 'former', :key_enabled => true, :desired_outcome => false},
+                 {:member_type => 'former', :key_enabled => false, :desired_outcome => false},
+                 {:member_type => 'courtesy key', :key_enabled => true, :desired_outcome => true},
+                 {:member_type => 'courtesy key', :key_enabled => false, :desired_outcome => false}]
+
+    scenarios.collect do |scenario|
+      it "#{scenario[:desired_outcome] ? 'should' : 'should not'} grant access to a 
+          #{scenario[:member_type]} member when their key is 
+          #{scenario[:key_enabled] ? 'enabled' : 'disabled'}" do
+        @member.update_attributes(:member_type => scenario[:member_type], 
+                                  :key_enabled => scenario[:key_enabled])
+        @member.access_enabled?.should scenario[:desired_outcome] ? be_true : be_false
+      end
+    end
+  end
+
   describe ".members_to_invoice" do
     before(:each) do
       anniversary_date = Date.new(2012, 1, 1)
@@ -421,57 +440,6 @@ describe Member do
       Member.export_to_csv('current', 'all').should match(/,current/)
       Member.export_to_csv('current', 'all').should match(/,full/)
       Member.export_to_csv('current', 'all').should match(/,affiliate/)
-    end
-
-  end
-
-  describe ".grant_access?" do
-    before(:each) do
-      @door_controller = FactoryGirl.create(:door_controller)
-    end
-
-    scenarios = [{:member_type => 'current', :key_enabled => true, :desired_outcome => true},
-                 {:member_type => 'current', :key_enabled => false, :desired_outcome => false},
-                 {:member_type => 'former', :key_enabled => true, :desired_outcome => false},
-                 {:member_type => 'former', :key_enabled => false, :desired_outcome => false},
-                 {:member_type => 'courtesy key', :key_enabled => true, :desired_outcome => true},
-                 {:member_type => 'courtesy key', :key_enabled => false, :desired_outcome => false}]
-
-    scenarios.collect do |scenario|
-      it "#{scenario[:desired_outcome] ? 'should' : 'should not'} grant access to a 
-          #{scenario[:member_type]} member when their key is 
-          #{scenario[:key_enabled] ? 'enabled' : 'disabled'}" do
-        @member.update_attributes(:member_type => scenario[:member_type], 
-                                  :key_enabled => scenario[:key_enabled])
-        Member.grant_access?(@member.rfid, @door_controller.address).should scenario[:desired_outcome] ? be_true : be_false
-      end
-    end
-
-    it "should not grant access to a non-existant member" do
-      @member.destroy
-      Member.grant_access?(@member.rfid, @door_controller.address).should be_false
-    end
-
-    it "should not grant access to a non-existant door_controller" do
-      Member.grant_access?(@member.rfid, 'bad door_controller').should be_false
-    end
-
-    it "should log successful access attempts" do
-      expect {
-        Member.grant_access?(@member.rfid, @door_controller.address)
-      }.to change(AccessLog, :count).by(1)
-    end
-
-    it "should handle keys in lower case" do
-      FactoryGirl.create(:full_member, :rfid => '1a2b3c')
-      Member.grant_access?('1A2B3C', @door_controller.address).should be_true
-    end
-
-    it "should not log unsuccessful access attempts" do
-      @member.destroy
-      expect {
-        Member.grant_access?(@member.rfid, @door_controller.address)
-      }.to change(AccessLog, :count).by(0)
     end
   end
 

@@ -138,23 +138,23 @@ class Member < ActiveRecord::Base
     self.pending_updates.each { |pending_update| pending_update.destroy }
   end
 
-  def self.grant_access?(rfid, door_address)
-    member = find_by_rfid(rfid)
-    member ||= find_by_rfid(rfid.downcase)
-    door_controller = DoorController.find_by_address(door_address)
-    if member && member.access_enabled? && door_controller
-      AccessLog.create(:member => member,
-                       :door_controller => door_controller,
-                       :member_name => member.full_name,
-                       :member_type => member.member_type,
-                       :billing_plan => member.billing_plan,
-                       :door_controller_location => door_controller.location,
-                       :access_granted => true)
-      true
-    else
-      false
-    end
-  end
+  # def self.grant_access?(rfid, door_address)
+  #   member = find_by_rfid(rfid)
+  #   member ||= find_by_rfid(rfid.downcase)
+  #   door_controller = DoorController.find_by_address(door_address)
+  #   if member && member.access_enabled? && door_controller
+  #     AccessLog.create(:member => member,
+  #                      :door_controller => door_controller,
+  #                      :member_name => member.full_name,
+  #                      :member_type => member.member_type,
+  #                      :billing_plan => member.billing_plan,
+  #                      :door_controller_location => door_controller.location,
+  #                      :access_granted => true)
+  #     true
+  #   else
+  #     false
+  #   end
+  # end
 
   def self.lookup_type_plan(type, plan)
     case true
