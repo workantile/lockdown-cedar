@@ -3,7 +3,7 @@ class ShoutOutEmail < ActionMailer::Base
 
   def absent_members_email(absent_members)
     @members = absent_members
-    mail to: "shoutout@workantile.com", subject: "Members absent 3 weeks or more"
+    mail to: "shoutout@workantile.com, maintainers@workantile.com", subject: "Members absent 3 weeks or more"
   end
 
 end
