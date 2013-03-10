@@ -1,0 +1,17 @@
+<p>These members have been absent for 3 weeks or more</p>
+<table>
+	<thead>
+		<th>Name</th>
+		<th>Email</th>
+		<th>Last day here</th>
+	</thead>
+	<tbody>
+		<% @members.each do |member| %>
+		<tr>
+			<td><%= member.full_name %></td>
+			<td><%= member.email %></td>
+			<td><%= member.last_day_present.strftime("%m/%d/%Y") unless member.last_day_present.nil? %></td>
+		</tr>
+		<% end %>
+	</tbody>
+</table>

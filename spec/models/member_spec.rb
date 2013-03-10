@@ -348,6 +348,17 @@ describe Member do
 
   end
 
+  describe ".last_day_present" do
+    it "should return the last day present" do
+      yesterday = Date.today.prev_day
+      Timecop.freeze(yesterday)
+      FactoryGirl.create(:log_success, :member => @member)
+      Timecop.return
+      FactoryGirl.create(:log_success, :member => @member)
+      @member.last_day_present.should eq(Date.today)
+    end
+  end
+
   describe ".needs_invoicing?" do
     before(:each) do
       @anniversary_date = Date.new(2012, 1, 1)
@@ -426,6 +437,28 @@ describe Member do
 
     it "should return affiliate members with excess day pass usage in the previous billing period" do
       Member.members_to_invoice.count.should eq(2)
+    end
+  end
+
+  describe ".members_absent" do
+    it "should return an array of members absent for a specified number of weeks or more" do
+      absent_member_1 = FactoryGirl.create(:full_member)
+      absent_member_2 = FactoryGirl.create(:full_member)
+      previously = Date.today - 30.day
+
+      Timecop.freeze(previously)
+      FactoryGirl.create(:log_success,
+                         :member => @member)
+      FactoryGirl.create(:log_success,
+                         :member => absent_member_1)
+      FactoryGirl.create(:log_success,
+                         :member => absent_member_2)
+
+      Timecop.return
+      FactoryGirl.create(:log_success,
+                         :member => @member)
+      
+      Member.members_absent(3).should eq([absent_member_1, absent_member_2])
     end
   end
 

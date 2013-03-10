@@ -138,23 +138,9 @@ class Member < ActiveRecord::Base
     self.pending_updates.each { |pending_update| pending_update.destroy }
   end
 
-  # def self.grant_access?(rfid, door_address)
-  #   member = find_by_rfid(rfid)
-  #   member ||= find_by_rfid(rfid.downcase)
-  #   door_controller = DoorController.find_by_address(door_address)
-  #   if member && member.access_enabled? && door_controller
-  #     AccessLog.create(:member => member,
-  #                      :door_controller => door_controller,
-  #                      :member_name => member.full_name,
-  #                      :member_type => member.member_type,
-  #                      :billing_plan => member.billing_plan,
-  #                      :door_controller_location => door_controller.location,
-  #                      :access_granted => true)
-  #     true
-  #   else
-  #     false
-  #   end
-  # end
+  def last_day_present
+    access_logs.order("access_date DESC").first.access_date unless access_logs.empty?
+  end
 
   def self.lookup_type_plan(type, plan)
     case true
@@ -184,6 +170,21 @@ class Member < ActiveRecord::Base
     candidates = Member.where("member_type = 'current' and billing_plan = 'affiliate'")
     candidates.inject([]) do |members, member|
       members << member if member.needs_invoicing?
+      members
+    end
+  end
+
+  def self.members_absent(weeks)
+    days = weeks * 7
+    now = Date.today
+    Member.where("member_type = 'current'").inject([]) do | members, member |
+      if member.access_logs.order("access_date DESC").first.nil?
+        members << member
+      else
+        if now - member.access_logs.order("access_date DESC").first.access_date >= days
+          members << member
+        end
+      end
       members
     end
   end
