@@ -25,16 +25,22 @@ describe "daily_tasks namespace" do
 			Rake.application.invoke_task "daily_tasks:send_absence_email"
 		end
 
-		it "should find members absent over 3 weeks" do
-			Member.should_receive(:members_absent).with(3)
+		it "checks for abesnt members" do
+			Member.should_receive(:members_absent)
 			run_rake_task
 		end
 
-		it "sends an email to the shoutout committee" do
-			@member = stub_model(Member)
-			Member.stub(:members_absent) { [@member] }
+		it "sends an email to the shoutout committee if there are absent members" do
+			absent_members = [stub_model(Member)]
+			Member.stub(:members_absent) { absent_members }
+			ShoutOutEmail.should_receive(:absent_members_email).and_return(double("mailer", :deliver => true))			
 			run_rake_task
-			ActionMailer::Base.deliveries.last.to.should == ["shoutout@workantile.com"]			
+		end
+
+		it "does not send an email to the shoutout committee if there are no absent members" do
+			Member.stub(:members_absent) { [] }
+			ShoutOutEmail.should_not_receive(:absent_members_email)
+			run_rake_task
 		end
 	end
 

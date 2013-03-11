@@ -460,6 +460,18 @@ describe Member do
       
       Member.members_absent(3).should eq([absent_member_1, absent_member_2])
     end
+
+    it "should not return suppoting members" do
+      absent_member = FactoryGirl.create(:supporter_member)
+      previously = Date.today - 30.day
+      Timecop.freeze(previously)
+      FactoryGirl.create(:log_success,
+                         :member => @member)
+      FactoryGirl.create(:log_success,
+                         :member => absent_member)
+      Timecop.return
+      Member.members_absent(3).should eq([@member])
+    end
   end
 
   describe ".export_to_csv" do 

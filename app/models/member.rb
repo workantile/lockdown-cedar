@@ -177,7 +177,7 @@ class Member < ActiveRecord::Base
   def self.members_absent(weeks)
     days = weeks * 7
     now = Date.today
-    Member.where("member_type = 'current'").inject([]) do | members, member |
+    Member.where("member_type = 'current' AND billing_plan <> 'supporter'").inject([]) do | members, member |
       if member.access_logs.order("access_date DESC").first.nil?
         members << member
       else

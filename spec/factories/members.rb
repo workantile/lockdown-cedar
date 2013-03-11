@@ -28,6 +28,11 @@ FactoryGirl.define do
       billing_plan    "student"
   	end
 
+    trait :supporter do
+      member_type   "current"
+      billing_plan  "supporter"
+    end
+
   	trait :courtesy_key do
   		member_type		"courtesy key"
       billing_plan  "none"
@@ -42,6 +47,7 @@ FactoryGirl.define do
   	factory :full_no_work_member, :traits => [:full_no_work]
   	factory :affiliate_member, :traits => [:affiliate]
   	factory :student_member, :traits => [:student]
+    factory :supporter_member, :traits => [:supporter]
     factory :former_member, :traits => [:former]
   	factory :courtesy_key, :traits => [:courtesy_key]
   end
