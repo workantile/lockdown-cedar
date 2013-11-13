@@ -18,6 +18,30 @@ describe Admin::MembersController do
     end
   end
 
+  describe "POST 'find key'" do
+    before(:each) do
+      member = FactoryGirl.create(:full_member, rfid: '1234')
+      post(:find_key, :rfid => member.rfid)
+    end
+
+    it 'assigns to @member' do
+      assigns(:member).should be_kind_of(Member)
+    end
+  
+    it "renders the 'edit' template" do
+      response.should render_template('edit')
+    end
+
+  end
+
+  describe "POST 'find key' with key not tied to a member" do
+    it "redirect to the index" do
+      member = FactoryGirl.create(:full_member, rfid: '1234')
+      post(:find_key, :rfid => '1235')
+      response.should redirect_to(admin_members_url)
+    end
+  end
+
   describe "POST 'create'" do
     describe "success" do
       before(:each) do

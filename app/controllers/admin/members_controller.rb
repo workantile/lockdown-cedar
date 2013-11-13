@@ -9,6 +9,16 @@ class Admin::MembersController < ApplicationController
 		respond_with @members
 	end
 
+	def find_key
+		@member = Member.find_by_rfid(params[:rfid])
+    @member ||= Member.find_by_rfid(params[:rfid].downcase)
+		if @member
+			render :action => 'edit'
+		else
+   		redirect_to admin_members_path
+		end
+	end
+
 	def new
 		@member = Member.new
 	end

@@ -75,7 +75,11 @@ class Member < ActiveRecord::Base
   end
 
   def current_billing_period
-    boundary_date = Date.new(Date.today.year, Date.today.month, self.anniversary_date.day)
+    begin
+      boundary_date = Date.new(Date.today.year, Date.today.month, self.anniversary_date.day)
+    rescue
+      boundary_date = Date.new(Date.today.year, Date.today.month, self.anniversary_date.next_day.day)
+    end
     if Date.today < boundary_date
       boundary_date.prev_month..boundary_date.prev_day
     else

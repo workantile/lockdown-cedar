@@ -19,7 +19,11 @@
 				<li>Courtesy keys: <%= Member.courtesy_key.count %></li>
 				<li>Former: <%= Member.former.count %></li>
 			</ul>
-
+			<%= form_tag find_key_admin_members_url do %>
+				<%= label_tag :rfid_key, "Find member with this key" %>
+				<%= text_field_tag :rfid_key %>
+				<%= submit_tag "Find member", :class => 'btn btn-primary' %>
+			<% end %>
 		</div>
 		<div class="span9">
 			<%= button_to 'Add new member', new_admin_member_url, :method => :get, :class => 'btn btn-success' %>

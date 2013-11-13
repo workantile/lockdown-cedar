@@ -10,6 +10,7 @@ Openings::Application.routes.draw do
     	get 'billing', :on => :collection
       post 'export', :on => :collection
       put 'invoiced', :on => :member
+      post 'find_key', :on => :collection
       delete 'destroy_delayed_updates', :on => :member
     end
 
