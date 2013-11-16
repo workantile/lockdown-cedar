@@ -474,6 +474,21 @@ describe Member do
     end
   end
 
+  describe ".find_by_key" do
+    before(:each) do
+      @rfid_number = "a1b2"
+      @member = FactoryGirl.create(:full_member, rfid: @rfid_number)
+    end
+
+    it "should return a member with a given rfid key" do
+      Member.find_by_key(@rfid_number).should eq(@member)
+    end
+
+    it "should return nil if the key does not belong to any member" do
+      Member.find_by_key("non-existent key").should eq(nil)
+    end
+  end
+
   describe ".export_to_csv" do 
     before(:each) do
       FactoryGirl.create(:full_member)

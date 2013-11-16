@@ -10,8 +10,7 @@ class Admin::MembersController < ApplicationController
 	end
 
 	def find_key
-		@member = Member.find_by_rfid(params[:rfid])
-    @member ||= Member.find_by_rfid(params[:rfid].downcase)
+		@member = Member.find_by_key(params[:rfid_key])
 		if @member
 			render :action => 'edit'
 		else

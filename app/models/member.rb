@@ -146,6 +146,10 @@ class Member < ActiveRecord::Base
     access_logs.order("access_date DESC").first.access_date unless access_logs.empty?
   end
 
+  def self.find_by_key(rfid_key)
+    Member.where("rfid = ? OR rfid = ?", rfid_key, rfid_key.downcase).first
+  end
+  
   def self.lookup_type_plan(type, plan)
     case true
     when (type == 'all' && plan == 'all')

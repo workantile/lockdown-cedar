@@ -21,7 +21,7 @@ describe Admin::MembersController do
   describe "POST 'find key'" do
     before(:each) do
       member = FactoryGirl.create(:full_member, rfid: '1234')
-      post(:find_key, :rfid => member.rfid)
+      post(:find_key, :rfid_key => member.rfid)
     end
 
     it 'assigns to @member' do
@@ -37,7 +37,7 @@ describe Admin::MembersController do
   describe "POST 'find key' with key not tied to a member" do
     it "redirect to the index" do
       member = FactoryGirl.create(:full_member, rfid: '1234')
-      post(:find_key, :rfid => '1235')
+      post(:find_key, :rfid_key => '1235')
       response.should redirect_to(admin_members_url)
     end
   end
