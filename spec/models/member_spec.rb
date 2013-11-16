@@ -484,6 +484,10 @@ describe Member do
       Member.find_by_key(@rfid_number).should eq(@member)
     end
 
+    it "should return a member with a given rfid key with a case-insensitive serch" do
+      Member.find_by_key(@rfid_number.upcase).should eq(@member)
+    end
+
     it "should return nil if the key does not belong to any member" do
       Member.find_by_key("non-existent key").should eq(nil)
     end
