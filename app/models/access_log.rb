@@ -12,7 +12,7 @@ class AccessLog < ActiveRecord::Base
   before_save :set_date
 
   def set_date
-  	self.access_date ||= Date.today
+  	self.access_date ||= Date.current
   end
 
   def self.export_to_csv(date_range)
