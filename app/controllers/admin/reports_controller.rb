@@ -4,7 +4,11 @@ class Admin::ReportsController < ApplicationController
 	def index
 		params[:start_date] ||= Date.today.prev_month.strftime("%m/%d/%Y")
 		params[:end_date] ||= Date.today.strftime("%m/%d/%Y")
-		@logs = AccessLog.where(:access_date => date_range)
+		if params[:id]
+			@logs = AccessLog.where(:access_date => date_range, :member_id => params[:id])
+		else
+			@logs = AccessLog.where(:access_date => date_range)
+		end
 		respond_with @logs
 	end
 
