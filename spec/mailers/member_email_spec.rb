@@ -13,10 +13,8 @@ describe MemberEmail do
 
     it "renders the body" do
       mail.body.encoded.should match("Hi #{member.first_name}")
-      mail.body.encoded.should match("#{member.usage_this_billing_period}")
+      mail.body.encoded.should match("#{member.usage_this_month}")
       mail.body.encoded.should match("#{Member::AFFILIATE_FREE_DAY_PASSES}")
-      mail.body.encoded.should match("#{member.current_billing_period.first.strftime("%B %-d, %Y")}")
-      mail.body.encoded.should match("#{member.current_billing_period.last.strftime("%B %-d, %Y")}")
     end
   end
 
@@ -33,9 +31,7 @@ describe MemberEmail do
     it "renders the body" do
       mail.body.encoded.should match("Hi #{member.first_name}")
       mail.body.encoded.should match("#{Member::AFFILIATE_FREE_DAY_PASSES}")
-      mail.body.encoded.should match("#{member.billable_days_this_billing_period}")
-      mail.body.encoded.should match("#{member.current_billing_period.first.strftime("%B %-d, %Y")}")
-      mail.body.encoded.should match("#{member.current_billing_period.last.strftime("%B %-d, %Y")}")
+      mail.body.encoded.should match("#{member.billable_days_this_month}")
     end
   end
 end

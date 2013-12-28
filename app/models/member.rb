@@ -47,13 +47,13 @@ class Member < ActiveRecord::Base
   end
 
   def set_default_anniversary_date
-  	self.anniversary_date ||= Date.today
+  	self.anniversary_date ||= Date.current
   end
   
   def check_member_type
     # TODO: implement state machine
     if member_type == 'former'
-      self.termination_date ||= Date.today
+      self.termination_date ||= Date.current
       self.billing_plan = 'none'
     end
   end
@@ -66,60 +66,46 @@ class Member < ActiveRecord::Base
     end
   end
 
-  def billing_period_begins
-    if anniversary_date
-      anniversary_date.mday.ordinalize
-    else
-      ""
-    end
+  def first_of_month
+    Date.new(Date.current.year, Date.current.month, 1)
   end
 
-  def current_billing_period
-    begin
-      boundary_date = Date.new(Date.today.year, Date.today.month, self.anniversary_date.day)
-    rescue
-      boundary_date = Date.new(Date.today.year, Date.today.month, self.anniversary_date.next_day.day)
-    end
-    if Date.today < boundary_date
-      boundary_date.prev_month..boundary_date.prev_day
-    else
-      boundary_date..boundary_date.next_month.prev_day
-    end
+  def last_of_month
+    Date.new(Date.current.year, Date.current.month, -1)
   end
 
-  def previous_billing_period
-    current_billing_period.first.prev_month..current_billing_period.last.prev_month
+  def this_month
+    first_of_month..last_of_month
+  end
+
+  def last_month
+    first_of_month.prev_month..last_of_month.prev_month
   end
 
   def usage_this_month
-    this_month = Date.new(Date.today.year, Date.today.month, 1)..Date.new(Date.today.year, Date.today.month, -1)
     self.access_logs.where(:access_date => this_month).count(:access_date, :distinct => true)
   end
 
-  def usage_this_billing_period
-    self.access_logs.where(:access_date => self.current_billing_period).count(:access_date, :distinct => true)
+  def usage_last_month
+    self.access_logs.where(:access_date => last_month).count(:access_date, :distinct => true)
   end
 
-  def usage_previous_billing_period
-    self.access_logs.where(:access_date => self.previous_billing_period).count(:access_date, :distinct => true)
-  end
-
-  def billable_days_this_billing_period
-    if self.usage_this_billing_period > AFFILIATE_FREE_DAY_PASSES
-      self.usage_this_billing_period - AFFILIATE_FREE_DAY_PASSES
+  def billable_days_this_month
+    if self.usage_this_month > AFFILIATE_FREE_DAY_PASSES
+      self.usage_this_month - AFFILIATE_FREE_DAY_PASSES
     else
       0
     end
   end
 
   def send_usage_email
-    if billing_plan == "affiliate" && usage_email_sent != Date.today
-      if self.usage_this_billing_period > AFFILIATE_FREE_DAY_PASSES
+    if billing_plan == "affiliate" && usage_email_sent != Date.current
+      if self.usage_this_month > AFFILIATE_FREE_DAY_PASSES
         MemberEmail.delay.billable_day_pass_use(self)
       else
         MemberEmail.delay.free_day_pass_use(self)
       end
-      self.usage_email_sent = Date.today
+      self.usage_email_sent = Date.current
       self.save
     end
   end
@@ -127,12 +113,12 @@ class Member < ActiveRecord::Base
   def needs_invoicing?
     self.billing_plan == "affiliate" && 
     self.member_type == "current" &&
-    self.usage_previous_billing_period > Member::AFFILIATE_FREE_DAY_PASSES &&
-    (self.last_date_invoiced.nil? || self.last_date_invoiced < self.current_billing_period.first) ? true :false
+    self.usage_last_month > Member::AFFILIATE_FREE_DAY_PASSES &&
+    (self.last_date_invoiced.nil? || self.last_date_invoiced < self.first_of_month) ? true :false
   end
 
   def delay_update(attribute, value)
-    run_at = self.current_billing_period.last + 1.day
+    run_at = self.last_of_month + 1.day
     delay_obj = self.delay(:run_at => run_at).update_attributes(attribute => value)
     self.pending_updates.create(:description => "#{attribute.to_s} will be updated to #{value.to_s} on #{run_at.to_s}",
                                :delayed_job_id => delay_obj.id)
@@ -184,7 +170,7 @@ class Member < ActiveRecord::Base
 
   def self.members_absent(weeks)
     days = weeks * 7
-    now = Date.today
+    now = Date.current
     Member.where("member_type = 'current' AND billing_plan <> 'supporter'").inject([]) do | members, member |
       if member.access_logs.order("access_date DESC").first.nil?
         members << member

@@ -30,80 +30,6 @@ describe Member do
   it { should have_many(:access_logs) }
   it { should have_many(:pending_updates) }
 
-  describe ".current_billing_period" do
-    before(:each) do
-      @member.update_attributes(:anniversary_date => Date.new(2012, 2, 15))
-    end
-
-    it "should return the current billing period" do
-      Timecop.freeze(Date.new(2012, 11, 10))
-      expected_period = Date.new(2012,10,15)..Date.new(2012,11,14)
-      @member.current_billing_period.should eq(expected_period)
-    end
-
-    it "should not be confused by month or year boundaries" do
-      Timecop.freeze(Date.new(2013, 1, 10))
-      expected_period = Date.new(2012,12,15)..Date.new(2013,1,14)
-      @member.current_billing_period.should eq(expected_period)
-
-      Timecop.freeze(Date.new(2013, 1, 16))
-      expected_period = Date.new(2013,1,15)..Date.new(2013,2,14)
-      @member.current_billing_period.should eq(expected_period)
-    end
-  end
-
-  describe ".previous_billing_period" do
-    before(:each) do
-      @member.update_attributes(:anniversary_date => Date.new(2012, 2, 15))
-    end
-
-    it "should return the previous billing period" do
-      Timecop.freeze(Date.new(2012, 11, 10))
-      expected_period = Date.new(2012,9,15)..Date.new(2012,10,14)
-      @member.previous_billing_period.should eq(expected_period)
-    end
-
-    it "should not be confused by month or year boundaries" do
-      Timecop.freeze(Date.new(2013, 2, 10))
-      expected_period = Date.new(2012,12,15)..Date.new(2013,1,14)
-      @member.previous_billing_period.should eq(expected_period)
-
-      Timecop.freeze(Date.new(2013, 2, 16))
-      expected_period = Date.new(2013,1,15)..Date.new(2013,2,14)
-      @member.previous_billing_period.should eq(expected_period)
-    end
-  end
-
-  describe ".usage_this_billing_period" do
-    before(:each) do
-      @member.update_attributes(:anniversary_date => Date.new(2012, 2, 15))
-      2.times { FactoryGirl.create(:log_success, 
-                                   :access_date => Date.new(2012, 11, 18),
-                                   :member => @member)}
-      1.upto(3) { |i| FactoryGirl.create(:log_success, 
-                                         :access_date => Date.new(2012, 11, 18) + i.day,
-                                         :member => @member) }
-    end
-
-    it "should count multipla access on 1 day as 1 day's usage" do
-      Timecop.freeze(Date.new(2012, 11, 30))
-      @member.usage_this_billing_period.should eq(4)
-    end
-
-    it "should not be confused by boundary conditions" do
-      FactoryGirl.create(:log_success, :access_date => Date.new(2012,11,15), :member => @member)
-      FactoryGirl.create(:log_success, :access_date => Date.new(2012,12,14), :member => @member)
-      Timecop.freeze(Date.new(2012,12,14))
-      @member.usage_this_billing_period.should eq(6)
-    end
-
-    it "should not count usage from the previous billing period" do
-      FactoryGirl.create(:log_success, :access_date => Date.new(2012,10,14), :member => @member)
-      Timecop.freeze(Date.new(2012,11,30))
-      @member.usage_this_billing_period.should eq(4)
-    end
-  end
-
   describe ".usage_this_month" do
     before(:each) do
       @this_is_now = Timecop.freeze(Date.new(2012, 11, 15))
@@ -134,34 +60,29 @@ describe Member do
     end
   end
 
-  describe ".usage_previous_billing_period" do
+  describe ".usage_last_month" do
     before(:each) do
-      @member.update_attributes(:anniversary_date => Date.new(2012, 2, 15))
+      that_was_then = Date.new(2012, 11, 18)
+      @this_is_now = Timecop.freeze(Date.new(2012, 12, 30))
       2.times { FactoryGirl.create(:log_success, 
-                                   :access_date => Date.new(2012, 11, 18),
+                                   :access_date => that_was_then,
                                    :member => @member)}
       1.upto(3) { |i| FactoryGirl.create(:log_success, 
-                                         :access_date => Date.new(2012, 11, 18) + i.day,
+                                         :access_date => that_was_then + i.day,
                                          :member => @member) }
     end
 
     it "should count multipla access on 1 day as 1 day's usage" do
-      Timecop.freeze(Date.new(2012, 12, 30))
-      @member.usage_previous_billing_period.should eq(4)
+      @member.usage_last_month.should eq(4)
     end
 
-    it "should not be confused by boundary conditions" do
-      FactoryGirl.create(:log_success, :access_date => Date.new(2012,11,15), :member => @member)
-      FactoryGirl.create(:log_success, :access_date => Date.new(2012,12,14), :member => @member)
-      Timecop.freeze(Date.new(2013,01,14))
-      @member.usage_previous_billing_period.should eq(6)
+    it "should not count usage from this month" do
+      FactoryGirl.create(:log_success,
+                         :access_date => @this_is_now,
+                         :member => @member)
+      @member.usage_last_month.should eq(4)
     end
 
-    it "should not count usage from the previous billing period" do
-      FactoryGirl.create(:log_success, :access_date => Date.new(2012,10,14), :member => @member)
-      Timecop.freeze(Date.new(2012,12,30))
-      @member.usage_previous_billing_period.should eq(4)
-    end
   end
 
   describe ".check_member_type" do
@@ -185,13 +106,6 @@ describe Member do
       expect {
         @member.update_attributes(:task => 'some task')
       }.not_to change(@member, :billing_plan)
-    end
-  end
-
-  describe ".billing_period_begins" do
-    it "should return the day of the month a member's billing period begins" do
-      @member.anniversary_date = Date.new(2012,5,6)
-      @member.billing_period_begins.should include '6'
     end
   end
 
@@ -232,7 +146,7 @@ describe Member do
     it "should send a free day pass email if period-to-date usage is <= affilate free day passes" do
       start_date = Timecop.freeze(Date.new(2012,1,1))
 
-      @affiliate = FactoryGirl.create(:affiliate_member, :anniversary_date => start_date)
+      @affiliate = FactoryGirl.create(:affiliate_member)
       Member::AFFILIATE_FREE_DAY_PASSES.times { 
         |n| FactoryGirl.create(:log_success, 
                                :access_date => start_date + n.day,
@@ -246,7 +160,7 @@ describe Member do
     it "should send a billable day pass email if period-to-date usage is > affilate free day passes" do
       start_date = Timecop.freeze(Date.new(2012,1,1))
 
-      @affiliate = FactoryGirl.create(:affiliate_member, :anniversary_date => start_date)
+      @affiliate = FactoryGirl.create(:affiliate_member)
       (Member::AFFILIATE_FREE_DAY_PASSES + 1).times { 
         |n| FactoryGirl.create(:log_success, 
                                :access_date => start_date + n.day,
@@ -262,7 +176,7 @@ describe Member do
   describe ".delay_update" do
     before(:each) do
       Delayed::Worker.delay_jobs = true  # make sure this fucking thing is always on for these examples
-      @affiliate = FactoryGirl.create(:affiliate_member, :anniversary_date => Date.new(2012,1,1))
+      @affiliate = FactoryGirl.create(:affiliate_member)
       Timecop.freeze(Date.new(2012,1,15))  
       @affiliate.delay_update(:member_type, "former")
       @pending = @affiliate.pending_updates.first
@@ -276,8 +190,8 @@ describe Member do
       Delayed::Job.exists?(@pending.delayed_job_id).should be_true
     end
 
-    it "the delayed job should run at the beginning of the next billing period" do
-      run_at = @affiliate.current_billing_period.last + 1.day
+    it "the delayed job should run at the beginning of next month" do
+      run_at = @affiliate.last_of_month + 1.day
       Delayed::Job.find(@pending.delayed_job_id).run_at.to_date.should eq(run_at)
     end
   end
@@ -285,7 +199,7 @@ describe Member do
   describe ".destroy_pending_updates" do
     before(:each) do
       Delayed::Worker.delay_jobs = true  # make sure this fucking thing is always on for these examples
-      @affiliate = FactoryGirl.create(:affiliate_member, :anniversary_date => Date.new(2012,1,1))
+      @affiliate = FactoryGirl.create(:affiliate_member)
       Timecop.freeze(Date.new(2012,1,15))  
       @affiliate.delay_update(:member_type, "former")
       @pending = @affiliate.pending_updates.first
@@ -301,31 +215,31 @@ describe Member do
     end
   end
   
-  describe ".billable_days_this_billing_period" do
+  describe ".billable_days_this_month" do
     it "should return 0 if the member has not exceeded use of all free day passes" do
       start_date = Timecop.freeze(Date.new(2012,1,1)).to_date
 
-      @affiliate = FactoryGirl.create(:affiliate_member, :anniversary_date => start_date)
+      @affiliate = FactoryGirl.create(:affiliate_member)
       Member::AFFILIATE_FREE_DAY_PASSES.times { 
         |n| FactoryGirl.create(:log_success, 
                                :access_date => start_date + n.day,
                                :member => @affiliate)
       }
 
-      @affiliate.billable_days_this_billing_period.should eq(0)
+      @affiliate.billable_days_this_month.should eq(0)
     end
 
     it "should return the difference between the total day passes used and allowed number" do
       start_date = Timecop.freeze(Date.new(2012,1,1)).to_date
 
-      @affiliate = FactoryGirl.create(:affiliate_member, :anniversary_date => start_date)
+      @affiliate = FactoryGirl.create(:affiliate_member)
       (Member::AFFILIATE_FREE_DAY_PASSES + 2).times { 
         |n| FactoryGirl.create(:log_success, 
                                :access_date => start_date + n.day,
                                :member => @affiliate)
       }
 
-      @affiliate.billable_days_this_billing_period.should eq(2)
+      @affiliate.billable_days_this_month.should eq(2)
     end
   end
 
@@ -361,21 +275,21 @@ describe Member do
 
   describe ".needs_invoicing?" do
     before(:each) do
-      @anniversary_date = Date.new(2012, 1, 1)
-      @affiliate_yes = FactoryGirl.create(:affiliate_member, :anniversary_date => @anniversary_date)
+      @start_date = Date.new(2012, 1, 1)
+      @affiliate_yes = FactoryGirl.create(:affiliate_member)
       (Member::AFFILIATE_FREE_DAY_PASSES + 2).times { 
         |n| FactoryGirl.create(:log_success, 
-                               :access_date => @anniversary_date + n.day,
+                               :access_date => @start_date + n.day,
                                :member => @affiliate_yes)
       }
-      @affiliate_no = FactoryGirl.create(:affiliate_member, :anniversary_date => @anniversary_date)
+      @affiliate_no = FactoryGirl.create(:affiliate_member)
       (Member::AFFILIATE_FREE_DAY_PASSES).times { 
         |n| FactoryGirl.create(:log_success, 
-                               :access_date => @anniversary_date + n.day,
+                               :access_date => @start_date + n.day,
                                :member => @affiliate_no)
       }
-      @former = FactoryGirl.create(:former_member, :anniversary_date => @anniversary_date)
-      Timecop.freeze(@anniversary_date.next_month)
+      @former = FactoryGirl.create(:former_member)
+      Timecop.freeze(@start_date.next_month)
     end
 
     it "should say yes only to current affiliate members" do
@@ -393,10 +307,10 @@ describe Member do
       @affiliate_yes.update_attributes(:last_date_invoiced => "")
       @affiliate_yes.needs_invoicing?.should be_true
 
-      @affiliate_yes.update_attributes(:last_date_invoiced => @affiliate_yes.current_billing_period.first.prev_month)
+      @affiliate_yes.update_attributes(:last_date_invoiced => @affiliate_yes.last_month.first)
       @affiliate_yes.needs_invoicing?.should be_true
 
-      @affiliate_yes.update_attributes(:last_date_invoiced => @affiliate_yes.current_billing_period.first)
+      @affiliate_yes.update_attributes(:last_date_invoiced => @affiliate_yes.this_month.first)
       @affiliate_yes.needs_invoicing?.should be_false
     end
   end
@@ -422,17 +336,17 @@ describe Member do
 
   describe ".members_to_invoice" do
     before(:each) do
-      anniversary_date = Date.new(2012, 1, 1)
-      FactoryGirl.create(:affiliate_member, :anniversary_date => anniversary_date)
+      start_date = Date.new(2012, 1, 1)
+      FactoryGirl.create(:affiliate_member)
       2.times do 
-        affiliate = FactoryGirl.create(:affiliate_member, :anniversary_date => anniversary_date)
+        affiliate = FactoryGirl.create(:affiliate_member)
         (Member::AFFILIATE_FREE_DAY_PASSES + 2).times { 
           |n| FactoryGirl.create(:log_success, 
-                                 :access_date => anniversary_date + n.day,
+                                 :access_date => start_date + n.day,
                                  :member => affiliate)
         }
       end
-      Timecop.freeze(anniversary_date.next_month)
+      Timecop.freeze(start_date.next_month)
     end
 
     it "should return affiliate members with excess day pass usage in the previous billing period" do

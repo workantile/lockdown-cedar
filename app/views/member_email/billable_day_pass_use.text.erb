@@ -1,5 +1,5 @@
 Hi <%= @member.first_name %>,
 
-As of today, you have used all of the <%= Member::AFFILIATE_FREE_DAY_PASSES %> included in your billing plan, plus <%= @member.billable_days_this_billing_period.to_s %> billable day passes, in this billing period. Your billing period runs from <%= @member.current_billing_period.first.strftime("%B %-d, %Y") %> to <%= @member.current_billing_period.last.strftime("%B %-d, %Y") %>.
+As of today, you have used all of the <%= Member::AFFILIATE_FREE_DAY_PASSES %> included in your billing plan, plus <%= @member.billable_days_this_month.to_s %> billable day passes, this month.
 
 If you have any questions, or think you should not be charged for this day pass, please email Brendan at brendan@themodernfirm.com or Tom at twbrandt@gmail.com
