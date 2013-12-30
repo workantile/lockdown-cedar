@@ -222,17 +222,17 @@ describe Admin::MembersController do
 
   describe "GET 'billing'" do
     before(:each) do
-      anniversary_date = Date.new(2012, 1, 1)
+      start_date = Date.new(2012, 1, 1)
       2.times {
-        affiliate = FactoryGirl.create(:affiliate_member, :anniversary_date => anniversary_date)
+        affiliate = FactoryGirl.create(:affiliate_member)
         (Member::AFFILIATE_FREE_DAY_PASSES + 2).times { 
           |n| FactoryGirl.create(:log_success, 
-                                 :access_date => anniversary_date + n.day,
+                                 :access_date => start_date + n.day,
                                  :member => affiliate)
         }
       }
       get :billing
-      Timecop.freeze(anniversary_date.next_month)
+      Timecop.freeze(start_date.next_month)
     end
 
     it "assigns to members" do

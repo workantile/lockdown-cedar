@@ -11,20 +11,21 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130217175640) do
+ActiveRecord::Schema.define(:version => 20131229172240) do
 
   create_table "access_logs", :force => true do |t|
     t.date     "access_date"
     t.boolean  "access_granted"
     t.string   "msg"
     t.integer  "member_id"
-    t.datetime "created_at",               :null => false
-    t.datetime "updated_at",               :null => false
+    t.datetime "created_at",                                 :null => false
+    t.datetime "updated_at",                                 :null => false
     t.string   "member_name"
     t.string   "member_type"
     t.string   "door_controller_location"
     t.string   "billing_plan"
     t.integer  "door_controller_id"
+    t.boolean  "billable",                 :default => true
   end
 
   create_table "admins", :force => true do |t|

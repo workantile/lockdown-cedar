@@ -13,7 +13,7 @@
 			<tr>
 				<td><%= member.full_name %></td>
 				<td><%= member.pay_simple_customer_id %></td>
-				<td><%= member.usage_last_month - Member::AFFILIATE_FREE_DAY_PASSES %></td>
+				<td class="billable-days"><%= member.billable_usage_last_month%></td>
 				<td>
 					<div id="member-<%= member.id.to_s %>">
 						<button type="button" class="btn btn-primary btn-small invoice_button" data-url=<%= invoiced_admin_member_url(member) %> >

@@ -2,7 +2,7 @@ require 'csv'
 
 class AccessLog < ActiveRecord::Base
   attr_accessible :access_granted, :msg, :member, :door_controller, :member_name, :member_type, 
-  								:billing_plan, :door_controller_location
+  								:billing_plan, :door_controller_location, :billable
 
   belongs_to :door_controller
   belongs_to :member

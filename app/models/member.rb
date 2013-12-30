@@ -90,12 +90,22 @@ class Member < ActiveRecord::Base
     self.access_logs.where(:access_date => last_month).count(:access_date, :distinct => true)
   end
 
-  def billable_days_this_month
-    if self.usage_this_month > AFFILIATE_FREE_DAY_PASSES
-      self.usage_this_month - AFFILIATE_FREE_DAY_PASSES
-    else
-      0
-    end
+  def non_billable_usage_last_month
+    self.access_logs.where(:access_date => last_month, :billable => false).count(:access_date, :distinct => true)
+  end
+
+  def billable_usage_last_month
+    result = usage_last_month - (AFFILIATE_FREE_DAY_PASSES + non_billable_usage_last_month)
+    result < 0 ? 0 : result
+  end
+
+  def non_billable_usage_this_month
+    self.access_logs.where(:access_date => this_month, :billable => false).count(:access_date, :distinct => true)
+  end
+
+  def billable_usage_this_month
+    result = usage_this_month - (AFFILIATE_FREE_DAY_PASSES + non_billable_usage_this_month)
+    result < 0 ? 0 : result
   end
 
   def send_usage_email

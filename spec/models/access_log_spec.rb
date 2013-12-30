@@ -16,6 +16,7 @@ describe AccessLog do
 
 		it { should belong_to :member }
 		it { should belong_to :door_controller }
+		it { should respond_to :billable }
 	end
 
 	it "should save the access_date in local time" do

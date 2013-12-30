@@ -2,7 +2,7 @@
 	Hi <%= @member.first_name %>,
 </p>
 <p>
-	As of today, you have used <%= @member.usage_this_month.to_s %> of the <%= Member::AFFILIATE_FREE_DAY_PASSES %> day passes included in your billing plan this month.
+	As of today, you have used <%= @member.billable_usage_this_month.to_s %> of the <%= Member::AFFILIATE_FREE_DAY_PASSES %> day passes included in your billing plan this month.
 </p>
 <p>
 	If you think you should not be charged for this day pass, please fill out this 
