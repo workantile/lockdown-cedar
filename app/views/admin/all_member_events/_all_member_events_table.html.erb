@@ -1,0 +1,16 @@
+	<table class="table table-bordered table-condensed table-striped">
+		<thead>
+			<tr>
+				<th>event name</th>
+				<th>schduled</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% @all_member_events.each do |all_member_event| %>
+			<tr>
+				<td><%= link_to all_member_event.name, edit_admin_all_member_event_path(all_member_event) %></td>
+				<td><%= all_member_event.formatted_display %></td>
+			</tr>
+			<% end %>
+		</tbody>
+	</table>
