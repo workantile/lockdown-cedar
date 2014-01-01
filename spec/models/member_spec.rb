@@ -235,13 +235,24 @@ describe Member do
   end
 
   describe ".last_day_present" do
-    it "should return the last day present" do
+    it "returns the last day present" do
       yesterday = Date.today.prev_day
       Timecop.freeze(yesterday)
       FactoryGirl.create(:log_success, :member => member)
       Timecop.return
       FactoryGirl.create(:log_success, :member => member)
       member.last_day_present.should eq(Date.today)
+    end
+  end
+
+  describe ".last_day_present_formatted" do
+    it "returns the last day present formatted for display" do
+      yesterday = Date.today.prev_day
+      Timecop.freeze(yesterday)
+      FactoryGirl.create(:log_success, :member => member)
+      Timecop.return
+      FactoryGirl.create(:log_success, :member => member)
+      member.last_day_present_formatted.should eq(Date.today.strftime("%m/%d/%Y"))
     end
   end
 

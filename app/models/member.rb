@@ -134,6 +134,10 @@ class Member < ActiveRecord::Base
     access_logs.order("access_date DESC").first.access_date unless access_logs.empty?
   end
 
+  def last_day_present_formatted
+    last_day_present ? last_day_present.strftime("%m/%d/%Y") : "n/a"
+  end
+
   def self.find_by_key(rfid_key)
     Member.where("LOWER(rfid) = ?", rfid_key.downcase).first
   end

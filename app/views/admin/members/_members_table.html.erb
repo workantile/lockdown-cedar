@@ -18,7 +18,7 @@
 			<tr>
 				<td><%= link_to member.full_name, edit_admin_member_path(member) %></td>
 				<td><%= member.anniversary_date.strftime("%m/%d/%Y") %></td>
-				<td><%= link_to(last_day_present(member), admin_reports_path(id: member.id)) %></td>
+				<td><%= link_to(member.last_day_present_formatted, admin_reports_path(id: member.id)) %></td>
 				<td><%= member.billing_plan %></td>
 				<td><%= member.usage_this_month %></td>
 				<td><%= member.usage_last_month %></td>

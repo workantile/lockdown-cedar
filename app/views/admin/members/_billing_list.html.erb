@@ -11,7 +11,15 @@
 		<tbody>
 			<% @members.each do |member| %>
 			<tr>
-				<td><%= member.full_name %></td>
+				<td>
+					<%= link_to(member.full_name, 
+						admin_reports_path(
+							id: member.id,
+							start_date: member.last_month.first.strftime("%m/%d/%Y"),
+							end_date: member.last_month.last.strftime("%m/%d/%Y"))
+						)
+					%>
+				</td>
 				<td><%= member.pay_simple_customer_id %></td>
 				<td class="billable-days"><%= member.billable_usage_last_month%></td>
 				<td>

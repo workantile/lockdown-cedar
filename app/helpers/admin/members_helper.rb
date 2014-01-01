@@ -10,9 +10,4 @@ module Admin::MembersHelper
 		select_tag(:plan, options_for_select(plan_list, params[:plan]), :"data-url" => admin_members_url)
 	end
 
-	def last_day_present(member)
-		date = member.last_day_present
-		date ? date.strftime("%m/%d/%Y") : 'n/a'
-	end
-
 end
