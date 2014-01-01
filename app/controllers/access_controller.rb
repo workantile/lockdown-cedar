@@ -9,12 +9,12 @@ class AccessController < ApplicationController
 	end
 
 	def grant_access
-		@member = Member.find_by_rfid(params[:rfid])
-    @member ||= Member.find_by_rfid(params[:rfid].downcase)
+		@member = Member.find_by_key(params[:rfid])
 		if @member && @member.access_enabled?
 			@response = @door_controller.success_response
+      @all_member_event = AllMemberEvent.event_happening?
 			log_access
-			send_email
+			send_email if @member.send_usage_email? && !@all_member_event
 		else
 			@response = @door_controller.error_response
 		end
@@ -28,13 +28,16 @@ class AccessController < ApplicationController
                    :member_type => @member.member_type,
                    :billing_plan => @member.billing_plan,
                    :door_controller_location => @door_controller.location,
-                   :access_granted => true)
-end
+                   :access_granted => true,
+                   :billable => !@all_member_event)
+  end
 
-	def send_email
-		member = Member.find_by_rfid(params[:rfid])
-    member ||= Member.find_by_rfid(params[:rfid].downcase)
-		member.send_usage_email
-	end
+  def send_email
+    if @member.billable_usage_this_month == 0
+      MemberEmail.delay.free_day_pass_use(@member)
+    else
+      MemberEmail.delay.billable_day_pass_use(@member)
+    end
+  end
 
 end

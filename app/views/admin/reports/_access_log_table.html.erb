@@ -4,6 +4,7 @@
 		<th>member</th>
 		<th>type</th>
 		<th>plan</th>
+		<th>billable</th>
 	</thead>
 	<tbody>
 		<% @logs.each do |log| %>
@@ -12,6 +13,7 @@
 			<td><%= log.member_name %></td>
 			<td><%= log.member_type %></td>
 			<td><%= log.billing_plan %></td>
+			<td><%= log.billable %></td>
 		</tr>
 		<% end %>
 	</tbody>

@@ -149,109 +149,69 @@ describe Member do
     end
   end
 
-  describe ".send_usage_email" do
-    before(:each) do
-      Delayed::Worker.delay_jobs = false
-    end
-    after(:each) do
-      Delayed::Worker.delay_jobs = true
-    end      
-    
-    it "should send an email to affiliate members" do
-      @affiliate = FactoryGirl.create(:affiliate_member)
-      @affiliate.send_usage_email
-      last_email.to.should include(@affiliate.email)
+  describe ".send_usage_email?" do
+    let!(:affiliate) { FactoryGirl.create(:affiliate_member)}
+
+    it "indicates affiliate members should receive usage emails" do
+      expect(affiliate.send_usage_email?).to be_true
     end
 
-    it "should not send an email to a full member" do
-      member.send_usage_email
-      last_email.should be_nil
+    it "indicates full members should not receive usage emails" do
+      expect(member.send_usage_email?).to be_false
     end
 
-    it "should not send more than one email in one day to a member" do
-      @affiliate = FactoryGirl.create(:affiliate_member)
-      now = Timecop.freeze(Date.today)
-      @affiliate.send_usage_email
-      @affiliate.reload
-      @affiliate.send_usage_email
-      all_emails.count.should eq(1)
-
-      Timecop.freeze(now + 1.day)
-      @affiliate.send_usage_email
-      @affiliate.reload
-      @affiliate.send_usage_email
-      all_emails.count.should eq(2)
+    it "indicates that an email not be sent if one was already sent today" do
+      affiliate.usage_email_sent = Timecop.freeze(Date.current).to_date
+      expect(affiliate.send_usage_email?).to be_false
     end
 
-    it "should send a free day pass email if period-to-date usage is <= affilate free day passes" do
-      start_date = Timecop.freeze(Date.new(2012,1,1))
-
-      @affiliate = FactoryGirl.create(:affiliate_member)
-      Member::AFFILIATE_FREE_DAY_PASSES.times { 
-        |n| FactoryGirl.create(:log_success, 
-                               :access_date => start_date + n.day,
-                               :member => @affiliate)
-      }
-      
-      MemberEmail.should_receive(:free_day_pass_use).with(@affiliate).and_return(double("mailer", :deliver => true))
-      @affiliate.send_usage_email
+    it "indicates that an email be sent if one was sent before today" do
+      affiliate.usage_email_sent = Timecop.freeze(Date.current).to_date - 1.day
+      expect(affiliate.send_usage_email?).to be_true
     end
-
-    it "should send a billable day pass email if period-to-date usage is > affilate free day passes" do
-      start_date = Timecop.freeze(Date.new(2012,1,1))
-
-      @affiliate = FactoryGirl.create(:affiliate_member)
-      (Member::AFFILIATE_FREE_DAY_PASSES + 1).times { 
-        |n| FactoryGirl.create(:log_success, 
-                               :access_date => start_date + n.day,
-                               :member => @affiliate)
-      }
-      
-      MemberEmail.should_receive(:billable_day_pass_use).with(@affiliate).and_return(double("mailer", :deliver => true))
-      @affiliate.send_usage_email
-    end
-
   end
 
   describe ".delay_update" do
+    let!(:affiliate)  { FactoryGirl.create(:affiliate_member) }
+    let(:pending)     { affiliate.pending_updates.first }
+
     before(:each) do
       Delayed::Worker.delay_jobs = true  # make sure this fucking thing is always on for these examples
-      @affiliate = FactoryGirl.create(:affiliate_member)
       Timecop.freeze(Date.new(2012,1,15))  
-      @affiliate.delay_update(:member_type, "former")
-      @pending = @affiliate.pending_updates.first
+      affiliate.delay_update(:member_type, "former")
     end
 
     it "should create a pending update object" do
-      @pending.should_not be_nil
+      pending.should_not be_nil
     end
 
     it "should create a delayed job object" do
-      Delayed::Job.exists?(@pending.delayed_job_id).should be_true
+      Delayed::Job.exists?(pending.delayed_job_id).should be_true
     end
 
     it "the delayed job should run at the beginning of next month" do
-      run_at = @affiliate.last_of_month + 1.day
-      Delayed::Job.find(@pending.delayed_job_id).run_at.to_date.should eq(run_at)
+      run_at = affiliate.last_of_month + 1.day
+      Delayed::Job.find(pending.delayed_job_id).run_at.to_date.should eq(run_at)
     end
   end
 
   describe ".destroy_pending_updates" do
+    let!(:affiliate)  { FactoryGirl.create(:affiliate_member) }
+    let(:pending)     { affiliate.pending_updates.first }
+
     before(:each) do
       Delayed::Worker.delay_jobs = true  # make sure this fucking thing is always on for these examples
-      @affiliate = FactoryGirl.create(:affiliate_member)
       Timecop.freeze(Date.new(2012,1,15))  
-      @affiliate.delay_update(:member_type, "former")
-      @pending = @affiliate.pending_updates.first
-      @affiliate.destroy_pending_updates
+      affiliate.delay_update(:member_type, "former")
+      affiliate.destroy_pending_updates
     end
 
     it "should destroy pending update objects" do
-      @affiliate.pending_updates.count.should eq(0)
+      affiliate.pending_updates.count.should eq(0)
     end
 
     it "should delete associated delayed jobs" do
-      Delayed::Job.exists?(@pending.delayed_job_id).should be_false
+      Delayed::Job.exists?(pending.delayed_job_id).should be_false
     end
   end
   

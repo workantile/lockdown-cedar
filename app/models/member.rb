@@ -108,16 +108,8 @@ class Member < ActiveRecord::Base
     result < 0 ? 0 : result
   end
 
-  def send_usage_email
-    if billing_plan == "affiliate" && usage_email_sent != Date.current
-      if self.usage_this_month > AFFILIATE_FREE_DAY_PASSES
-        MemberEmail.delay.billable_day_pass_use(self)
-      else
-        MemberEmail.delay.free_day_pass_use(self)
-      end
-      self.usage_email_sent = Date.current
-      self.save
-    end
+  def send_usage_email?
+    billing_plan == "affiliate" && usage_email_sent != Date.current
   end
 
   def needs_invoicing?

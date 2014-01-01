@@ -19,10 +19,9 @@ feature 'Adding all members events', %q{
   end
   
   scenario 'Creating an all member event' do
-    fill_in 'Name', :with => "Social Lunch"
-    fill_in 'Date', :with => DateTime.new(2013, 1, 1).to_s
-    fill_in 'Time', :with => Time.new(10, 30).to_s
-    click_button 'Create all member event'
+    fill_in 'Name',       :with => "Social Lunch"
+    fill_in 'Scheduled',  :with => "1/10/2013 07:00 pm"
+    click_button 'Create all members event'
     
     # Then I should not see an error message.
     page.should have_no_selector('div.field_with_errors')
@@ -30,7 +29,7 @@ feature 'Adding all members events', %q{
 
   scenario 'Screwing up creating an all member event' do
     fill_in 'Name',  :with => ''
-    click_button 'Create all member event'
+    click_button 'Create all members event'
     
     
     # Then I should see an error message
