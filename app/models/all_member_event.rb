@@ -6,9 +6,6 @@ class AllMemberEvent < ActiveRecord::Base
   default_scope order("scheduled ASC")
 
   def scheduled=(a_date)
-    puts "*******"
-    puts Time.zone.now
-    puts "*******"
     if a_date.instance_of?(String) && !a_date.empty?
       local_time = Date._strptime(a_date, "%m/%d/%Y %I:%M %P")
       self[:scheduled] = DateTime.civil_from_format(
@@ -25,7 +22,7 @@ class AllMemberEvent < ActiveRecord::Base
   end
 
   def formatted_display
-    if scheduled.hour == 0
+    if scheduled.in_time_zone.hour == 0
       scheduled.strftime("%m/%d/%Y all day")
     else
       scheduled.strftime("%m/%d/%Y %l:%M %P")
