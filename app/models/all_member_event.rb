@@ -9,7 +9,7 @@ class AllMemberEvent < ActiveRecord::Base
     if a_date.instance_of?(String) && !a_date.empty?
       local_time = Date._strptime(a_date, "%m/%d/%Y %I:%M %P")
       self[:scheduled] = DateTime.civil_from_format(
-        'local', 
+        'utc', 
         local_time[:year], 
         local_time[:mon],
         local_time[:mday],
