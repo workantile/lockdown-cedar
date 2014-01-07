@@ -22,7 +22,7 @@ class AllMemberEvent < ActiveRecord::Base
   end
 
   def formatted_display
-    if scheduled.in_time_zone.hour == 0
+    if scheduled.hour == 0
       scheduled.strftime("%m/%d/%Y all day")
     else
       scheduled.strftime("%m/%d/%Y %l:%M %P")
