@@ -26,6 +26,13 @@ feature 'Member opens door', %q{
 
     # And I should receive an email.
     last_email.to.should include(member.email)
+
+    # When I open the door a second time today
+    ActionMailer::Base.deliveries.clear
+    visit '/access/' + @door_controller.address + "/" + member.rfid
+
+    # I should not receive an email
+    last_email.should be_nil
   end
 
   scenario 'A former member opens the door' do
