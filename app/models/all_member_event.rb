@@ -30,7 +30,7 @@ class AllMemberEvent < ActiveRecord::Base
   end
 
   def self.event_happening?
-    now = DateTime.current.utc
+    now = DateTime.current
     AllMemberEvent.where(:scheduled => now.beginning_of_day ..(now + 1.hour)).exists? 
   end
 
