@@ -86,8 +86,16 @@ class Member < ActiveRecord::Base
     self.access_logs.where(:access_date => this_month).count(:access_date, :distinct => true)
   end
 
+  def day_pass_usage_this_month
+    self.access_logs.where(:access_date => this_month, :billable => true).count(:access_date, :distinct => true)
+  end
+
   def usage_last_month
     self.access_logs.where(:access_date => last_month).count(:access_date, :distinct => true)
+  end
+
+  def day_pass_usage_last_month
+    self.access_logs.where(:access_date => last_month, :billable => true).count(:access_date, :distinct => true)
   end
 
   def non_billable_usage_last_month
@@ -95,7 +103,7 @@ class Member < ActiveRecord::Base
   end
 
   def billable_usage_last_month
-    result = usage_last_month - (AFFILIATE_FREE_DAY_PASSES + non_billable_usage_last_month)
+    result = day_pass_usage_last_month - AFFILIATE_FREE_DAY_PASSES
     result < 0 ? 0 : result
   end
 
@@ -104,7 +112,7 @@ class Member < ActiveRecord::Base
   end
 
   def billable_usage_this_month
-    result = usage_this_month - (AFFILIATE_FREE_DAY_PASSES + non_billable_usage_this_month)
+    result = day_pass_usage_this_month - AFFILIATE_FREE_DAY_PASSES
     result < 0 ? 0 : result
   end
 

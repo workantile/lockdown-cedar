@@ -38,6 +38,8 @@ class AccessController < ApplicationController
     else
       MemberEmail.delay.billable_day_pass_use(@member)
     end
+    @member.usage_email_sent = Date.current
+    @member.save
   end
 
 end

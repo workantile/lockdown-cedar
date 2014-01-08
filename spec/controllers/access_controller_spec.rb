@@ -97,6 +97,13 @@ describe AccessController do
 			get :show, :address => door_controller.address, :rfid => member.rfid
 		end
 
+		it "sets the email sent date to the current date" do
+			member.stub(:send_usage_email?) { true }
+			member.stub(:billable_usage_this_month) { 1 }
+			member.should_receive(:usage_email_sent=).with(Date.current)
+			get :show, :address => door_controller.address, :rfid => member.rfid
+		end
+
 		it "sends no emails during an all-members event" do
 			AllMemberEvent.stub(:event_happening?) { true }
 			member.stub(:send_usage_email?) { true }

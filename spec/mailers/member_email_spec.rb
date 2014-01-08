@@ -13,7 +13,7 @@ describe MemberEmail do
 
     it "renders the body" do
       mail.body.encoded.should match("Hi #{member.first_name}")
-      mail.body.encoded.should match("#{member.billable_usage_this_month}")
+      mail.body.encoded.should match("#{member.day_pass_usage_this_month}")
       mail.body.encoded.should match("#{Member::AFFILIATE_FREE_DAY_PASSES}")
     end
   end

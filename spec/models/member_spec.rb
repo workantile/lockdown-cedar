@@ -28,8 +28,8 @@ describe Member do
   it { should have_many(:access_logs) }
   it { should have_many(:pending_updates) }
 
-  context "counting total, billable, and non-billable usage" do
-    let!(:affilate) { FactoryGirl.create(:affiliate_member) }
+  context "counting total, day pass, billable, and non-billable usage" do
+    let!(:affilate)         { FactoryGirl.create(:affiliate_member) }
     let(:free_days)         { Member::AFFILIATE_FREE_DAY_PASSES }
     let(:start_date)        { Date.new(2012,11,1) }
     let(:free_dates)        { (0..(free_days - 1)).map { |n| start_date + n.day } }
@@ -73,6 +73,12 @@ describe Member do
         end
       end
 
+      describe ".day_pass_usage_this_month" do
+        it "returns the number of day passes used this month" do
+          expect(member.day_pass_usage_this_month).to eq(4)
+        end
+      end
+
       describe ".billable_usage_this_month" do
         it "returns 0 if there are no billable days this month" do
           expect(member.billable_usage_this_month).to eq(0)
@@ -104,6 +110,12 @@ describe Member do
       describe ".non_billable_usage_last_month" do
         it "counts non-billable days from last month" do
           expect(member.non_billable_usage_last_month).to eq(1)
+        end
+      end
+
+      describe ".day_pass_usage_last_month" do
+        it "returns the number of day passes used this month" do
+          expect(member.day_pass_usage_last_month).to eq(4)
         end
       end
 

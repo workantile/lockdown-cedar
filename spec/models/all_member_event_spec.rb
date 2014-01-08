@@ -2,9 +2,8 @@ require 'spec_helper'
 
 describe AllMemberEvent do
   let!(:all_member_event) { FactoryGirl.create(:all_member_event) }
-  # Timecop creates datetime objects in UTC, while Rails uses the current timezone offset when storing and
-  # retrieving datetime objects from the database. So we need to current offset to using Timecop so that datetime
-  # objects are compared correctly when retrieving data from the database.
+  # We need to set the correct timezone when mocking the current date and time with Timecop, as rails stores and
+  # retrieves DateTime objects in the database taking the current timezone into account.
   let(:current_offset)    { DateTime.current.offset }
 
   it { should respond_to :name }
@@ -22,7 +21,6 @@ describe AllMemberEvent do
 
     it "returns true if the current time is between 1 hour before and midnight on the day of a scheduled event" do
       FactoryGirl.create(:all_member_event, :scheduled => '1/10/2013 01:00 pm')
-      AllMemberEvent.all.each { |a| puts a.inspect }
       Timecop.freeze(DateTime.new(2013, 1, 10, 12, 1, 0, current_offset))
       expect(AllMemberEvent.event_happening?).to be_true
     end
