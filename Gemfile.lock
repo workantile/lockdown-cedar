@@ -97,7 +97,7 @@ GEM
     less-rails (2.2.6)
       actionpack (>= 3.1)
       less (~> 2.2.0)
-    libv8 (3.11.8.13)
+    libv8 (3.16.14.13)
     libwebsocket (0.1.7.1)
       addressable
       websocket
@@ -139,7 +139,7 @@ GEM
     rake (10.0.3)
     rdoc (3.12)
       json (~> 1.4)
-    ref (1.0.2)
+    ref (2.0.0)
     rspec-core (2.12.2)
     rspec-expectations (2.12.1)
       diff-lcs (~> 1.1.3)
@@ -173,8 +173,8 @@ GEM
     steak (2.0.0)
       capybara (>= 1.0.0)
       rspec-rails (>= 2.5.0)
-    therubyracer (0.11.2)
-      libv8 (~> 3.11.8.12)
+    therubyracer (0.12.2)
+      libv8 (~> 3.16.14.0)
       ref
     thor (0.16.0)
     tilt (1.3.3)
@@ -217,7 +217,10 @@ DEPENDENCIES
   sass-rails (~> 3.2.3)
   shoulda-matchers
   steak
-  therubyracer
+  therubyracer (~> 0.12.0)
   timecop
   twitter-bootstrap-rails
   uglifier (>= 1.0.3)
+
+BUNDLED WITH
+   1.11.2
