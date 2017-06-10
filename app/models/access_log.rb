@@ -1,13 +1,13 @@
 require 'csv'
 
 class AccessLog < ActiveRecord::Base
-  attr_accessible :access_granted, :msg, :member, :door_controller, :member_name, :member_type, 
+  attr_accessible :access_granted, :msg, :member, :door_controller, :member_name, :member_type,
   								:billing_plan, :door_controller_location, :billable
 
   belongs_to :door_controller
   belongs_to :member
 
-	default_scope where(:access_granted => true).order("created_at DESC")
+	default_scope { where(:access_granted => true).order("created_at DESC") }
 
   before_save :set_date
 

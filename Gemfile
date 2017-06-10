@@ -1,31 +1,26 @@
 source 'https://rubygems.org'
-ruby '1.9.3'
+ruby '2.3.3'
 
-gem 'rails', '3.2.11'
+gem 'rails', '4.2.8'
 gem 'pg'
 gem 'devise'
 gem 'delayed_job_active_record'
 
+# See https://github.com/sstephenson/execjs#readme for more supported runtimes
+gem 'therubyracer'
 
-# Gems used only for assets and not required
-# in production environments by default.
-group :assets do
-  gem 'sass-rails',   '~> 3.2.3'
-  gem 'coffee-rails', '~> 3.2.1'
-
-  # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  gem 'therubyracer', '~> 0.12.0'
-
-  gem 'uglifier', '>= 1.0.3'
-  gem 'less-rails'
-  gem 'twitter-bootstrap-rails'
-end
+gem 'sass-rails'
+gem 'coffee-rails'
+gem 'uglifier'
+gem 'twitter-bootstrap-rails'
 
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 
+gem 'protected_attributes'
+
 group :development, :test do
-	gem 'rspec-rails', '>= 2.0.0'
+	gem 'rspec-rails', '~> 3.5'
 	gem 'factory_girl_rails'
 end
 
@@ -35,6 +30,6 @@ group :test do
  	gem 'capybara-webkit'
 	gem 'database_cleaner'
 	gem 'email_spec'
-	gem 'action_mailer_cache_delivery', '~> 0.3.2'
+	gem 'action_mailer_cache_delivery'
   gem 'timecop'
 end

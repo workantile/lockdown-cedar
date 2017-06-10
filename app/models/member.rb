@@ -19,21 +19,21 @@ class Member < ActiveRecord::Base
   after_initialize :set_default_anniversary_date
   before_save :check_member_type
 
-  default_scope order("first_name ASC, last_name ASC")
+  default_scope { order("first_name ASC, last_name ASC") }
 
-  scope :current, where(:member_type => 'current')
-  scope :full, where(:member_type => 'current', :billing_plan => 'full')
-  scope :full_no_work, where(:member_type => 'current', :billing_plan => 'full - no work')
-  scope :affiliate, where(:member_type => 'current', :billing_plan => 'affiliate')
-  scope :student, where(:member_type => 'current', :billing_plan => 'student')
-  scope :supporting, where(:member_type =>'current', :billing_plan => 'supporter')
-  scope :former, where(:member_type => 'former')
-  scope :courtesy_key, where(:member_type => 'courtesy key')
-  scope :none, where("member_type <> 'current'")
+  scope :current, -> { where(:member_type => 'current') }
+  scope :full, -> { where(:member_type => 'current', :billing_plan => 'full') }
+  scope :full_no_work, -> { where(:member_type => 'current', :billing_plan => 'full - no work') }
+  scope :affiliate, -> { where(:member_type => 'current', :billing_plan => 'affiliate') }
+  scope :student, -> { where(:member_type => 'current', :billing_plan => 'student') }
+  scope :supporting, -> { where(:member_type =>'current', :billing_plan => 'supporter') }
+  scope :former, -> { where(:member_type => 'former') }
+  scope :courtesy_key, -> { where(:member_type => 'courtesy key') }
+  # scope :none, -> { where("member_type <> 'current'") }
 
   has_many :access_logs
   has_many :pending_updates, :dependent => :destroy
-  
+
   def full_name
   	[first_name, last_name].join(' ')
   end
@@ -49,7 +49,7 @@ class Member < ActiveRecord::Base
   def set_default_anniversary_date
   	self.anniversary_date ||= Date.current
   end
-  
+
   def check_member_type
     # TODO: implement state machine
     if member_type == 'former'
@@ -121,7 +121,7 @@ class Member < ActiveRecord::Base
   end
 
   def needs_invoicing?
-    self.billing_plan == "affiliate" && 
+    self.billing_plan == "affiliate" &&
     self.member_type == "current" &&
     self.usage_last_month > Member::AFFILIATE_FREE_DAY_PASSES &&
     (self.last_date_invoiced.nil? || self.last_date_invoiced < self.first_of_month) ? true :false

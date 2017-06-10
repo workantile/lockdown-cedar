@@ -10,7 +10,7 @@ Openings::Application.routes.draw do
     resources :members do
     	get 'billing', :on => :collection
       post 'export', :on => :collection
-      put 'invoiced', :on => :member
+      patch 'invoiced', :on => :member
       post 'find_key', :on => :collection
       delete 'destroy_delayed_updates', :on => :member
     end
@@ -20,5 +20,5 @@ Openings::Application.routes.draw do
   end
 
   root :to => "home#index"
-  
+
 end

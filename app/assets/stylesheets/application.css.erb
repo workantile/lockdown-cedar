@@ -8,7 +8,7 @@
  * You're free to add application-wide styles to this file and they'll appear at the top of the
  * compiled file, but it's generally better to create a new file per style scope.
  *
- *= require jquery.ui.all
+ *= require jquery-ui
  *= require_self
  *= require_tree .
  */
@@ -26,14 +26,14 @@
     left:       0;
     height:     100%;
     width:      100%;
-    background: rgba( 255, 255, 255, .8 ) 
-                url(<%= asset_path 'ajax-loader.gif' %>) 
-                50% 50% 
+    background: rgba( 255, 255, 255, .8 )
+                url(<%= asset_path 'ajax-loader.gif' %>)
+                50% 50%
                 no-repeat;
 }
 
 body.loading {
-    overflow: hidden;   
+    overflow: hidden;
 }
 
 /* Anytime the body has the loading class, our
