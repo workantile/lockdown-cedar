@@ -9,8 +9,8 @@ class Member < ActiveRecord::Base
                   :billing_plan, :key_enabled, :task, :pay_simple_customer_id, :termination_date, :last_date_invoiced
 
   validates_presence_of :first_name, :last_name, :email, :member_type, :billing_plan
-  validates_uniqueness_of :email
-  validates_uniqueness_of :rfid, :allow_nil => true, :allow_blank => true
+  validates_uniqueness_of :email, :case_sensitive => false
+  validates_uniqueness_of :rfid, :allow_nil => true, :allow_blank => true, :case_sensitive => false
 
   validates :member_type, :inclusion => {:in => MEMBER_TYPES, :message => "%{value} is not a valid member type"}
   validates :billing_plan, :inclusion => {:in => BILLING_PLANS, :message => "%{value} is not a valid billing plan"}
@@ -83,23 +83,23 @@ class Member < ActiveRecord::Base
   end
 
   def usage_this_month
-    self.access_logs.where(:access_date => this_month).count(:access_date, :distinct => true)
+    self.access_logs.where(access_date: this_month).select(:access_date).distinct.count
   end
 
   def day_pass_usage_this_month
-    self.access_logs.where(:access_date => this_month, :billable => true).count(:access_date, :distinct => true)
+    self.access_logs.where(access_date: this_month, billable: true).select(:access_date).distinct.count
   end
 
   def usage_last_month
-    self.access_logs.where(:access_date => last_month).count(:access_date, :distinct => true)
+    self.access_logs.where(access_date: last_month).select(:access_date).distinct.count
   end
 
   def day_pass_usage_last_month
-    self.access_logs.where(:access_date => last_month, :billable => true).count(:access_date, :distinct => true)
+    self.access_logs.where(access_date: last_month, billable: true).select(:access_date).distinct.count
   end
 
   def non_billable_usage_last_month
-    self.access_logs.where(:access_date => last_month, :billable => false).count(:access_date, :distinct => true)
+    self.access_logs.where(access_date: last_month, billable: false).select(:access_date).distinct.count
   end
 
   def billable_usage_last_month
@@ -108,7 +108,7 @@ class Member < ActiveRecord::Base
   end
 
   def non_billable_usage_this_month
-    self.access_logs.where(:access_date => this_month, :billable => false).count(:access_date, :distinct => true)
+    self.access_logs.where(access_date: this_month, billable: false).select(:access_date).distinct.count
   end
 
   def billable_usage_this_month

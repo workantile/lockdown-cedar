@@ -19,9 +19,9 @@ feature 'Running reports', %q{
   end
 
   scenario "reporting access log" do
-    page.should have_content('beginning')
-    page.should have_content('ending')
-    page.should have_content('Access log')
+    expect(page).to have_content('beginning')
+    expect(page).to have_content('ending')
+    expect(page).to have_content('Access log')
   end
 
 end

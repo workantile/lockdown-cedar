@@ -9,12 +9,12 @@ describe Admin::MembersController do
   describe "GET 'new'" do
     it "assigns to @member" do
       get :new
-      assigns(:member).should be_kind_of(Member)
+      expect(assigns(:member)).to be_kind_of(Member)
     end 
   
     it "renders the 'new' template" do
       get :new
-      response.should render_template('new')
+      expect(response).to render_template('new')
     end
   end
 
@@ -25,11 +25,11 @@ describe Admin::MembersController do
     end
 
     it 'assigns to @member' do
-      assigns(:member).should be_kind_of(Member)
+      expect(assigns(:member)).to be_kind_of(Member)
     end
   
     it "renders the 'edit' template" do
-      response.should render_template('edit')
+      expect(response).to render_template('edit')
     end
 
   end
@@ -38,7 +38,7 @@ describe Admin::MembersController do
     it "redirect to the index" do
       member = FactoryGirl.create(:full_member, rfid: '1234')
       post(:find_key, :rfid_key => '1235')
-      response.should redirect_to(admin_members_url)
+      expect(response).to redirect_to(admin_members_url)
     end
   end
 
@@ -49,11 +49,11 @@ describe Admin::MembersController do
       end
     
       it "persists a new member with the parameters submitted" do
-        assigns(:member).should be_persisted
+        expect(assigns(:member)).to be_persisted
       end
     
       it "redirects to the index" do
-        response.should redirect_to(admin_members_url)
+        expect(response).to redirect_to(admin_members_url)
       end
     end
   
@@ -63,11 +63,11 @@ describe Admin::MembersController do
       end
 
       it "renders the new template again" do
-        response.should render_template('new')
+        expect(response).to render_template('new')
       end
     
       it "does not persist a new member" do
-        assigns(:member).should_not be_persisted
+        expect(assigns(:member)).not_to be_persisted
       end
     end
   end
@@ -80,11 +80,11 @@ describe Admin::MembersController do
     end
 
     it 'assigns to @member' do
-      assigns(:member).should be_kind_of(Member)
+      expect(assigns(:member)).to be_kind_of(Member)
     end
   
     it "renders the 'edit' template" do
-      response.should render_template('edit')
+      expect(response).to render_template('edit')
     end
 
   end
@@ -97,7 +97,7 @@ describe Admin::MembersController do
     	end
 
       it "redirects to the index" do
-        response.should redirect_to(admin_members_url)
+        expect(response).to redirect_to(admin_members_url)
       end
     end
 
@@ -108,7 +108,7 @@ describe Admin::MembersController do
     	end
 
     	it "renders the 'edit' template" do
-    		response.should render_template('edit')
+    		expect(response).to render_template('edit')
     	end
     end
 
@@ -117,7 +117,7 @@ describe Admin::MembersController do
         member = FactoryGirl.create(:full_member)
         member_hash = FactoryGirl.attributes_for(:former_member, :anniversary_date => "12/01/2012")
         put(:update, :id => member.id, :member => member_hash, :member_type_timing => 'immediately')
-        PendingUpdate.count.should eq(0)
+        expect(PendingUpdate.count).to eq(0)
       end
     end
 
@@ -129,14 +129,14 @@ describe Admin::MembersController do
       end
 
       it "should invoke the delay update method" do
-        Member.any_instance.should_receive(:delay_update)
+        expect_any_instance_of(Member).to receive(:delay_update)
         put(:update, :id => @member.id, :member => @member_hash, :member_type_timing => 'end_billing_period')
       end
 
       it "should not change the currenr value of member type" do
         put(:update, :id => @member.id, :member => @member_hash, :member_type_timing => 'end_billing_period')
         @member.reload
-        @member.member_type.should eq('current')
+        expect(@member.member_type).to eq('current')
       end
     end
 
@@ -145,7 +145,7 @@ describe Admin::MembersController do
         member = FactoryGirl.create(:full_member)
         member_hash = FactoryGirl.attributes_for(:affiliate_member, :anniversary_date => "12/01/2012")
         put(:update, :id => member.id, :member => member_hash, :billing_plan_timing => 'immediately')
-        PendingUpdate.count.should eq(0)
+        expect(PendingUpdate.count).to eq(0)
       end
     end
 
@@ -157,14 +157,14 @@ describe Admin::MembersController do
       end
 
       it "should invoke the delay update method" do
-        Member.any_instance.should_receive(:delay_update)
+        expect_any_instance_of(Member).to receive(:delay_update)
         put(:update, :id => @member.id, :member => @member_hash, :billing_plan_timing => 'end_billing_period')
       end
 
       it "should not change the current value of billing plan" do
         put(:update, :id => @member.id, :member => @member_hash, :billing_plan_timing => 'end_billing_period')
         @member.reload
-        @member.billing_plan.should eq('full')
+        expect(@member.billing_plan).to eq('full')
       end
     end
   end
@@ -176,17 +176,17 @@ describe Admin::MembersController do
 
     it "assigns to @member" do
       delete :destroy_delayed_updates, :id => @member.id
-      assigns(:member).should be_kind_of(Member)
+      expect(assigns(:member)).to be_kind_of(Member)
     end
 
     it "invokes the destroy pending update method" do
-      Member.any_instance.should_receive(:destroy_pending_updates)
+      expect_any_instance_of(Member).to receive(:destroy_pending_updates)
       delete :destroy_delayed_updates, :id => @member.id
     end
 
     it "redirect to the index" do
       delete :destroy_delayed_updates, :id => @member.id
-      response.should redirect_to(admin_members_url)
+      expect(response).to redirect_to(admin_members_url)
     end
   end
 
@@ -197,7 +197,7 @@ describe Admin::MembersController do
   	end
 
   	it "redirects to the index" do
-  		response.should redirect_to(admin_members_url)
+  		expect(response).to redirect_to(admin_members_url)
   	end
   end
 
@@ -207,15 +207,15 @@ describe Admin::MembersController do
     end
 
     it "calls the members export method" do
-      Member.should_receive(:export_to_csv).with('current', 'all')
+      expect(Member).to receive(:export_to_csv).with('current', 'all')
       post_export
     end
 
     it "renders the response as text" do
       expected_return = "'comma', separated', 'values'"
-      Member.should_receive(:export_to_csv).with('current', 'all') { expected_return }
+      expect(Member).to receive(:export_to_csv).with('current', 'all') { expected_return }
       post_export
-      response.body.should match(/#{expected_return}/)
+      expect(response.body).to match(/#{expected_return}/)
     end
 
   end
@@ -236,11 +236,11 @@ describe Admin::MembersController do
     end
 
     it "assigns to members" do
-      assigns(:members).should be_kind_of(Array)
+      expect(assigns(:members)).to be_kind_of(Array)
     end
 
     it "renders the 'billing' template" do
-      response.should render_template('billing')
+      expect(response).to render_template('billing')
     end
   end
 

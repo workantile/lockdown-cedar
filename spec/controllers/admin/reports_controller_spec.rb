@@ -5,7 +5,7 @@ describe Admin::ReportsController do
   context "unauthorized access" do
     it "renders the sign_in template" do
       get :index
-      response.should redirect_to(new_admin_session_url)
+      expect(response).to redirect_to(new_admin_session_url)
     end
   end
 
@@ -18,7 +18,7 @@ describe Admin::ReportsController do
     describe "GET 'index'" do
     	it "renders the index template" do
   	  	get :index
-  	  	response.should render_template(:index)
+  	  	expect(response).to render_template(:index)
     	end
     end
 
@@ -28,15 +28,15 @@ describe Admin::ReportsController do
       end
 
       it "calls the members export method" do
-        AccessLog.should_receive(:export_to_csv).with(Date.new(2013,1,1)..Date.new(2013,1,31))
+        expect(AccessLog).to receive(:export_to_csv).with(Date.new(2013,1,1)..Date.new(2013,1,31))
         post_export
       end
 
       it "renders the response as text" do
         expected_return = "'comma', separated', 'values'"
-        AccessLog.should_receive(:export_to_csv).with(Date.new(2013,1,1)..Date.new(2013,1,31)) { expected_return }
+        expect(AccessLog).to receive(:export_to_csv).with(Date.new(2013,1,1)..Date.new(2013,1,31)) { expected_return }
         post_export
-        response.body.should match(/#{expected_return}/)
+        expect(response.body).to match(/#{expected_return}/)
       end
     end
   end

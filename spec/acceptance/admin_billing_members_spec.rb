@@ -39,12 +39,12 @@ feature 'Billing members', %q{
   
   scenario 'Shows number of billable days' do
     # I should see the number of billable days
-    find('.billable-days').should have_content('2')
+    expect(find('.billable-days')).to have_content('2')
   end
 
   scenario 'Billing a member' do
     # And I want to bill a member
-    page.should have_content(@member_to_invoice.full_name)
+    expect(page).to have_content(@member_to_invoice.full_name)
 
     # And I click the "Mark as invoiced" button
     click_button('Mark')

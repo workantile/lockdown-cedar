@@ -34,7 +34,7 @@ feature 'Updating members', %q{
     click_button 'Update member'
     
     # Then I should not see an error message.
-    page.should have_no_selector('div.field_with_errors')
+    expect(page).to have_no_selector('div.field_with_errors')
   end
 
   scenario 'Screwing up updating a new member' do
@@ -50,6 +50,6 @@ feature 'Updating members', %q{
     click_button 'Update member'
     
     # Then I should see an error message
-    page.should have_selector('div.field_with_errors')
+    expect(page).to have_selector('div.field_with_errors')
   end
 end

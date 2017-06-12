@@ -22,17 +22,17 @@ feature 'Member opens door', %q{
     visit '/access/' + @door_controller.address + "/" + member.rfid
     
     # Then the door should open.
-    page.should have_content(@door_controller.success_response)
+    expect(page).to have_content(@door_controller.success_response)
 
     # And I should receive an email.
-    last_email.to.should include(member.email)
+    expect(last_email.to).to include(member.email)
 
     # When I open the door a second time today
     ActionMailer::Base.deliveries.clear
     visit '/access/' + @door_controller.address + "/" + member.rfid
 
     # I should not receive an email
-    last_email.should be_nil
+    expect(last_email).to be_nil
   end
 
   scenario 'A former member opens the door' do
@@ -43,7 +43,7 @@ feature 'Member opens door', %q{
     visit '/access/' + @door_controller.address + "/" + member.rfid
     
     # Then the door should not open.
-    page.should have_content(@door_controller.error_response)
+    expect(page).to have_content(@door_controller.error_response)
   end
 
   scenario 'A current member whose key has been disabled opens the door' do
@@ -54,6 +54,6 @@ feature 'Member opens door', %q{
     visit '/access/' + @door_controller.address + "/" + member.rfid
     
     # Then the door should not open.
-    page.should have_content(@door_controller.error_response)
+    expect(page).to have_content(@door_controller.error_response)
   end
 end

@@ -14,7 +14,7 @@ describe "daily_tasks namespace" do
 		end
 
 		it "should take a snapshot of membership data" do
-			Snapshot.should_receive(:take_snapshot).once
+			expect(Snapshot).to receive(:take_snapshot).once
 			run_rake_task
 		end
 	end
@@ -26,20 +26,20 @@ describe "daily_tasks namespace" do
 		end
 
 		it "checks for abesnt members" do
-			Member.should_receive(:members_absent)
+			expect(Member).to receive(:members_absent)
 			run_rake_task
 		end
 
 		it "sends an email to the shoutout committee if there are absent members" do
 			absent_members = [stub_model(Member)]
-			Member.stub(:members_absent) { absent_members }
-			ShoutOutEmail.should_receive(:absent_members_email).and_return(double("mailer", :deliver => true))			
+			allow(Member).to receive(:members_absent) { absent_members }
+			expect(ShoutOutEmail).to receive(:absent_members_email).and_return(double("mailer", :deliver => true))			
 			run_rake_task
 		end
 
 		it "does not send an email to the shoutout committee if there are no absent members" do
-			Member.stub(:members_absent) { [] }
-			ShoutOutEmail.should_not_receive(:absent_members_email)
+			allow(Member).to receive(:members_absent) { [] }
+			expect(ShoutOutEmail).not_to receive(:absent_members_email)
 			run_rake_task
 		end
 	end

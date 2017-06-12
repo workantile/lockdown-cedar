@@ -6,15 +6,15 @@ describe MemberEmail do
     let(:mail) 		{ MemberEmail.free_day_pass_use(member) }
 
     it "renders the headers" do
-      mail.subject.should eq("Day pass use")
-      mail.to.should eq([member.email])
-      mail.from.should eq(["admin@workantile.com"])
+      expect(mail.subject).to eq("Day pass use")
+      expect(mail.to).to eq([member.email])
+      expect(mail.from).to eq(["admin@workantile.com"])
     end
 
     it "renders the body" do
-      mail.body.encoded.should match("Hi #{member.first_name}")
-      mail.body.encoded.should match("#{member.day_pass_usage_this_month}")
-      mail.body.encoded.should match("#{Member::AFFILIATE_FREE_DAY_PASSES}")
+      expect(mail.body.encoded).to match("Hi #{member.first_name}")
+      expect(mail.body.encoded).to match("#{member.day_pass_usage_this_month}")
+      expect(mail.body.encoded).to match("#{Member::AFFILIATE_FREE_DAY_PASSES}")
     end
   end
 
@@ -23,15 +23,15 @@ describe MemberEmail do
     let(:mail) 		{ MemberEmail.billable_day_pass_use(member) }
 
     it "renders the headers" do
-      mail.subject.should eq("Billable day pass use")
-      mail.to.should eq([member.email])
-      mail.from.should eq(["admin@workantile.com"])
+      expect(mail.subject).to eq("Billable day pass use")
+      expect(mail.to).to eq([member.email])
+      expect(mail.from).to eq(["admin@workantile.com"])
     end
 
     it "renders the body" do
-      mail.body.encoded.should match("Hi #{member.first_name}")
-      mail.body.encoded.should match("#{Member::AFFILIATE_FREE_DAY_PASSES}")
-      mail.body.encoded.should match("#{member.billable_usage_this_month}")
+      expect(mail.body.encoded).to match("Hi #{member.first_name}")
+      expect(mail.body.encoded).to match("#{Member::AFFILIATE_FREE_DAY_PASSES}")
+      expect(mail.body.encoded).to match("#{member.billable_usage_this_month}")
     end
   end
 end

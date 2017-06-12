@@ -1,32 +1,32 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Member do
   let!(:member)   { FactoryGirl.create(:full_member) }
 
-  it { should respond_to :full_name }
-  it { should respond_to :last_date_invoiced }
-  it { should validate_presence_of(:first_name) }
-  it { should validate_presence_of(:last_name) }
-  it { should validate_presence_of(:email) }
-  it { should validate_presence_of(:member_type) }
-  it { should validate_presence_of(:billing_plan) }
+  it { is_expected.to respond_to :full_name }
+  it { is_expected.to respond_to :last_date_invoiced }
+  it { is_expected.to validate_presence_of :first_name }
+  it { is_expected.to validate_presence_of(:last_name) }
+  it { is_expected.to validate_presence_of(:email) }
+  it { is_expected.to validate_presence_of(:member_type) }
+  it { is_expected.to validate_presence_of(:billing_plan) }
 
-  it { should validate_uniqueness_of(:email) }
-  it { should validate_uniqueness_of(:rfid)}
+  it { is_expected.to validate_uniqueness_of(:email).case_insensitive }
+  it { is_expected.to validate_uniqueness_of(:rfid).case_insensitive}
 
-  it { should ensure_inclusion_of(:member_type).in_array(['current',
+  it { is_expected.to validate_inclusion_of(:member_type).in_array(['current',
   																											 'former',
   																											 'courtesy key']) }
 
-  it { should ensure_inclusion_of(:billing_plan).in_array(['full',
+  it { is_expected.to validate_inclusion_of(:billing_plan).in_array(['full',
                                                          'full - no work',
                                                          'affiliate',
                                                          'student',
                                                          'supporter',
                                                          'none']) }
 
-  it { should have_many(:access_logs) }
-  it { should have_many(:pending_updates) }
+  it { is_expected.to have_many(:access_logs) }
+  it { is_expected.to have_many(:pending_updates) }
 
   context "counting total, day pass, billable, and non-billable usage" do
     let!(:affilate)         { FactoryGirl.create(:affiliate_member) }
@@ -38,10 +38,10 @@ describe Member do
 
     before(:each) do
       free_dates.each do |date|
-        2.times { FactoryGirl.create( :log_success, 
+        2.times { FactoryGirl.create( :log_success,
                             :access_date => date,
                             :member => member ) }
-      end        
+      end
 
       2.times { FactoryGirl.create( :log_success,
                           :access_date => non_billable_date,
@@ -86,7 +86,7 @@ describe Member do
 
         it "returns the number of billable days this month" do
           billable_dates.each do |date|
-            FactoryGirl.create( :log_success, 
+            FactoryGirl.create( :log_success,
                                 :access_date => date,
                                 :member => member )
           end
@@ -126,7 +126,7 @@ describe Member do
 
         it "counts billable days from last month" do
           billable_dates.each do |date|
-            FactoryGirl.create( :log_success, 
+            FactoryGirl.create( :log_success,
                                 :access_date => date,
                                 :member => member )
           end
@@ -165,21 +165,21 @@ describe Member do
     let!(:affiliate) { FactoryGirl.create(:affiliate_member)}
 
     it "indicates affiliate members should receive usage emails" do
-      expect(affiliate.send_usage_email?).to be_true
+      expect(affiliate.send_usage_email?).to be true
     end
 
     it "indicates full members should not receive usage emails" do
-      expect(member.send_usage_email?).to be_false
+      expect(member.send_usage_email?).to be false
     end
 
     it "indicates that an email not be sent if one was already sent today" do
       affiliate.usage_email_sent = Timecop.freeze(Date.current).to_date
-      expect(affiliate.send_usage_email?).to be_false
+      expect(affiliate.send_usage_email?).to be false
     end
 
     it "indicates that an email be sent if one was sent before today" do
       affiliate.usage_email_sent = Timecop.freeze(Date.current).to_date - 1.day
-      expect(affiliate.send_usage_email?).to be_true
+      expect(affiliate.send_usage_email?).to be true
     end
   end
 
@@ -189,21 +189,21 @@ describe Member do
 
     before(:each) do
       Delayed::Worker.delay_jobs = true  # make sure this fucking thing is always on for these examples
-      Timecop.freeze(Date.new(2012,1,15))  
+      Timecop.freeze(Date.new(2012,1,15))
       affiliate.delay_update(:member_type, "former")
     end
 
     it "should create a pending update object" do
-      pending.should_not be_nil
+      expect(pending).not_to be_nil
     end
 
     it "should create a delayed job object" do
-      Delayed::Job.exists?(pending.delayed_job_id).should be_true
+      expect(Delayed::Job.exists?(pending.delayed_job_id)).to be_truthy
     end
 
     it "the delayed job should run at the beginning of next month" do
       run_at = affiliate.last_of_month + 1.day
-      Delayed::Job.find(pending.delayed_job_id).run_at.to_date.should eq(run_at)
+      expect(Delayed::Job.find(pending.delayed_job_id).run_at.to_date).to eq(run_at)
     end
   end
 
@@ -213,20 +213,20 @@ describe Member do
 
     before(:each) do
       Delayed::Worker.delay_jobs = true  # make sure this fucking thing is always on for these examples
-      Timecop.freeze(Date.new(2012,1,15))  
+      Timecop.freeze(Date.new(2012,1,15))
       affiliate.delay_update(:member_type, "former")
       affiliate.destroy_pending_updates
     end
 
     it "should destroy pending update objects" do
-      affiliate.pending_updates.count.should eq(0)
+      expect(affiliate.pending_updates.count).to eq(0)
     end
 
     it "should delete associated delayed jobs" do
-      Delayed::Job.exists?(pending.delayed_job_id).should be_false
+      expect(Delayed::Job.exists?(pending.delayed_job_id)).to be_falsey
     end
   end
-  
+
   describe ".lookup_type_plan" do
     before(:each) do
       FactoryGirl.create(:full_member)
@@ -236,12 +236,12 @@ describe Member do
 
     it "should return plan asked for" do
       members = Member.lookup_type_plan("current", "all")
-      members.map(&:billing_plan).should include("full", "affiliate")
+      expect(members.map(&:billing_plan)).to include("full", "affiliate")
     end
 
     it "should return type asked for" do
       member = Member.lookup_type_plan("former", "all").first
-      member.member_type.should eq("former")
+      expect(member.member_type).to eq("former")
     end
 
   end
@@ -253,7 +253,7 @@ describe Member do
       FactoryGirl.create(:log_success, :member => member)
       Timecop.return
       FactoryGirl.create(:log_success, :member => member)
-      member.last_day_present.should eq(Date.today)
+      expect(member.last_day_present).to eq(Date.today)
     end
   end
 
@@ -264,7 +264,7 @@ describe Member do
       FactoryGirl.create(:log_success, :member => member)
       Timecop.return
       FactoryGirl.create(:log_success, :member => member)
-      member.last_day_present_formatted.should eq(Date.today.strftime("%m/%d/%Y"))
+      expect(member.last_day_present_formatted).to eq(Date.today.strftime("%m/%d/%Y"))
     end
   end
 
@@ -272,14 +272,14 @@ describe Member do
     before(:each) do
       @start_date = Date.new(2012, 1, 1)
       @affiliate_yes = FactoryGirl.create(:affiliate_member)
-      (Member::AFFILIATE_FREE_DAY_PASSES + 2).times { 
-        |n| FactoryGirl.create(:log_success, 
+      (Member::AFFILIATE_FREE_DAY_PASSES + 2).times {
+        |n| FactoryGirl.create(:log_success,
                                :access_date => @start_date + n.day,
                                :member => @affiliate_yes)
       }
       @affiliate_no = FactoryGirl.create(:affiliate_member)
-      (Member::AFFILIATE_FREE_DAY_PASSES).times { 
-        |n| FactoryGirl.create(:log_success, 
+      (Member::AFFILIATE_FREE_DAY_PASSES).times {
+        |n| FactoryGirl.create(:log_success,
                                :access_date => @start_date + n.day,
                                :member => @affiliate_no)
       }
@@ -288,25 +288,25 @@ describe Member do
     end
 
     it "should say yes only to current affiliate members" do
-      member.needs_invoicing?.should be_false
-      @affiliate_yes.needs_invoicing?.should be_true
-      @former.needs_invoicing?.should be_false
+      expect(member.needs_invoicing?).to be_falsey
+      expect(@affiliate_yes.needs_invoicing?).to be_truthy
+      expect(@former.needs_invoicing?).to be_falsey
     end
 
     it "should say yes only to members with excess uasge in the previous billing period" do
-      @affiliate_yes.needs_invoicing?.should be_true
-      @affiliate_no.needs_invoicing?.should be_false
+      expect(@affiliate_yes.needs_invoicing?).to be_truthy
+      expect(@affiliate_no.needs_invoicing?).to be_falsey
     end
 
     it "should say yes only to members where the last_date_invoiced is blank or prior to the start of the current billing period" do
       @affiliate_yes.update_attributes(:last_date_invoiced => "")
-      @affiliate_yes.needs_invoicing?.should be_true
+      expect(@affiliate_yes.needs_invoicing?).to be_truthy
 
       @affiliate_yes.update_attributes(:last_date_invoiced => @affiliate_yes.last_month.first)
-      @affiliate_yes.needs_invoicing?.should be_true
+      expect(@affiliate_yes.needs_invoicing?).to be_truthy
 
       @affiliate_yes.update_attributes(:last_date_invoiced => @affiliate_yes.this_month.first)
-      @affiliate_yes.needs_invoicing?.should be_false
+      expect(@affiliate_yes.needs_invoicing?).to be_falsey
     end
   end
 
@@ -319,12 +319,12 @@ describe Member do
                  {:member_type => 'courtesy key', :key_enabled => false, :desired_outcome => false}]
 
     scenarios.collect do |scenario|
-      it "#{scenario[:desired_outcome] ? 'should' : 'should not'} grant access to a 
-          #{scenario[:member_type]} member when their key is 
+      it "#{scenario[:desired_outcome] ? 'should' : 'should not'} grant access to a
+          #{scenario[:member_type]} member when their key is
           #{scenario[:key_enabled] ? 'enabled' : 'disabled'}" do
-        member.update_attributes(:member_type => scenario[:member_type], 
+        member.update_attributes(:member_type => scenario[:member_type],
                                   :key_enabled => scenario[:key_enabled])
-        member.access_enabled?.should scenario[:desired_outcome] ? be_true : be_false
+        expect(member.access_enabled?).to scenario[:desired_outcome] ? be_truthy : be_falsey
       end
     end
   end
@@ -333,10 +333,10 @@ describe Member do
     before(:each) do
       start_date = Date.new(2012, 1, 1)
       FactoryGirl.create(:affiliate_member)
-      2.times do 
+      2.times do
         affiliate = FactoryGirl.create(:affiliate_member)
-        (Member::AFFILIATE_FREE_DAY_PASSES + 2).times { 
-          |n| FactoryGirl.create(:log_success, 
+        (Member::AFFILIATE_FREE_DAY_PASSES + 2).times {
+          |n| FactoryGirl.create(:log_success,
                                  :access_date => start_date + n.day,
                                  :member => affiliate)
         }
@@ -345,7 +345,7 @@ describe Member do
     end
 
     it "should return affiliate members with excess day pass usage in the previous billing period" do
-      Member.members_to_invoice.count.should eq(2)
+      expect(Member.members_to_invoice.count).to eq(2)
     end
   end
 
@@ -366,8 +366,8 @@ describe Member do
       Timecop.return
       FactoryGirl.create(:log_success,
                          :member => member)
-      
-      Member.members_absent(3).should eq([absent_member_1, absent_member_2])
+
+      expect(Member.members_absent(3)).to eq([absent_member_1, absent_member_2])
     end
 
     it "should not return suppoting members" do
@@ -379,7 +379,7 @@ describe Member do
       FactoryGirl.create(:log_success,
                          :member => absent_member)
       Timecop.return
-      Member.members_absent(3).should eq([member])
+      expect(Member.members_absent(3)).to eq([member])
     end
   end
 
@@ -388,19 +388,19 @@ describe Member do
     let!(:member_with_key)  { FactoryGirl.create(:full_member, rfid: rfid_number) }
 
     it "should return a member with a given rfid key" do
-      Member.find_by_key(rfid_number).should eq(member_with_key)
+      expect(Member.find_by_key(rfid_number)).to eq(member_with_key)
     end
 
     it "should return a member with a given rfid key with a case-insensitive serch" do
-      Member.find_by_key(rfid_number.upcase).should eq(member_with_key)
+      expect(Member.find_by_key(rfid_number.upcase)).to eq(member_with_key)
     end
 
     it "should return nil if the key does not belong to any member" do
-      Member.find_by_key("non-existent key").should eq(nil)
+      expect(Member.find_by_key("non-existent key")).to eq(nil)
     end
   end
 
-  describe ".export_to_csv" do 
+  describe ".export_to_csv" do
     before(:each) do
       FactoryGirl.create(:full_member)
       FactoryGirl.create(:affiliate_member)
@@ -408,9 +408,9 @@ describe Member do
     end
 
     it "should return a comma-separated string containing member types and plans specified" do
-      Member.export_to_csv('current', 'all').should match(/,current/)
-      Member.export_to_csv('current', 'all').should match(/,full/)
-      Member.export_to_csv('current', 'all').should match(/,affiliate/)
+      expect(Member.export_to_csv('current', 'all')).to match(/,current/)
+      expect(Member.export_to_csv('current', 'all')).to match(/,full/)
+      expect(Member.export_to_csv('current', 'all')).to match(/,affiliate/)
     end
   end
 

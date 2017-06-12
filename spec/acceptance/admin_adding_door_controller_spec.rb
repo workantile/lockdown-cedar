@@ -26,7 +26,7 @@ feature 'Adding door controllers', %q{
     click_button 'Create door controller'
     
     # Then I should not see an error message.
-    page.should have_no_selector('div.field_with_errors')
+    expect(page).to have_no_selector('div.field_with_errors')
   end
 
   scenario 'Screwing up creating a new door controller' do
@@ -37,6 +37,6 @@ feature 'Adding door controllers', %q{
     click_button 'Create door controller'
     
     # Then I should see an error message
-    page.should have_selector('div.field_with_errors')
+    expect(page).to have_selector('div.field_with_errors')
   end
 end

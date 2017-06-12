@@ -6,11 +6,11 @@ describe AllMemberEvent do
   # retrieves DateTime objects in the database taking the current timezone into account.
   let(:current_offset)    { DateTime.current.offset }
 
-  it { should respond_to :name }
-  it { should respond_to :scheduled }
+  it { is_expected.to respond_to :name }
+  it { is_expected.to respond_to :scheduled }
 
-  it { should validate_presence_of :name }
-  it { should validate_presence_of :scheduled }
+  it { is_expected.to validate_presence_of :name }
+  it { is_expected.to validate_presence_of :scheduled }
 
   describe ".event_happening?" do
     it "returns true if the current time is during an all day event" do

@@ -30,7 +30,7 @@ feature 'Updating admins', %q{
     click_button 'Update admin'
     
     # Then I should not see an error message.
-    page.should have_no_selector('div.field_with_errors')
+    expect(page).to have_no_selector('div.field_with_errors')
   end
 
   scenario 'Updating a new admin incorrectly' do
@@ -43,7 +43,7 @@ feature 'Updating admins', %q{
     click_button 'Update admin'
     
     # Then I should see an error message
-    page.should have_selector('div.field_with_errors')
+    expect(page).to have_selector('div.field_with_errors')
   end
 
 end

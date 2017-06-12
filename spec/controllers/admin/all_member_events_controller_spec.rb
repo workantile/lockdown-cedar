@@ -54,11 +54,11 @@ describe Admin::AllMemberEventsController do
       end
 
       it "renders the new template again" do
-        response.should render_template('new')
+        expect(response).to render_template('new')
       end
     
       it "does not persist a new all member event" do
-        assigns(:all_member_event).should_not be_persisted
+        expect(assigns(:all_member_event)).not_to be_persisted
       end
     end
   end
@@ -69,11 +69,11 @@ describe Admin::AllMemberEventsController do
     end
 
     it 'assigns to @all_member_event' do
-      assigns(:all_member_event).should be_kind_of(AllMemberEvent)
+      expect(assigns(:all_member_event)).to be_kind_of(AllMemberEvent)
     end
   
     it "renders the 'edit' template" do
-      response.should render_template('edit')
+      expect(response).to render_template('edit')
     end
   end
 
@@ -82,7 +82,7 @@ describe Admin::AllMemberEventsController do
       it "redirects to the index" do
         all_member_event = FactoryGirl.create(:all_member_event)
         put(:update, :id => all_member_event.id, :all_member_event => FactoryGirl.attributes_for(:all_member_event))
-        response.should redirect_to(admin_all_member_events_url)
+        expect(response).to redirect_to(admin_all_member_events_url)
       end
     end
 
@@ -90,7 +90,7 @@ describe Admin::AllMemberEventsController do
       it "renders the 'edit' template" do
         all_member_event = FactoryGirl.create(:all_member_event)
         put(:update, :id => all_member_event.id, :all_member_event => FactoryGirl.attributes_for(:all_member_event, :name => ''))
-        response.should render_template('edit')
+        expect(response).to render_template('edit')
       end
     end
   end
@@ -98,7 +98,7 @@ describe Admin::AllMemberEventsController do
   describe "DELETE 'destroy'" do
     it "redirects to the index" do
       delete(:destroy, :id => FactoryGirl.create(:all_member_event).id)
-      response.should redirect_to(admin_all_member_events_url)
+      expect(response).to redirect_to(admin_all_member_events_url)
     end
   end
 

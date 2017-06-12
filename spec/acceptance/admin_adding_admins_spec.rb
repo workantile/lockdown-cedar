@@ -26,7 +26,7 @@ feature 'Creating admins', %q{
     click_button 'Create admin'
     
     # Then I should not see an error message.
-    page.should have_no_selector('div.field_with_errors')
+    expect(page).to have_no_selector('div.field_with_errors')
   end
 
   scenario 'Screwing up creating a new admin' do
@@ -37,6 +37,6 @@ feature 'Creating admins', %q{
     click_button 'Create admin'
     
     # Then I should see an error message
-    page.should have_selector('div.field_with_errors')
+    expect(page).to have_selector('div.field_with_errors')
   end
 end

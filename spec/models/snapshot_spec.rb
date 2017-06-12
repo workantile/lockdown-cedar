@@ -7,10 +7,10 @@ describe Snapshot do
 			@snapshot = FactoryGirl.create(:snapshot)
 		end
 
-		it { should validate_presence_of(:category) }
-		it { should validate_presence_of(:item) }
-		it { should validate_presence_of(:count) }
-		it { should validate_presence_of(:snapshot_date) }
+		it { is_expected.to validate_presence_of(:category) }
+		it { is_expected.to validate_presence_of(:item) }
+		it { is_expected.to validate_presence_of(:count) }
+		it { is_expected.to validate_presence_of(:snapshot_date) }
 	end
 
 	describe ".take_snapshot" do
