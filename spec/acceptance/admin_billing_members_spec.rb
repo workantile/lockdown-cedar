@@ -5,11 +5,11 @@ feature 'Billing members', %q{
   As an admin
   I want to invoice members
 } do
-  
+
   background do
     # Given I am an admin
     @i_am_an_admin = FactoryGirl.create(:admin)
-    
+
     # And I have signed in
     sign_in_as @i_am_an_admin
 
@@ -19,7 +19,7 @@ feature 'Billing members', %q{
     @member_to_invoice = FactoryGirl.create(:affiliate_member)
     (Member::AFFILIATE_FREE_DAY_PASSES + 2).times do |n|
       last_access = start_date + n.day
-      FactoryGirl.create( :log_success, 
+      FactoryGirl.create( :log_success,
                           :access_date => last_access,
                           :member => @member_to_invoice )
     end
@@ -34,9 +34,9 @@ feature 'Billing members', %q{
 
     # When I visit the member billing page
     visit billing_admin_members_path
-    
+
   end
-  
+
   scenario 'Shows number of billable days' do
     # I should see the number of billable days
     expect(find('.billable-days')).to have_content('2')
@@ -49,7 +49,6 @@ feature 'Billing members', %q{
     # And I click the "Mark as invoiced" button
     click_button('Mark')
 
-    pending "get javascript testing to work"
   end
 
 end

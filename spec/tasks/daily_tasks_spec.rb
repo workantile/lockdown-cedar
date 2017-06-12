@@ -1,5 +1,5 @@
-require "spec_helper"
-require "rake"
+require 'rails_helper'
+require 'rake'
 
 describe "daily_tasks namespace" do
 	before(:each) do
@@ -31,9 +31,9 @@ describe "daily_tasks namespace" do
 		end
 
 		it "sends an email to the shoutout committee if there are absent members" do
-			absent_members = [stub_model(Member)]
+			absent_members = [class_double(Member)]
 			allow(Member).to receive(:members_absent) { absent_members }
-			expect(ShoutOutEmail).to receive(:absent_members_email).and_return(double("mailer", :deliver => true))			
+			expect(ShoutOutEmail).to receive(:absent_members_email).and_return(double("mailer", :deliver => true))
 			run_rake_task
 		end
 

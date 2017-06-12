@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe DoorController do
   before(:each) do
@@ -16,5 +16,5 @@ describe DoorController do
 
   it { is_expected.to validate_uniqueness_of :address }
   it { is_expected.to validate_uniqueness_of :location }
-  
+
 end

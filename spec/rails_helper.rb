@@ -62,4 +62,6 @@ RSpec.configure do |config|
     ActionMailer::Base.deliveries.clear
   end
 
+  config.include(MailerMacros)
+
 end

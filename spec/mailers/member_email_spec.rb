@@ -1,4 +1,4 @@
-require "spec_helper"
+require 'rails_helper'
 
 describe MemberEmail do
   describe ".free_day_pass_use" do

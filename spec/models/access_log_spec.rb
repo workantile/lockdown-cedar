@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe AccessLog do
 	describe "expected attributes" do
@@ -25,7 +25,7 @@ describe AccessLog do
 		access_log = AccessLog.create
 		expect(AccessLog.where(:access_date => a_date).count).to eq(1)
 	end
-	
+
 	it "should not override access_date" do
 		Timecop.freeze(2012, 1, 15, 22, 0 ,0)
 		another_date = Date.new(2012, 1, 1)
@@ -33,7 +33,7 @@ describe AccessLog do
 		expect(access_log.access_date).to eq(another_date)
 	end
 
-  describe ".export_to_csv" do 
+  describe ".export_to_csv" do
     it "should return a comma-separated string containing records for the dates specified" do
 			Timecop.freeze(2013, 1, 1, 22, 0 ,0)
 			FactoryGirl.create(:log_success)

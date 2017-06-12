@@ -1,9 +1,9 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Admin::DoorControllersController do
 	before(:each) do
 		@the_admin = FactoryGirl.create(:admin)
-		sign_in :admin, @the_admin
+    sign_in @the_admin, scope: :admin
   end
 
   describe "GET index" do
@@ -25,8 +25,8 @@ describe Admin::DoorControllersController do
     it "assigns to @door_controller" do
       get :new
       expect(assigns(:door_controller)).to be_kind_of(DoorController)
-    end 
-  
+    end
+
     it "renders the 'new' template" do
       get :new
       expect(response).to render_template('new')
@@ -38,11 +38,11 @@ describe Admin::DoorControllersController do
       before(:each) do
         post(:create, :door_controller => FactoryGirl.attributes_for(:door_controller))
       end
-    
+
       it "persists a new door controller with the parameters submitted" do
         expect(assigns(:door_controller)).to be_persisted
       end
-    
+
       it "redirects to the index" do
         expect(response).to redirect_to(admin_door_controllers_url)
       end
@@ -56,7 +56,7 @@ describe Admin::DoorControllersController do
       it "renders the new template again" do
         expect(response).to render_template('new')
       end
-    
+
       it "does not persist a new door controller" do
         expect(assigns(:door_controller)).not_to be_persisted
       end
@@ -72,7 +72,7 @@ describe Admin::DoorControllersController do
     it 'assigns to @door_controller' do
       expect(assigns(:door_controller)).to be_kind_of(DoorController)
     end
-  
+
     it "renders the 'edit' template" do
       expect(response).to render_template('edit')
     end

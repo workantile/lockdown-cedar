@@ -1,9 +1,9 @@
-require "spec_helper"
+require 'rails_helper'
 
 describe ShoutOutEmail do
   describe ".absent_members_email" do
     before(:each) do
-      @members = [stub_model(Member, :full_name => "Joe Blow", :email => "foo@bar.com", :last_day_present => Date.new(2013, 1, 10))]
+      @members = [instance_double(Member, full_name: "Joe Blow", email: "foo@bar.com", last_day_present: Date.new(2013, 1, 10))]
       allow(Member).to receive(:members_absent) { @members }
       @mail = ShoutOutEmail.absent_members_email(@members)
     end

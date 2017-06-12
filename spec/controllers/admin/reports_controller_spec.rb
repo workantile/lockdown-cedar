@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Admin::ReportsController do
 
@@ -12,7 +12,7 @@ describe Admin::ReportsController do
   context "authorized access" do
   	before(:each) do
   		@the_admin = FactoryGirl.create(:admin)
-  		sign_in :admin, @the_admin
+  		sign_in @the_admin, scope: :admin
     end
 
     describe "GET 'index'" do

@@ -1,13 +1,22 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe AccessController do
-	let!(:member) { stub_model(Member, :member_type => 'current', :billing_plan => 'full', :rfid => '1234',
-		:key_enabled => true, :email => 'foo@bar.com') }
-	let!(:door_controller) { stub_model(DoorController, :address => "abc", :success_response => "OK") }
+	let!(:member) {
+		FactoryGirl.create(
+			:member,
+			member_type: 'current',
+			billing_plan: 'full',
+			rfid: '1234',
+			key_enabled: true,
+			email: 'foo@bar.com')
+	}
+	let!(:door_controller) {
+		FactoryGirl.create(:door_controller, address: "abc", success_response: "OK")
+	}
 
 	before(:each) do
-		allow(Member).to receive(:find_by_key) { member }
-		allow(DoorController).to receive(:find_by_address) { door_controller }
+		allow(Member).to receive(:find_by_key).and_return(member)
+		allow(DoorController).to receive(:find_by_address).and_return(door_controller)
 	end
 
 	it "assigns to door_controller" do
@@ -93,12 +102,12 @@ describe AccessController do
     end
     after(:each) do
       Delayed::Worker.delay_jobs = true
-    end      
+    end
 
 		it "sees if the member should be sent an email" do
 			expect(member).to receive(:send_usage_email?)
 			get :show, :address => door_controller.address, :rfid => member.rfid
-		end	
+		end
 
 		it "sends a free day pass email if the member's billable usage this month is 0" do
 			allow(member).to receive(:send_usage_email?) { true }

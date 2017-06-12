@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe AllMemberEvent do
   let!(:all_member_event) { FactoryGirl.create(:all_member_event) }
@@ -16,13 +16,13 @@ describe AllMemberEvent do
     it "returns true if the current time is during an all day event" do
       FactoryGirl.create(:all_member_event, :scheduled => '1/10/2013 12:00 am')
       Timecop.freeze(DateTime.new(2013, 1, 10, 13, 0, 0, current_offset))
-      expect(AllMemberEvent.event_happening?).to be_true
+      expect(AllMemberEvent.event_happening?).to be true
     end
 
     it "returns true if the current time is between 1 hour before and midnight on the day of a scheduled event" do
       FactoryGirl.create(:all_member_event, :scheduled => '1/10/2013 01:00 pm')
       Timecop.freeze(DateTime.new(2013, 1, 10, 12, 1, 0, current_offset))
-      expect(AllMemberEvent.event_happening?).to be_true
+      expect(AllMemberEvent.event_happening?).to be true
     end
 
     it "returns false if the current time is not during an all day event or 1 hour before a scheduled event" do
@@ -30,7 +30,7 @@ describe AllMemberEvent do
       FactoryGirl.create(:all_member_event, :scheduled => '1/10/2013 02:00 pm')
       FactoryGirl.create(:all_member_event, :scheduled => '1/11/2013 12:00 am')
       Timecop.freeze(DateTime.new(2013, 1, 10, 12, 0, 0, current_offset))
-      expect(AllMemberEvent.event_happening?).to be_false
+      expect(AllMemberEvent.event_happening?).to be false
     end
   end
 

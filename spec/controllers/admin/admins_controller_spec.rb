@@ -1,17 +1,17 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Admin::AdminsController do
 	before(:each) do
 		@the_admin = FactoryGirl.create(:admin)
-		sign_in :admin, @the_admin
+    sign_in @the_admin, scope: :admin
   end
 
   describe "GET 'new'" do
     it "assigns to @admin" do
       get :new
       expect(assigns(:admin)).to be_kind_of(Admin)
-    end 
-  
+    end
+
     it "renders the 'new' template" do
       get :new
       expect(response).to render_template('new')
@@ -21,25 +21,25 @@ describe Admin::AdminsController do
   describe "POST 'create'" do
     describe "success" do
       before(:each) do
-        post(:create, :admin => FactoryGirl.attributes_for(:admin, 
-        																									 :email => "foo@foobar.com", 
+        post(:create, :admin => FactoryGirl.attributes_for(:admin,
+        																									 :email => "foo@foobar.com",
         																									 :password => "apassword",
         																									 :password_confirmation => "apassword"))
       end
-    
+
       it "persists a new admin with the parameters submitted" do
         expect(assigns(:admin)).to be_persisted
       end
-    
+
       it "redirects to the index" do
         expect(response).to redirect_to(admin_admins_url)
       end
     end
-  
+
     describe "failure" do
       before(:each) do
-        post(:create, :admin => FactoryGirl.attributes_for(:admin, 
-        																									 :email => "foo@foobar.com", 
+        post(:create, :admin => FactoryGirl.attributes_for(:admin,
+        																									 :email => "foo@foobar.com",
         																									 :password => "apassword",
         																									 :password_confirmation => ""))
       end
@@ -47,7 +47,7 @@ describe Admin::AdminsController do
       it "renders the new template again" do
         expect(response).to render_template('new')
       end
-    
+
       it "does not persist a new admin" do
         expect(assigns(:admin)).not_to be_persisted
       end
@@ -63,7 +63,7 @@ describe Admin::AdminsController do
     it 'assigns to @admin' do
       expect(assigns(:admin)).to be_kind_of(Admin)
     end
-  
+
     it "renders the 'edit' template" do
       expect(response).to render_template('edit')
     end
@@ -77,12 +77,12 @@ describe Admin::AdminsController do
         																				 :password => admin.password,
         																				 :password_confirmation => admin.password})
       end
-    
+
       it "redirects to the index" do
         expect(response).to redirect_to(admin_admins_url)
       end
     end
-  
+
     describe "failure" do
       before(:each) do
       	admin = FactoryGirl.create(:other_admin)

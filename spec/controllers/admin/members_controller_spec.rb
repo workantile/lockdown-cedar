@@ -1,17 +1,17 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Admin::MembersController do
 	before(:each) do
 		@the_admin = FactoryGirl.create(:admin)
-		sign_in :admin, @the_admin
+    sign_in @the_admin, scope: :admin
   end
 
   describe "GET 'new'" do
     it "assigns to @member" do
       get :new
       expect(assigns(:member)).to be_kind_of(Member)
-    end 
-  
+    end
+
     it "renders the 'new' template" do
       get :new
       expect(response).to render_template('new')
@@ -27,7 +27,7 @@ describe Admin::MembersController do
     it 'assigns to @member' do
       expect(assigns(:member)).to be_kind_of(Member)
     end
-  
+
     it "renders the 'edit' template" do
       expect(response).to render_template('edit')
     end
@@ -47,16 +47,16 @@ describe Admin::MembersController do
       before(:each) do
         post(:create, :member => FactoryGirl.attributes_for(:full_member, :anniversary_date => "12/01/2012"))
       end
-    
+
       it "persists a new member with the parameters submitted" do
         expect(assigns(:member)).to be_persisted
       end
-    
+
       it "redirects to the index" do
         expect(response).to redirect_to(admin_members_url)
       end
     end
-  
+
     describe "failure" do
       before(:each) do
         post(:create, :member => FactoryGirl.attributes_for(:full_member, :email => "", :anniversary_date => "12/01/2012"))
@@ -65,7 +65,7 @@ describe Admin::MembersController do
       it "renders the new template again" do
         expect(response).to render_template('new')
       end
-    
+
       it "does not persist a new member" do
         expect(assigns(:member)).not_to be_persisted
       end
@@ -82,7 +82,7 @@ describe Admin::MembersController do
     it 'assigns to @member' do
       expect(assigns(:member)).to be_kind_of(Member)
     end
-  
+
     it "renders the 'edit' template" do
       expect(response).to render_template('edit')
     end
@@ -225,8 +225,8 @@ describe Admin::MembersController do
       start_date = Date.new(2012, 1, 1)
       2.times {
         affiliate = FactoryGirl.create(:affiliate_member)
-        (Member::AFFILIATE_FREE_DAY_PASSES + 2).times { 
-          |n| FactoryGirl.create(:log_success, 
+        (Member::AFFILIATE_FREE_DAY_PASSES + 2).times {
+          |n| FactoryGirl.create(:log_success,
                                  :access_date => start_date + n.day,
                                  :member => affiliate)
         }
