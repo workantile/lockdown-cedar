@@ -9,10 +9,10 @@ gem 'delayed_job_active_record'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
 gem 'therubyracer'
 
+gem 'bootstrap-sass'
 gem 'sass-rails'
 gem 'coffee-rails'
 gem 'uglifier'
-gem 'twitter-bootstrap-rails'
 
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
