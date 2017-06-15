@@ -28,7 +28,7 @@ class Admin::MembersController < ApplicationController
    		redirect_to admin_members_path
    	else
     	render :action => "new"
-    end       		
+    end
 	end
 
 	def edit
@@ -57,12 +57,12 @@ class Admin::MembersController < ApplicationController
 	def billing
 		@members = Member.members_to_invoice
 	end
-	
+
 	def invoiced
 		@member = Member.find(params[:id])
 		@member.last_date_invoiced = Date.today
 		@member.save
-		respond_with @member
+		redirect_to billing_admin_members_path
 	end
 
 	def destroy_delayed_updates

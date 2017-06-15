@@ -1,28 +1,39 @@
-<div class="container">
+<div class="container-fluid">
 	<div class="row">
-		<div class="span3">
+		<div class="col-md-3">
 			<%= form_tag admin_reports_url do %>
-				<%= label_tag :start_date, "List access log beginning" %>
-				<%= text_field_tag :start_date, 
-					params[:start_date],
-					:id => 'start-date', 
-					:"data-url" => admin_reports_url
-				%>
-				<%= label_tag :end_date, "ending" %>
-				<%= text_field_tag :end_date, 
-					params[:end_date], 
-					:id => 'end-date',
-					:"data-url" => admin_reports_url
-				%>
-				<button id="apply-dates" class="btn block-display">Apply</button>
-				<%= submit_tag "Export access log", :class => "btn btn-primary" %>
+
+				<div class="form-group">
+					<%= label_tag :start_date, "List access log beginning"  %>
+					<%= text_field_tag :start_date,
+						params[:start_date],
+						id: 'start-date',
+						"data-url": admin_reports_url,
+						class: "form-control"
+					%>
+				</div>
+
+				<div class="form-group">
+					<%= label_tag :end_date, "ending" %>
+					<%= text_field_tag :end_date,
+						params[:end_date],
+						id: 'end-date',
+						"data-url": admin_reports_url,
+						class: "form-control"
+					%>
+				</div>
+
+				<button id="apply-dates" class="btn btn-default">Apply</button>
+				<%= submit_tag "Export access log", class: "btn btn-primary" %>
 			<% end %>
 		</div>
-		<div class="span9">
+
+		<div class="col-md-9">
 			<h4>Access log:</h4>
 			<div id="access-logs-table">
-				<%= render :partial => "access_log_table" %>
+				<%= render partial: "access_log_table" %>
 			</div>
 		</div>
+
 	</div>
 </div>

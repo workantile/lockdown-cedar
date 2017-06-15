@@ -13,5 +13,4 @@
 	</div>
 </div>
 <% end %>
-<%= button_to('Delete door controller', admin_door_controller_path(@door_controller), :confirm => "Are you sure?", 
-:method => :delete, :class => 'btn btn-danger') unless @door_controller.new_record? %>
+<%= button_to('Delete door controller', admin_door_controller_path(@door_controller), data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger') unless @door_controller.new_record? %>

@@ -1,8 +1,8 @@
-<%= form_for([:admin, @all_member_event], :html => {:class => 'form-horizontal'}) do |f| %>
+<%= form_for([:admin, @all_member_event], :html => {class: 'form-horizontal'}) do |f| %>
 <div class="container">
 	<div class="row">
 		<div class="span3">
-			<p><%= f.submit button_label, :class => 'btn btn-primary' %></p>
+			<p><%= f.submit button_label, class: 'btn btn-primary' %></p>
 		</div>
 		<div class="span9">
 			<%= build_control(f, @all_member_event, nil, :name, 'text').html_safe %>
@@ -11,5 +11,9 @@
 	</div>
 </div>
 <% end %>
-<%= button_to('Delete all member event', admin_all_member_event_path(@all_member_event), :confirm => "Are you sure?", 
-:method => :delete, :class => 'btn btn-danger') unless @all_member_event.new_record? %>
+<%= button_to(
+  'Delete all member event',
+  admin_all_member_event_path(@all_member_event),
+  data: { :confirm => "Are you sure?" },
+  method: :delete, class: 'btn btn-danger') unless @all_member_event.new_record?
+%>

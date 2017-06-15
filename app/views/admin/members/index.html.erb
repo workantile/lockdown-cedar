@@ -1,6 +1,6 @@
-<div class="container">
+<div class="container-fluid">
 	<div class="row">
-		<div class="span3">
+		<div class="col-md-3">
 			<%= form_tag export_admin_members_url do %>
 				<%= build_filters %>
 				<%= submit_tag "Export members", :class => 'btn btn-primary' %>
@@ -20,14 +20,16 @@
 				<li>Former: <%= Member.former.count %></li>
 			</ul>
 			<%= form_tag find_key_admin_members_url do %>
-				<%= label_tag :rfid_key, "Find member with this key" %>
-				<%= text_field_tag :rfid_key %>
+				<div class="form-group">
+					<%= label_tag :rfid_key, "Find member with this key" %>
+					<%= text_field_tag :rfid_key, nil, class: "form-control" %>
+				</div>
 				<%= submit_tag "Find member", :class => 'btn btn-primary' %>
 			<% end %>
 		</div>
-		<div class="span9">
+		<div class="col-md-9">
 			<%= button_to 'Add new member', new_admin_member_url, :method => :get, :class => 'btn btn-success' %>
-			<div id="members-table">
+			<div id="members-table" class="members-table">
 				<%= render :partial => 'members_table' %>
 			</div>
 		</div>

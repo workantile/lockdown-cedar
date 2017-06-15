@@ -3,7 +3,7 @@ class AllMemberEvent < ActiveRecord::Base
 
   validates_presence_of :name, :scheduled
 
-  default_scope { order("scheduled ASC") }
+  default_scope { order("scheduled DESC") }
 
   def scheduled=(a_date)
     if a_date.instance_of?(String) && !a_date.empty?

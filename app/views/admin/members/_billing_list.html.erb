@@ -12,7 +12,7 @@
 			<% @members.each do |member| %>
 			<tr>
 				<td>
-					<%= link_to(member.full_name, 
+					<%= link_to(member.full_name,
 						admin_reports_path(
 							id: member.id,
 							start_date: member.last_month.first.strftime("%m/%d/%Y"),
@@ -23,10 +23,11 @@
 				<td><%= member.pay_simple_customer_id %></td>
 				<td class="billable-days"><%= member.billable_usage_last_month%></td>
 				<td>
-					<div id="member-<%= member.id.to_s %>">
-						<button type="button" class="btn btn-primary btn-small invoice_button" data-url=<%= invoiced_admin_member_url(member) %> >
-							Mark as invoiced
-						</button>
+						<%= button_to(
+							'Mark as invoiced',
+							invoiced_admin_member_url(member),
+							method: :patch, class: 'btn btn-primary')
+						%>
 					</div>
 				</td>
 			</tr>
