@@ -3,7 +3,7 @@
   border-color: #B94A48;
 }
 
-/*.loader {
+.loader {
     display:    none;
     position:   fixed;
     z-index:    1000;
@@ -12,11 +12,15 @@
     height:     100%;
     width:      100%;
     background: rgba( 255, 255, 255, .8 )
-                url(<%= asset_path 'ajax-loader.gif' %>)
+                image-url("ajax-loader.gif")
                 50% 50%
                 no-repeat;
 }
-*/
+
+.visible {
+  display: block;
+}
+
 body.loading {
   overflow: hidden;
 }

@@ -2,21 +2,21 @@ $(document).ready(function () {
 	$('#plan, #type').change(function () {
 		$.ajax({
 			url: $(this).attr('data-url'),
-			data: { type: $("#type option:selected").text(), 
-					plan: $("#plan option:selected").text() 
+			data: { type: $("#type option:selected").text(),
+					plan: $("#plan option:selected").text()
 				  },
 			dataType: "script"
 		});
 	});
 
-	$("body").on({
-	    ajaxStart: function() { 
-	        $(this).addClass("loading"); 
+	$(this).on({
+	    ajaxStart: function() {
+	        $('.loader').addClass('visible');
 	    },
-	    ajaxStop: function() { 
-	        $(this).removeClass("loading"); 
-	    }    
-	});	
+	    ajaxStop: function() {
+	        $('.loader').removeClass('visible');
+	    }
+	});
 
 	$('.invoice_button').click(function () {
 		$.ajax({

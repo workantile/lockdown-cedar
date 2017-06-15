@@ -1,12 +1,12 @@
 $(document).ready(function () {
-	$("body").on({
-	    ajaxStart: function() { 
-	        $(this).addClass("loading"); 
+	$(this).on({
+	    ajaxStart: function() {
+	        $('.loader').addClass('visible');
 	    },
-	    ajaxStop: function() { 
-	        $(this).removeClass("loading"); 
-	    }    
-	});	
+	    ajaxStop: function() {
+	        $('.loader').removeClass('visible');
+	    }
+	});
 
 	$('#apply-dates').click(function () {
 		$.ajax({
