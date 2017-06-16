@@ -29,7 +29,6 @@ class Member < ActiveRecord::Base
   scope :supporting, -> { where(:member_type =>'current', :billing_plan => 'supporter') }
   scope :former, -> { where(:member_type => 'former') }
   scope :courtesy_key, -> { where(:member_type => 'courtesy key') }
-  # scope :none, -> { where("member_type <> 'current'") }
 
   has_many :access_logs
   has_many :pending_updates, :dependent => :destroy
