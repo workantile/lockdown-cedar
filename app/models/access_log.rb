@@ -15,6 +15,10 @@ class AccessLog < ActiveRecord::Base
   	self.access_date ||= Date.current
   end
 
+  def free_day?
+    created_at.sunday? || AllMemberEvent.where(scheduled: created_at.beginning_of_day ..(created_at + 1.hour)).exists?
+  end
+
   def self.export_to_csv(date_range)
     logs = where(:access_date => date_range)
     headers = logs.first.attributes.collect { |attribute| attribute[0] }
