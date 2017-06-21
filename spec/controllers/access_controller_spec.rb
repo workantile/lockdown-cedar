@@ -58,8 +58,7 @@ describe AccessController do
 				:member_type => member.member_type,
 				:billing_plan => member.billing_plan,
 				:door_controller_location => door_controller.location,
-				:access_granted => true,
-				:billable => true
+				:access_granted => true
 			)
 		get :show, :address => door_controller.address, :rfid => member.rfid
 	end
@@ -73,8 +72,7 @@ describe AccessController do
 				:member_type => member.member_type,
 				:billing_plan => member.billing_plan,
 				:door_controller_location => door_controller.location,
-				:access_granted => true,
-				:billable => false
+				:access_granted => true
 			)
 		get :show, :address => door_controller.address, :rfid => member.rfid
 	end
@@ -89,8 +87,7 @@ describe AccessController do
 					:member_type => member.member_type,
 					:billing_plan => member.billing_plan,
 					:door_controller_location => door_controller.location,
-					:access_granted => true,
-					:billable => false
+					:access_granted => true
 				)
 			get :show, :address => door_controller.address, :rfid => member.rfid
 		end

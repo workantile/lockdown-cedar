@@ -28,114 +28,97 @@ describe Member do
   it { is_expected.to have_many(:access_logs) }
   it { is_expected.to have_many(:pending_updates) }
 
-  context "counting total, day pass, billable, and non-billable usage" do
-    let!(:affilate)         { FactoryGirl.create(:affiliate_member) }
-    let(:free_days)         { Member::AFFILIATE_FREE_DAY_PASSES }
-    let(:start_date)        { Date.new(2012,11,1) }
-    let(:free_dates)        { (0..(free_days - 1)).map { |n| start_date + n.day } }
-    let(:billable_dates)    { (free_days..(free_days + 1)).map { |n| start_date + n.day } }
-    let(:non_billable_date) { start_date + (free_days + 2).day }
+  context "counting total, countable, free, and billable usage" do
+    # usage: total days of access in a month
+    # countable usage: total usage in a month that are not Sunday
+    #   and not all-member events.
+    # free usage: total countable usage up to Member::AFFILIATE_FREE_DAY_PASSES
+    # billable usage: total countable usage - Member::AFFILIATE_FREE_DAY_PASSES,
+    #   0 if negative.
+    let!(:affiliate)  { FactoryGirl.create(:affiliate_member) }
 
     before(:each) do
-      free_dates.each do |date|
-        2.times { FactoryGirl.create( :log_success,
-                            :access_date => date,
-                            :member => member ) }
-      end
+      time_this_month = DateTime.new(2017, 6, 7, 10, 30, 0)
+      time_last_month = DateTime.new(2017, 5, 3, 11, 0, 0)
 
-      2.times { FactoryGirl.create( :log_success,
-                          :access_date => non_billable_date,
-                          :member => member,
-                          :billable => false) }
+      (0..7).each { |n|
+        a_time = time_this_month + n.day
+        another_time = time_last_month + n.day
+        FactoryGirl.create(:log_success, member: affiliate, access_date_time: a_time)
+        FactoryGirl.create(:log_success, member: affiliate, access_date_time: a_time + 30.minutes)
+      }
 
-      FactoryGirl.create( :log_success,
-                          :access_date => start_date.prev_month,
-                          :member => member)
-      FactoryGirl.create( :log_success,
-                          :access_date => start_date,
-                          :member => affilate)
+      (0..6).each { |n|
+        another_time = time_last_month + n.day
+        FactoryGirl.create(:log_success, member: affiliate, access_date_time: another_time)
+        FactoryGirl.create(:log_success, member: affiliate, access_date_time: another_time + 30.minutes)
+      }
+
+      FactoryGirl.create(:all_member_event, scheduled: DateTime.new(2017, 6, 7, 5, 0, 0))
+      FactoryGirl.create(:all_member_event, scheduled: DateTime.new(2017, 5, 3, 5, 0, 0))
+
+      Timecop.freeze(2017, 6, 30)
     end
 
-    context "in this month" do
-      before :each do
-        Timecop.freeze(start_date + (free_days + 3).day)
-      end
-
-      describe ".usage_this_month" do
-        it "returns the number of days the user used the facility" do
-          expect(member.usage_this_month).to eq(5)
-        end
-      end
-
-      describe ".non_billable_usage_this_month" do
-        it "returns the number of non-billable days used this month" do
-          expect(member.non_billable_usage_this_month).to eq(1)
-        end
-      end
-
-      describe ".day_pass_usage_this_month" do
-        it "returns the number of day passes used this month" do
-          expect(member.day_pass_usage_this_month).to eq(4)
-        end
-      end
-
-      describe ".billable_usage_this_month" do
-        it "returns 0 if there are no billable days this month" do
-          expect(member.billable_usage_this_month).to eq(0)
-        end
-
-        it "returns the number of billable days this month" do
-          billable_dates.each do |date|
-            FactoryGirl.create( :log_success,
-                                :access_date => date,
-                                :member => member )
-          end
-          expect(member.billable_usage_this_month).to eq(2)
-        end
-      end
-
+    after(:each) do
+      Timecop.return
     end
 
-    context "from last month" do
-      before :each do
-        Timecop.freeze(start_date.next_month)
-      end
-
-      describe ".usage_last_month" do
-        it "returns the number of days the user used the facility last month" do
-          expect(member.usage_last_month).to eq(5)
+    context "usage in this month" do
+      describe "#usage_this_month" do
+        it "returns number of days user used the facility" do
+          expect(affiliate.usage_this_month).to eq(8)
         end
       end
 
-      describe ".non_billable_usage_last_month" do
-        it "counts non-billable days from last month" do
-          expect(member.non_billable_usage_last_month).to eq(1)
+      describe "#countable_usage_this_month" do
+        it "returns number of days user used the facility that are not Sundays or all member events" do
+          expect(affiliate.countable_usage_this_month).to eq(6)
         end
       end
 
-      describe ".day_pass_usage_last_month" do
-        it "returns the number of day passes used this month" do
-          expect(member.day_pass_usage_last_month).to eq(4)
+      describe "#free_usage_this_month" do
+        it "returns countable usage up to the number of free day passes affiliates are allowed" do
+          expect(affiliate.free_usage_this_month).to eq(Member::AFFILIATE_FREE_DAY_PASSES)
         end
       end
 
-      describe ".billable_usage_last_month" do
-        it "returns 0 if there are no billable days from last month" do
-          expect(member.billable_usage_last_month).to eq(0)
-        end
-
-        it "counts billable days from last month" do
-          billable_dates.each do |date|
-            FactoryGirl.create( :log_success,
-                                :access_date => date,
-                                :member => member )
-          end
-          expect(member.billable_usage_last_month).to eq(2)
+      describe "#billable_usage_this_month" do
+        it "returns the countable usage over the number of free day passes affiliates are allowed" do
+          expect(affiliate.billable_usage_this_month).to eq(2)
         end
       end
 
-    end
-  end
+    end # end context usage in this month
+
+    context "usage in last month" do
+      describe "#usage_last_month" do
+        it "returns number of days user used the facility" do
+          expect(affiliate.usage_last_month).to eq(7)
+        end
+      end
+
+      describe "#countable_usage_last_month" do
+        it "returns number of days user used the facility that are not Sundays or all member events" do
+          expect(affiliate.countable_usage_last_month).to eq(5)
+        end
+      end
+
+      describe "#free_usage_last_month" do
+        it "returns countable usage up to the number of free day passes affiliates are allowed" do
+          expect(affiliate.free_usage_last_month).to eq(Member::AFFILIATE_FREE_DAY_PASSES)
+        end
+      end
+
+      describe "#billable_usage_last_month" do
+        it "returns the countable usage over the number of free day passes affiliates are allowed" do
+          expect(affiliate.billable_usage_last_month).to eq(1)
+        end
+      end
+
+    end # end context usage in last month
+
+  end # end context counting total, countable, free, and billable usage
 
   describe ".check_member_type" do
     it "should set the termination date when a member leaves" do
@@ -269,44 +252,48 @@ describe Member do
   end
 
   describe ".needs_invoicing?" do
+    let(:affiliate_yes)   { FactoryGirl.create(:affiliate_member) }
+    let(:affiliate_no)    { FactoryGirl.create(:affiliate_member) }
+    let(:former)          { FactoryGirl.create(:former_member) }
+
     before(:each) do
-      @start_date = Date.new(2012, 1, 1)
-      @affiliate_yes = FactoryGirl.create(:affiliate_member)
-      (Member::AFFILIATE_FREE_DAY_PASSES + 2).times {
-        |n| FactoryGirl.create(:log_success,
-                               :access_date => @start_date + n.day,
-                               :member => @affiliate_yes)
+      a_time = DateTime.new(2017, 5, 8, 11, 30, 0)
+
+      (0..4).each { |n|
+        FactoryGirl.create(:log_success, access_date_time: a_time + n.day, member: affiliate_yes)
+        FactoryGirl.create(:log_success, access_date_time: a_time + n.day, member: former)
       }
-      @affiliate_no = FactoryGirl.create(:affiliate_member)
-      (Member::AFFILIATE_FREE_DAY_PASSES).times {
-        |n| FactoryGirl.create(:log_success,
-                               :access_date => @start_date + n.day,
-                               :member => @affiliate_no)
+      (0..3).each { |n|
+        FactoryGirl.create(:log_success, access_date_time: a_time + n.day, member: affiliate_no)
       }
-      @former = FactoryGirl.create(:former_member)
-      Timecop.freeze(@start_date.next_month)
+
+      Timecop.freeze(2017, 6, 1, 5, 0, 0)
+    end
+
+    after(:each) do
+      Timecop.return
     end
 
     it "should say yes only to current affiliate members" do
       expect(member.needs_invoicing?).to be_falsey
-      expect(@affiliate_yes.needs_invoicing?).to be_truthy
-      expect(@former.needs_invoicing?).to be_falsey
+      expect(affiliate_yes.needs_invoicing?).to be_truthy
+      expect(former.needs_invoicing?).to be_falsey
     end
 
     it "should say yes only to members with excess uasge in the previous billing period" do
-      expect(@affiliate_yes.needs_invoicing?).to be_truthy
-      expect(@affiliate_no.needs_invoicing?).to be_falsey
+      expect(affiliate_yes.needs_invoicing?).to be_truthy
+      expect(affiliate_no.needs_invoicing?).to be_falsey
     end
 
     it "should say yes only to members where the last_date_invoiced is blank or prior to the start of the current billing period" do
-      @affiliate_yes.update_attributes(:last_date_invoiced => "")
-      expect(@affiliate_yes.needs_invoicing?).to be_truthy
+      affiliate_yes.update_attributes(last_date_invoiced: "")
+      expect(affiliate_yes.needs_invoicing?).to be_truthy
 
-      @affiliate_yes.update_attributes(:last_date_invoiced => @affiliate_yes.last_month.first)
-      expect(@affiliate_yes.needs_invoicing?).to be_truthy
+      affiliate_yes.update_attributes(last_date_invoiced: affiliate_yes.last_month.first)
+      expect(affiliate_yes.needs_invoicing?).to be_truthy
 
-      @affiliate_yes.update_attributes(:last_date_invoiced => @affiliate_yes.this_month.first)
-      expect(@affiliate_yes.needs_invoicing?).to be_falsey
+      affiliate_yes.update_attributes(last_date_invoiced: affiliate_yes.this_month.first)
+      expect(affiliate_yes.needs_invoicing?).to be_falsey
     end
   end
 
@@ -337,8 +324,8 @@ describe Member do
         affiliate = FactoryGirl.create(:affiliate_member)
         (Member::AFFILIATE_FREE_DAY_PASSES + 2).times {
           |n| FactoryGirl.create(:log_success,
-                                 :access_date => start_date + n.day,
-                                 :member => affiliate)
+                                 access_date_time: start_date + n.day,
+                                 member: affiliate)
         }
       end
       Timecop.freeze(start_date.next_month)

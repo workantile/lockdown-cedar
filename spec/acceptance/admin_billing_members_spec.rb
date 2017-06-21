@@ -20,14 +20,13 @@ feature 'Billing members', %q{
     (Member::AFFILIATE_FREE_DAY_PASSES + 2).times do |n|
       last_access = start_date + n.day
       FactoryGirl.create( :log_success,
-                          :access_date => last_access,
-                          :member => @member_to_invoice )
+                          access_date_time: last_access,
+                          member: @member_to_invoice )
     end
 
     FactoryGirl.create(:log_success,
-                        :access_date => last_access + 1.day,
-                        :member => @member_to_invoice,
-                        :billable => false)
+                        access_date_time: last_access + 1.day,
+                        member: @member_to_invoice)
 
     # And I want to look at the member's last month's activity
     Timecop.travel(start_date.next_month)

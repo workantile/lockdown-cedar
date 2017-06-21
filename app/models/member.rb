@@ -85,34 +85,44 @@ class Member < ActiveRecord::Base
     self.access_logs.where(access_date: this_month).select(:access_date).distinct.count
   end
 
-  def day_pass_usage_this_month
-    self.access_logs.where(access_date: this_month, billable: true).select(:access_date).distinct.count
+  def countable_usage_this_month
+    AccessLog.find_by_sql(build_sql(first_of_month, last_of_month)).count
+  end
+
+  def free_usage_this_month
+    countable_usage_this_month > AFFILIATE_FREE_DAY_PASSES ? AFFILIATE_FREE_DAY_PASSES : countable_usage_this_month
+  end
+
+  def billable_usage_this_month
+    result = countable_usage_this_month - AFFILIATE_FREE_DAY_PASSES
+    result < 0 ? 0 : result
   end
 
   def usage_last_month
     self.access_logs.where(access_date: last_month).select(:access_date).distinct.count
   end
 
-  def day_pass_usage_last_month
-    self.access_logs.where(access_date: last_month, billable: true).select(:access_date).distinct.count
+  def countable_usage_last_month
+    AccessLog.find_by_sql(build_sql(first_of_month.prev_month, last_of_month.prev_month)).count
   end
 
-  def non_billable_usage_last_month
-    self.access_logs.where(access_date: last_month, billable: false).select(:access_date).distinct.count
+  def free_usage_last_month
+    countable_usage_last_month > AFFILIATE_FREE_DAY_PASSES ? AFFILIATE_FREE_DAY_PASSES : countable_usage_last_month
   end
 
   def billable_usage_last_month
-    result = day_pass_usage_last_month - AFFILIATE_FREE_DAY_PASSES
+    result = countable_usage_last_month - AFFILIATE_FREE_DAY_PASSES
     result < 0 ? 0 : result
   end
 
-  def non_billable_usage_this_month
-    self.access_logs.where(access_date: this_month, billable: false).select(:access_date).distinct.count
-  end
-
-  def billable_usage_this_month
-    result = day_pass_usage_this_month - AFFILIATE_FREE_DAY_PASSES
-    result < 0 ? 0 : result
+  def build_sql(start_date, end_date)
+    "select distinct on (access_date) * from access_logs "\
+    "where member_id = #{id} and "\
+    "(access_date between \'#{start_date.to_s}\' and \'#{end_date.to_s}\') and "\
+    "extract(dow from access_date_time) <> 0 and "\
+    "not exists (select * from all_member_events "\
+    "where access_logs.access_date_time > (scheduled - interval '1 hour') "\
+    "and date_trunc('day', scheduled) = access_logs.access_date)"
   end
 
   def send_usage_email?
@@ -122,7 +132,7 @@ class Member < ActiveRecord::Base
   def needs_invoicing?
     self.billing_plan == "affiliate" &&
     self.member_type == "current" &&
-    self.usage_last_month > Member::AFFILIATE_FREE_DAY_PASSES &&
+    self.billable_usage_last_month > 0 &&
     (self.last_date_invoiced.nil? || self.last_date_invoiced < self.first_of_month) ? true :false
   end
 

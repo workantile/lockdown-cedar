@@ -13,7 +13,7 @@ describe MemberEmail do
 
     it "renders the body" do
       expect(mail.body.encoded).to match("Hi #{member.first_name}")
-      expect(mail.body.encoded).to match("#{member.day_pass_usage_this_month}")
+      expect(mail.body.encoded).to match("#{member.countable_usage_this_month}")
       expect(mail.body.encoded).to match("#{Member::AFFILIATE_FREE_DAY_PASSES}")
     end
   end

@@ -7,6 +7,7 @@ describe AccessLog do
 		end
 
 		it { is_expected.to respond_to :access_date }
+    it { is_expected.to respond_to :access_date_time }
 		it { is_expected.to respond_to :access_granted }
 		it { is_expected.to respond_to :msg }
 		it { is_expected.to respond_to :member_name }
@@ -16,24 +17,36 @@ describe AccessLog do
 
 		it { is_expected.to belong_to :member }
 		it { is_expected.to belong_to :door_controller }
-		it { is_expected.to respond_to :billable }
 	end
 
-	it "should save the access_date in local time" do
-		a_date = Date.new(2012, 1, 15)
-		Timecop.freeze(2012, 1, 15, 22, 0 ,0)
-		access_log = AccessLog.create
-		Timecop.return
-		expect(AccessLog.where(:access_date => a_date).count).to eq(1)
-	end
+  describe "#access_date_time" do
+    before(:each) do
+      Timecop.freeze(2017, 5, 1, 10, 0 ,0)
+    end
+    after(:each) do
+      Timecop.return
+    end
 
-	it "should not override access_date" do
-		Timecop.freeze(2012, 1, 15, 22, 0 ,0)
-		another_date = Date.new(2012, 1, 1)
-		access_log = FactoryGirl.create(:log_success, :access_date => another_date)
-		Timecop.return
-		expect(access_log.access_date).to eq(another_date)
-	end
+    it "should set be set to current time if it is not specified" do
+      AccessLog.create
+      expect(AccessLog.first.access_date_time).to eq(DateTime.now)
+    end
+
+    it "should be set to specified time if it is specified" do
+      a_time = DateTime.new(2017, 4, 30, 13, 0, 0)
+      AccessLog.create(access_date_time: a_time)
+      expect(AccessLog.first.access_date_time).to eq(a_time)
+    end
+  end
+
+  describe "#access_date" do
+    it "should be set to the date portion of #access_date_time" do
+      Timecop.freeze(2017, 5, 1, 10, 0 ,0)
+      AccessLog.create
+      expect(AccessLog.first.access_date).to eq(DateTime.now.to_date)
+      Timecop.return
+    end
+  end
 
   describe "#export_to_csv" do
     it "should return a comma-separated string containing records for the dates specified" do

@@ -28,8 +28,7 @@ class AccessController < ApplicationController
                    :member_type => @member.member_type,
                    :billing_plan => @member.billing_plan,
                    :door_controller_location => @door_controller.location,
-                   :access_granted => true,
-                   :billable => !@free_day)
+                   :access_granted => true)
   end
 
   def send_email

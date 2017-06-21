@@ -4,7 +4,7 @@
 		<th>member</th>
 		<th>type</th>
 		<th>plan</th>
-		<th>billable</th>
+		<th>free day</th>
 	</thead>
 	<tbody>
 		<% @logs.each do |log| %>
@@ -13,7 +13,7 @@
 			<td><%= log.member_name %></td>
 			<td><%= log.member_type %></td>
 			<td><%= log.billing_plan %></td>
-			<td><%= log.billable %></td>
+			<td><%= log.free_day? %></td>
 		</tr>
 		<% end %>
 	</tbody>
