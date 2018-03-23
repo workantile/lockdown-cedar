@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 ruby '2.3.3'
 
-gem 'rails', '4.2.8'
-gem 'pg'
+gem 'rails', '4.2.9'
+gem 'pg', '~> 0.11'
 gem 'devise'
 gem 'delayed_job_active_record'
 
