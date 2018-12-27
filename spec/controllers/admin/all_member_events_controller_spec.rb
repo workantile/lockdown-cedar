@@ -2,11 +2,11 @@ require 'rails_helper'
 
 describe Admin::AllMemberEventsController do
   before(:each) do
-    sign_in FactoryGirl.create(:admin), scope: :admin
+    sign_in FactoryBot.create(:admin), scope: :admin
   end
 
   describe "GET index" do
-    let!(:all_member_events) { FactoryGirl.create(:all_member_event) }
+    let!(:all_member_events) { FactoryBot.create(:all_member_event) }
 
     before(:each) do
       get :index
@@ -36,7 +36,7 @@ describe Admin::AllMemberEventsController do
   describe "POST create" do
     describe "success" do
       before(:each) do
-        post(:create, :all_member_event => FactoryGirl.attributes_for(:all_member_event))
+        post(:create, :all_member_event => FactoryBot.attributes_for(:all_member_event))
       end
 
       it "persists a new all member event with the parameters submitted" do
@@ -50,7 +50,7 @@ describe Admin::AllMemberEventsController do
 
     describe "failure" do
       before(:each) do
-        post(:create, :all_member_event => FactoryGirl.attributes_for(:all_member_event, :name => ''))
+        post(:create, :all_member_event => FactoryBot.attributes_for(:all_member_event, :name => ''))
       end
 
       it "renders the new template again" do
@@ -65,7 +65,7 @@ describe Admin::AllMemberEventsController do
 
   describe "GET 'edit'" do
     before(:each) do
-      get(:edit, :id => FactoryGirl.create(:all_member_event).id)
+      get(:edit, :id => FactoryBot.create(:all_member_event).id)
     end
 
     it 'assigns to @all_member_event' do
@@ -80,16 +80,16 @@ describe Admin::AllMemberEventsController do
   describe "PUT 'update'" do
     describe 'success' do
       it "redirects to the index" do
-        all_member_event = FactoryGirl.create(:all_member_event)
-        put(:update, :id => all_member_event.id, :all_member_event => FactoryGirl.attributes_for(:all_member_event))
+        all_member_event = FactoryBot.create(:all_member_event)
+        put(:update, :id => all_member_event.id, :all_member_event => FactoryBot.attributes_for(:all_member_event))
         expect(response).to redirect_to(admin_all_member_events_url)
       end
     end
 
     describe 'failure' do
       it "renders the 'edit' template" do
-        all_member_event = FactoryGirl.create(:all_member_event)
-        put(:update, :id => all_member_event.id, :all_member_event => FactoryGirl.attributes_for(:all_member_event, :name => ''))
+        all_member_event = FactoryBot.create(:all_member_event)
+        put(:update, :id => all_member_event.id, :all_member_event => FactoryBot.attributes_for(:all_member_event, :name => ''))
         expect(response).to render_template('edit')
       end
     end
@@ -97,7 +97,7 @@ describe Admin::AllMemberEventsController do
 
   describe "DELETE 'destroy'" do
     it "redirects to the index" do
-      delete(:destroy, :id => FactoryGirl.create(:all_member_event).id)
+      delete(:destroy, :id => FactoryBot.create(:all_member_event).id)
       expect(response).to redirect_to(admin_all_member_events_url)
     end
   end

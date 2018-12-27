@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe DoorController do
   before(:each) do
-    @door_controller = FactoryGirl.create(:door_controller)
+    @door_controller = FactoryBot.create(:door_controller)
     @door_controller.save
   end
 

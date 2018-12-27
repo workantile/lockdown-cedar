@@ -8,7 +8,7 @@ feature 'Billing members', %q{
 
   background do
     # Given I am an admin
-    @i_am_an_admin = FactoryGirl.create(:admin)
+    @i_am_an_admin = FactoryBot.create(:admin)
 
     # And I have signed in
     sign_in_as @i_am_an_admin
@@ -16,15 +16,15 @@ feature 'Billing members', %q{
     # And I have an affiliate member with 2 billable days and 1 non-billable day
     start_date = Date.new(2012, 1, 1)
     last_access = start_date
-    @member_to_invoice = FactoryGirl.create(:affiliate_member)
+    @member_to_invoice = FactoryBot.create(:affiliate_member)
     (Member::AFFILIATE_FREE_DAY_PASSES + 2).times do |n|
       last_access = start_date + n.day
-      FactoryGirl.create( :log_success,
+      FactoryBot.create( :log_success,
                           access_date_time: last_access,
                           member: @member_to_invoice )
     end
 
-    FactoryGirl.create(:log_success,
+    FactoryBot.create(:log_success,
                         access_date_time: last_access + 1.day,
                         member: @member_to_invoice)
 

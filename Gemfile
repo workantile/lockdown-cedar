@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.3.3'
+ruby '2.5.3'
 
 gem 'rails', '4.2.9'
 gem 'pg', '~> 0.11'
@@ -21,13 +21,13 @@ gem 'protected_attributes'
 
 group :development, :test do
 	gem 'rspec-rails', '~> 3.5'
-	gem 'factory_girl_rails'
+	gem 'factory_bot_rails'
 end
 
 group :test do
 	gem 'shoulda-matchers'
  	gem 'steak'
- 	gem 'capybara-webkit'
+ 	gem 'capybara'
 	gem 'database_cleaner'
 	gem 'email_spec'
 	gem 'action_mailer_cache_delivery'

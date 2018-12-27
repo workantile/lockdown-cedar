@@ -1,46 +1,46 @@
 # Read about factories at https://github.com/thoughtbot/factory_girl
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :member do
-  	first_name				"joe"
-  	last_name					"member"
+  	first_name				{ "joe" }
+  	last_name					{ "member" }
   	sequence(:email)	{ |n| "joe#{n}@foobar.net" }
   	sequence(:rfid) 	{ |n| "#{n}" }
-  	anniversary_date	Date.new(2012, 11, 1)
+  	anniversary_date	{ Date.new(2012, 11, 1) }
 
   	trait :full do
-  		member_type			"current"
-      billing_plan    "full"
+  		member_type			{ "current" }
+      billing_plan    { "full" }
   	end
 
   	trait :full_no_work do
-  		member_type			"current"
-      billing_plan    "full - no work"
+  		member_type			{ "current" }
+      billing_plan    { "full - no work" }
   	end
 
   	trait :affiliate do
-  		member_type			"current"
-      billing_plan    "affiliate"
+  		member_type			{ "current" }
+      billing_plan    { "affiliate" }
   	end
 
   	trait :student do
-  		member_type			"current"
-      billing_plan    "student"
+  		member_type			{ "current" }
+      billing_plan    { "student" }
   	end
 
     trait :supporter do
-      member_type   "current"
-      billing_plan  "supporter"
+      member_type   { "current" }
+      billing_plan  { "supporter" }
     end
 
   	trait :courtesy_key do
-  		member_type		"courtesy key"
-      billing_plan  "none"
+  		member_type		{ "courtesy key" }
+      billing_plan  { "none" }
   	end
 
     trait :former do
-      member_type   "former"
-      billing_plan  "none"
+      member_type   { "former" }
+      billing_plan  { "none" }
     end
 
   	factory :full_member, :traits => [:full]

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Admin::AdminsController do
 	before(:each) do
-		@the_admin = FactoryGirl.create(:admin)
+		@the_admin = FactoryBot.create(:admin)
     sign_in @the_admin, scope: :admin
   end
 
@@ -21,7 +21,7 @@ describe Admin::AdminsController do
   describe "POST 'create'" do
     describe "success" do
       before(:each) do
-        post(:create, :admin => FactoryGirl.attributes_for(:admin,
+        post(:create, :admin => FactoryBot.attributes_for(:admin,
         																									 :email => "foo@foobar.com",
         																									 :password => "apassword",
         																									 :password_confirmation => "apassword"))
@@ -38,7 +38,7 @@ describe Admin::AdminsController do
 
     describe "failure" do
       before(:each) do
-        post(:create, :admin => FactoryGirl.attributes_for(:admin,
+        post(:create, :admin => FactoryBot.attributes_for(:admin,
         																									 :email => "foo@foobar.com",
         																									 :password => "apassword",
         																									 :password_confirmation => ""))
@@ -56,7 +56,7 @@ describe Admin::AdminsController do
 
   describe "GET 'edit'" do
     before(:each) do
-      admin = FactoryGirl.create(:other_admin)
+      admin = FactoryBot.create(:other_admin)
       get(:edit, :id => admin.id)
     end
 
@@ -72,7 +72,7 @@ describe Admin::AdminsController do
   describe "PUT 'update'" do
     describe 'success' do
       before(:each) do
-      	admin = FactoryGirl.create(:other_admin)
+      	admin = FactoryBot.create(:other_admin)
         put(:update, :id => admin.id, :admin => {:email => admin.email,
         																				 :password => admin.password,
         																				 :password_confirmation => admin.password})
@@ -85,7 +85,7 @@ describe Admin::AdminsController do
 
     describe "failure" do
       before(:each) do
-      	admin = FactoryGirl.create(:other_admin)
+      	admin = FactoryBot.create(:other_admin)
         admin.password = ""
         put(:update, :id => admin.id, :admin => {:email => admin.email,
         																				 :password => admin.password,
@@ -101,7 +101,7 @@ describe Admin::AdminsController do
   describe "DELETE 'destroy'" do
     describe "deleting an admin" do
       before(:each) do
-        admin = FactoryGirl.create(:other_admin)
+        admin = FactoryBot.create(:other_admin)
         delete(:destroy, :id => admin.id)
       end
 

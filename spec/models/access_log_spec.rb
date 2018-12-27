@@ -3,7 +3,7 @@ require 'rails_helper'
 describe AccessLog do
 	describe "expected attributes" do
 		before (:each) do
-			@access_log = FactoryGirl.create(:log_success)
+			@access_log = FactoryBot.create(:log_success)
 		end
 
 		it { is_expected.to respond_to :access_date }
@@ -51,11 +51,11 @@ describe AccessLog do
   describe "#export_to_csv" do
     it "should return a comma-separated string containing records for the dates specified" do
 			Timecop.freeze(2013, 1, 1, 22, 0 ,0)
-			FactoryGirl.create(:log_success)
+			FactoryBot.create(:log_success)
 			Timecop.freeze(2013, 1, 31, 22, 0 ,0)
-			FactoryGirl.create(:log_success)
+			FactoryBot.create(:log_success)
 			Timecop.freeze(2013, 2, 1, 22, 0 ,0)
-			FactoryGirl.create(:log_success)
+			FactoryBot.create(:log_success)
 			Timecop.return
 
       the_result = AccessLog.export_to_csv(Date.new(2013, 1, 1)..Date.new(2013, 1, 31))
@@ -69,25 +69,25 @@ describe AccessLog do
   describe "#free_day?" do
   	it "should return true if access_date is a Sunday" do
   		Timecop.freeze(2017, 06, 04, 0, 0)
-  		access_log = FactoryGirl.create(:log_success)
+  		access_log = FactoryBot.create(:log_success)
   		Timecop.return
   		expect(access_log.free_day?).to eq(true)
   	end
 
   	it "should return true if access was during an all member event" do
   		free_access = DateTime.new(2017, 06, 05, 12, 0, 0)
-  		FactoryGirl.create(:all_member_event, scheduled: free_access)
+  		FactoryBot.create(:all_member_event, scheduled: free_access)
   		Timecop.freeze(free_access)
-  		access_log = FactoryGirl.create(:log_success)
+  		access_log = FactoryBot.create(:log_success)
   		Timecop.return
   		expect(access_log.free_day?).to eq(true)
   	end
 
   	it "should return false if access was not during an all member event" do
   		free_access = DateTime.new(2017, 06, 05, 12, 0, 0)
-  		FactoryGirl.create(:all_member_event, scheduled: free_access)
+  		FactoryBot.create(:all_member_event, scheduled: free_access)
   		Timecop.freeze(2017, 06, 06, 10, 0, 0)
-  		access_log = FactoryGirl.create(:log_success)
+  		access_log = FactoryBot.create(:log_success)
   		Timecop.return
   		expect(access_log.free_day?).to eq(false)
   	end

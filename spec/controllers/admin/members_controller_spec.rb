@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Admin::MembersController do
 	before(:each) do
-		@the_admin = FactoryGirl.create(:admin)
+		@the_admin = FactoryBot.create(:admin)
     sign_in @the_admin, scope: :admin
   end
 
@@ -20,7 +20,7 @@ describe Admin::MembersController do
 
   describe "POST 'find key'" do
     before(:each) do
-      member = FactoryGirl.create(:full_member, rfid: '1234')
+      member = FactoryBot.create(:full_member, rfid: '1234')
       post(:find_key, :rfid_key => member.rfid)
     end
 
@@ -36,7 +36,7 @@ describe Admin::MembersController do
 
   describe "POST 'find key' with key not tied to a member" do
     it "redirect to the index" do
-      member = FactoryGirl.create(:full_member, rfid: '1234')
+      member = FactoryBot.create(:full_member, rfid: '1234')
       post(:find_key, :rfid_key => '1235')
       expect(response).to redirect_to(admin_members_url)
     end
@@ -45,7 +45,7 @@ describe Admin::MembersController do
   describe "POST 'create'" do
     describe "success" do
       before(:each) do
-        post(:create, :member => FactoryGirl.attributes_for(:full_member, :anniversary_date => "12/01/2012"))
+        post(:create, :member => FactoryBot.attributes_for(:full_member, :anniversary_date => "12/01/2012"))
       end
 
       it "persists a new member with the parameters submitted" do
@@ -59,7 +59,7 @@ describe Admin::MembersController do
 
     describe "failure" do
       before(:each) do
-        post(:create, :member => FactoryGirl.attributes_for(:full_member, :email => "", :anniversary_date => "12/01/2012"))
+        post(:create, :member => FactoryBot.attributes_for(:full_member, :email => "", :anniversary_date => "12/01/2012"))
       end
 
       it "renders the new template again" do
@@ -74,8 +74,8 @@ describe Admin::MembersController do
 
   describe "GET 'edit'" do
     before(:each) do
-      member = FactoryGirl.create(:full_member)
-      pending_update = FactoryGirl.create(:pending_update, :member => member)
+      member = FactoryBot.create(:full_member)
+      pending_update = FactoryBot.create(:pending_update, :member => member)
       get(:edit, :id => member.id)
     end
 
@@ -92,8 +92,8 @@ describe Admin::MembersController do
   describe "PUT 'update'" do
     describe 'success' do
     	before(:each) do
-    		member = FactoryGirl.create(:full_member)
-    		put(:update, :id => member.id, :member => FactoryGirl.attributes_for(:full_member, :anniversary_date => "12/01/2012"))
+    		member = FactoryBot.create(:full_member)
+    		put(:update, :id => member.id, :member => FactoryBot.attributes_for(:full_member, :anniversary_date => "12/01/2012"))
     	end
 
       it "redirects to the index" do
@@ -103,8 +103,8 @@ describe Admin::MembersController do
 
     describe 'failure' do
     	before(:each) do
-    		member = FactoryGirl.create(:full_member)
-    		put(:update, :id => member.id, :member => FactoryGirl.attributes_for(:full_member, :email => '', :anniversary_date => "12/01/2012"))
+    		member = FactoryBot.create(:full_member)
+    		put(:update, :id => member.id, :member => FactoryBot.attributes_for(:full_member, :email => '', :anniversary_date => "12/01/2012"))
     	end
 
     	it "renders the 'edit' template" do
@@ -114,8 +114,8 @@ describe Admin::MembersController do
 
     describe 'update member type immediately' do
       it "should not create a pending update object" do
-        member = FactoryGirl.create(:full_member)
-        member_hash = FactoryGirl.attributes_for(:former_member, :anniversary_date => "12/01/2012")
+        member = FactoryBot.create(:full_member)
+        member_hash = FactoryBot.attributes_for(:former_member, :anniversary_date => "12/01/2012")
         put(:update, :id => member.id, :member => member_hash, :member_type_timing => 'immediately')
         expect(PendingUpdate.count).to eq(0)
       end
@@ -124,8 +124,8 @@ describe Admin::MembersController do
     describe 'update member type at end of billing period' do
       before(:each) do
         Delayed::Worker.delay_jobs = true
-        @member = FactoryGirl.create(:full_member)
-        @member_hash = FactoryGirl.attributes_for(:former_member, :anniversary_date => "12/01/2012")
+        @member = FactoryBot.create(:full_member)
+        @member_hash = FactoryBot.attributes_for(:former_member, :anniversary_date => "12/01/2012")
       end
 
       it "should invoke the delay update method" do
@@ -142,8 +142,8 @@ describe Admin::MembersController do
 
     describe 'update billing plan immediately' do
       it "should not create a pending update object" do
-        member = FactoryGirl.create(:full_member)
-        member_hash = FactoryGirl.attributes_for(:affiliate_member, :anniversary_date => "12/01/2012")
+        member = FactoryBot.create(:full_member)
+        member_hash = FactoryBot.attributes_for(:affiliate_member, :anniversary_date => "12/01/2012")
         put(:update, :id => member.id, :member => member_hash, :billing_plan_timing => 'immediately')
         expect(PendingUpdate.count).to eq(0)
       end
@@ -152,8 +152,8 @@ describe Admin::MembersController do
     describe 'update billing plan at end of billing period' do
       before(:each) do
         Delayed::Worker.delay_jobs = true
-        @member = FactoryGirl.create(:full_member)
-        @member_hash = FactoryGirl.attributes_for(:affiliate_member, :anniversary_date => "12/01/2012")
+        @member = FactoryBot.create(:full_member)
+        @member_hash = FactoryBot.attributes_for(:affiliate_member, :anniversary_date => "12/01/2012")
       end
 
       it "should invoke the delay update method" do
@@ -171,7 +171,7 @@ describe Admin::MembersController do
 
   describe "DELETE pending updates" do
     before(:each) do
-      @member = FactoryGirl.create(:full_member)
+      @member = FactoryBot.create(:full_member)
     end
 
     it "assigns to @member" do
@@ -192,7 +192,7 @@ describe Admin::MembersController do
 
   describe "DELETE 'destroy'" do
   	before(:each) do
-  		member = FactoryGirl.create(:full_member)
+  		member = FactoryBot.create(:full_member)
   		delete(:destroy, :id => member.id)
   	end
 
@@ -224,9 +224,9 @@ describe Admin::MembersController do
     before(:each) do
       start_date = Date.new(2012, 1, 1)
       2.times {
-        affiliate = FactoryGirl.create(:affiliate_member)
+        affiliate = FactoryBot.create(:affiliate_member)
         (Member::AFFILIATE_FREE_DAY_PASSES + 2).times {
-          |n| FactoryGirl.create(:log_success,
+          |n| FactoryBot.create(:log_success,
                                  :access_date => start_date + n.day,
                                  :member => affiliate)
         }
@@ -246,7 +246,7 @@ describe Admin::MembersController do
 
   describe "PUT 'invoiced'" do
     it "updates the member" do
-      affiliate = FactoryGirl.create(:affiliate_member)
+      affiliate = FactoryBot.create(:affiliate_member)
       xhr(:put, :invoiced, :id => affiliate.id)
     end
   end

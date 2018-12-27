@@ -2,13 +2,13 @@ require 'rails_helper'
 
 describe Admin::DoorControllersController do
 	before(:each) do
-		@the_admin = FactoryGirl.create(:admin)
+		@the_admin = FactoryBot.create(:admin)
     sign_in @the_admin, scope: :admin
   end
 
   describe "GET index" do
   	before(:each) do
-  		@door_controllers = FactoryGirl.create(:door_controller)
+  		@door_controllers = FactoryBot.create(:door_controller)
   		get :index
   	end
 
@@ -36,7 +36,7 @@ describe Admin::DoorControllersController do
   describe "POST create" do
     describe "success" do
       before(:each) do
-        post(:create, :door_controller => FactoryGirl.attributes_for(:door_controller))
+        post(:create, :door_controller => FactoryBot.attributes_for(:door_controller))
       end
 
       it "persists a new door controller with the parameters submitted" do
@@ -50,7 +50,7 @@ describe Admin::DoorControllersController do
 
     describe "failure" do
       before(:each) do
-        post(:create, :door_controller => FactoryGirl.attributes_for(:door_controller, :address => ''))
+        post(:create, :door_controller => FactoryBot.attributes_for(:door_controller, :address => ''))
       end
 
       it "renders the new template again" do
@@ -65,7 +65,7 @@ describe Admin::DoorControllersController do
 
   describe "GET 'edit'" do
     before(:each) do
-      door_controller = FactoryGirl.create(:door_controller)
+      door_controller = FactoryBot.create(:door_controller)
       get(:edit, :id => door_controller.id)
     end
 
@@ -81,8 +81,8 @@ describe Admin::DoorControllersController do
   describe "PUT 'update'" do
     describe 'success' do
     	before(:each) do
-      	door_controller = FactoryGirl.create(:door_controller)
-    		put(:update, :id => door_controller.id, :door_controller => FactoryGirl.attributes_for(:door_controller))
+      	door_controller = FactoryBot.create(:door_controller)
+    		put(:update, :id => door_controller.id, :door_controller => FactoryBot.attributes_for(:door_controller))
     	end
 
       it "redirects to the index" do
@@ -92,8 +92,8 @@ describe Admin::DoorControllersController do
 
     describe 'failure' do
     	before(:each) do
-    		door_controller = FactoryGirl.create(:door_controller)
-    		put(:update, :id => door_controller.id, :door_controller => FactoryGirl.attributes_for(:door_controller, :address => ''))
+    		door_controller = FactoryBot.create(:door_controller)
+    		put(:update, :id => door_controller.id, :door_controller => FactoryBot.attributes_for(:door_controller, :address => ''))
     	end
 
     	it "renders the 'edit' template" do
@@ -104,7 +104,7 @@ describe Admin::DoorControllersController do
 
   describe "DELETE 'destroy'" do
   	before(:each) do
-  		door_controller = FactoryGirl.create(:door_controller)
+  		door_controller = FactoryBot.create(:door_controller)
   		delete(:destroy, :id => door_controller.id)
   	end
 

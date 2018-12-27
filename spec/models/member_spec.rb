@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Member do
-  let!(:member)   { FactoryGirl.create(:full_member) }
+  let!(:member)   { FactoryBot.create(:full_member) }
 
   it { is_expected.to respond_to :full_name }
   it { is_expected.to respond_to :last_date_invoiced }
@@ -35,7 +35,7 @@ describe Member do
     # free usage: total countable usage up to Member::AFFILIATE_FREE_DAY_PASSES
     # billable usage: total countable usage - Member::AFFILIATE_FREE_DAY_PASSES,
     #   0 if negative.
-    let!(:affiliate)  { FactoryGirl.create(:affiliate_member) }
+    let!(:affiliate)  { FactoryBot.create(:affiliate_member) }
 
     before(:each) do
       time_this_month = DateTime.new(2017, 6, 7, 10, 30, 0)
@@ -44,18 +44,18 @@ describe Member do
       (0..7).each { |n|
         a_time = time_this_month + n.day
         another_time = time_last_month + n.day
-        FactoryGirl.create(:log_success, member: affiliate, access_date_time: a_time)
-        FactoryGirl.create(:log_success, member: affiliate, access_date_time: a_time + 30.minutes)
+        FactoryBot.create(:log_success, member: affiliate, access_date_time: a_time)
+        FactoryBot.create(:log_success, member: affiliate, access_date_time: a_time + 30.minutes)
       }
 
       (0..6).each { |n|
         another_time = time_last_month + n.day
-        FactoryGirl.create(:log_success, member: affiliate, access_date_time: another_time)
-        FactoryGirl.create(:log_success, member: affiliate, access_date_time: another_time + 30.minutes)
+        FactoryBot.create(:log_success, member: affiliate, access_date_time: another_time)
+        FactoryBot.create(:log_success, member: affiliate, access_date_time: another_time + 30.minutes)
       }
 
-      FactoryGirl.create(:all_member_event, scheduled: DateTime.new(2017, 6, 7, 5, 0, 0))
-      FactoryGirl.create(:all_member_event, scheduled: DateTime.new(2017, 5, 3, 5, 0, 0))
+      FactoryBot.create(:all_member_event, scheduled: DateTime.new(2017, 6, 7, 5, 0, 0))
+      FactoryBot.create(:all_member_event, scheduled: DateTime.new(2017, 5, 3, 5, 0, 0))
 
       Timecop.freeze(2017, 6, 30)
     end
@@ -145,7 +145,7 @@ describe Member do
   end
 
   describe ".send_usage_email?" do
-    let!(:affiliate) { FactoryGirl.create(:affiliate_member)}
+    let!(:affiliate) { FactoryBot.create(:affiliate_member)}
 
     it "indicates affiliate members should receive usage emails" do
       expect(affiliate.send_usage_email?).to be true
@@ -167,7 +167,7 @@ describe Member do
   end
 
   describe ".delay_update" do
-    let!(:affiliate)  { FactoryGirl.create(:affiliate_member) }
+    let!(:affiliate)  { FactoryBot.create(:affiliate_member) }
     let(:pending)     { affiliate.pending_updates.first }
 
     before(:each) do
@@ -191,7 +191,7 @@ describe Member do
   end
 
   describe ".destroy_pending_updates" do
-    let!(:affiliate)  { FactoryGirl.create(:affiliate_member) }
+    let!(:affiliate)  { FactoryBot.create(:affiliate_member) }
     let(:pending)     { affiliate.pending_updates.first }
 
     before(:each) do
@@ -212,9 +212,9 @@ describe Member do
 
   describe ".lookup_type_plan" do
     before(:each) do
-      FactoryGirl.create(:full_member)
-      FactoryGirl.create(:affiliate_member)
-      FactoryGirl.create(:former_member)
+      FactoryBot.create(:full_member)
+      FactoryBot.create(:affiliate_member)
+      FactoryBot.create(:former_member)
     end
 
     it "should return plan asked for" do
@@ -233,9 +233,9 @@ describe Member do
     it "returns the last day present" do
       yesterday = Date.today.prev_day
       Timecop.freeze(yesterday)
-      FactoryGirl.create(:log_success, :member => member)
+      FactoryBot.create(:log_success, :member => member)
       Timecop.return
-      FactoryGirl.create(:log_success, :member => member)
+      FactoryBot.create(:log_success, :member => member)
       expect(member.last_day_present).to eq(Date.today)
     end
   end
@@ -244,27 +244,27 @@ describe Member do
     it "returns the last day present formatted for display" do
       yesterday = Date.today.prev_day
       Timecop.freeze(yesterday)
-      FactoryGirl.create(:log_success, :member => member)
+      FactoryBot.create(:log_success, :member => member)
       Timecop.return
-      FactoryGirl.create(:log_success, :member => member)
+      FactoryBot.create(:log_success, :member => member)
       expect(member.last_day_present_formatted).to eq(Date.today.strftime("%m/%d/%Y"))
     end
   end
 
   describe ".needs_invoicing?" do
-    let(:affiliate_yes)   { FactoryGirl.create(:affiliate_member) }
-    let(:affiliate_no)    { FactoryGirl.create(:affiliate_member) }
-    let(:former)          { FactoryGirl.create(:former_member) }
+    let(:affiliate_yes)   { FactoryBot.create(:affiliate_member) }
+    let(:affiliate_no)    { FactoryBot.create(:affiliate_member) }
+    let(:former)          { FactoryBot.create(:former_member) }
 
     before(:each) do
       a_time = DateTime.new(2017, 5, 8, 11, 30, 0)
 
       (0..4).each { |n|
-        FactoryGirl.create(:log_success, access_date_time: a_time + n.day, member: affiliate_yes)
-        FactoryGirl.create(:log_success, access_date_time: a_time + n.day, member: former)
+        FactoryBot.create(:log_success, access_date_time: a_time + n.day, member: affiliate_yes)
+        FactoryBot.create(:log_success, access_date_time: a_time + n.day, member: former)
       }
       (0..3).each { |n|
-        FactoryGirl.create(:log_success, access_date_time: a_time + n.day, member: affiliate_no)
+        FactoryBot.create(:log_success, access_date_time: a_time + n.day, member: affiliate_no)
       }
 
       Timecop.freeze(2017, 6, 1, 5, 0, 0)
@@ -319,11 +319,11 @@ describe Member do
   describe ".members_to_invoice" do
     before(:each) do
       start_date = Date.new(2012, 1, 1)
-      FactoryGirl.create(:affiliate_member)
+      FactoryBot.create(:affiliate_member)
       2.times do
-        affiliate = FactoryGirl.create(:affiliate_member)
+        affiliate = FactoryBot.create(:affiliate_member)
         (Member::AFFILIATE_FREE_DAY_PASSES + 2).times {
-          |n| FactoryGirl.create(:log_success,
+          |n| FactoryBot.create(:log_success,
                                  access_date_time: start_date + n.day,
                                  member: affiliate)
         }
@@ -338,32 +338,32 @@ describe Member do
 
   describe ".members_absent" do
     it "should return an array of members absent for a specified number of weeks or more" do
-      absent_member_1 = FactoryGirl.create(:full_member)
-      absent_member_2 = FactoryGirl.create(:full_member)
+      absent_member_1 = FactoryBot.create(:full_member)
+      absent_member_2 = FactoryBot.create(:full_member)
       previously = Date.today - 30.day
 
       Timecop.freeze(previously)
-      FactoryGirl.create(:log_success,
+      FactoryBot.create(:log_success,
                          :member => member)
-      FactoryGirl.create(:log_success,
+      FactoryBot.create(:log_success,
                          :member => absent_member_1)
-      FactoryGirl.create(:log_success,
+      FactoryBot.create(:log_success,
                          :member => absent_member_2)
 
       Timecop.return
-      FactoryGirl.create(:log_success,
+      FactoryBot.create(:log_success,
                          :member => member)
 
       expect(Member.members_absent(3)).to eq([absent_member_1, absent_member_2])
     end
 
     it "should not return suppoting members" do
-      absent_member = FactoryGirl.create(:supporter_member)
+      absent_member = FactoryBot.create(:supporter_member)
       previously = Date.today - 30.day
       Timecop.freeze(previously)
-      FactoryGirl.create(:log_success,
+      FactoryBot.create(:log_success,
                          :member => member)
-      FactoryGirl.create(:log_success,
+      FactoryBot.create(:log_success,
                          :member => absent_member)
       Timecop.return
       expect(Member.members_absent(3)).to eq([member])
@@ -372,7 +372,7 @@ describe Member do
 
   describe ".find_by_key" do
     let(:rfid_number)       { "a1b2" }
-    let!(:member_with_key)  { FactoryGirl.create(:full_member, rfid: rfid_number) }
+    let!(:member_with_key)  { FactoryBot.create(:full_member, rfid: rfid_number) }
 
     it "should return a member with a given rfid key" do
       expect(Member.find_by_key(rfid_number)).to eq(member_with_key)
@@ -389,9 +389,9 @@ describe Member do
 
   describe ".export_to_csv" do
     before(:each) do
-      FactoryGirl.create(:full_member)
-      FactoryGirl.create(:affiliate_member)
-      FactoryGirl.create(:former_member)
+      FactoryBot.create(:full_member)
+      FactoryBot.create(:affiliate_member)
+      FactoryBot.create(:former_member)
     end
 
     it "should return a comma-separated string containing member types and plans specified" do

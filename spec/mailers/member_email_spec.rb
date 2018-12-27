@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe MemberEmail do
   describe ".free_day_pass_use" do
-  	let(:member)	{ FactoryGirl.create(:affiliate_member) }
+  	let(:member)	{ FactoryBot.create(:affiliate_member) }
     let(:mail) 		{ MemberEmail.free_day_pass_use(member) }
 
     it "renders the headers" do
@@ -19,7 +19,7 @@ describe MemberEmail do
   end
 
   describe ".billable_day_pass_use" do
-  	let(:member)	{ FactoryGirl.create(:affiliate_member) }
+  	let(:member)	{ FactoryBot.create(:affiliate_member) }
     let(:mail) 		{ MemberEmail.billable_day_pass_use(member) }
 
     it "renders the headers" do

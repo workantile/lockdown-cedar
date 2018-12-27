@@ -11,7 +11,7 @@ describe Admin::ReportsController do
 
   context "authorized access" do
   	before(:each) do
-  		@the_admin = FactoryGirl.create(:admin)
+  		@the_admin = FactoryBot.create(:admin)
   		sign_in @the_admin, scope: :admin
     end
 

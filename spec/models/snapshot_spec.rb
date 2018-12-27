@@ -4,7 +4,7 @@ describe Snapshot do
 
 	describe "validations" do
 		before(:each) do
-			@snapshot = FactoryGirl.create(:snapshot)
+			@snapshot = FactoryBot.create(:snapshot)
 		end
 
 		it { is_expected.to validate_presence_of(:category) }

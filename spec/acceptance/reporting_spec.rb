@@ -5,17 +5,17 @@ feature 'Running reports', %q{
   As an admin
   I want to run reports
 } do
-  
+
   background do
     # Given I am an admin
-    @i_am_an_admin = FactoryGirl.create(:admin)
-    
+    @i_am_an_admin = FactoryBot.create(:admin)
+
     # And I have signed in
     sign_in_as @i_am_an_admin
 
     # When I visit the new admin page
     visit 'reports'
-    
+
   end
 
   scenario "reporting access log" do

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe AccessController do
 	let!(:member) {
-		FactoryGirl.create(
+		FactoryBot.create(
 			:member,
 			member_type: 'current',
 			billing_plan: 'full',
@@ -11,7 +11,7 @@ describe AccessController do
 			email: 'foo@bar.com')
 	}
 	let!(:door_controller) {
-		FactoryGirl.create(:door_controller, address: "abc", success_response: "OK")
+		FactoryBot.create(:door_controller, address: "abc", success_response: "OK")
 	}
 
 	before(:each) do

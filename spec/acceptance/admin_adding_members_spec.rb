@@ -5,19 +5,19 @@ feature 'Creating members', %q{
   As an admin
   I want to create members
 } do
-  
+
   background do
     # Given I am an admin
-    @i_am_an_admin = FactoryGirl.create(:admin)
-    
+    @i_am_an_admin = FactoryBot.create(:admin)
+
     # And I have signed in
     sign_in_as @i_am_an_admin
 
     # When I visit the new member page
     visit 'members/new'
-    
+
   end
-  
+
   scenario 'Creating a new member correctly' do
     # And I create a new member correctly
     fill_in 'member_first_name',        :with => 'joe'
@@ -30,7 +30,7 @@ feature 'Creating members', %q{
     select 'current',                   :from => 'Member type'
     select 'full',                      :from => 'Billing plan'
     click_button 'Create member'
-    
+
     # Then I should not see an error message.
     expect(page).to have_no_selector('div.field_with_errors')
   end
@@ -46,7 +46,7 @@ feature 'Creating members', %q{
     select 'current',                   :from => 'Member type'
     select 'full',                      :from => 'Billing plan'
     click_button 'Create member'
-    
+
     # Then I should see an error message
     expect(page).to have_selector('div.field_with_errors')
   end
