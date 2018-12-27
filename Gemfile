@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 ruby '2.5.3'
 
-gem 'rails', '4.2.9'
+gem 'rails', '4.2.11'
 gem 'pg', '~> 0.11'
 gem 'devise'
 gem 'delayed_job_active_record'
