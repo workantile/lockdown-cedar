@@ -33,3 +33,5 @@ group :test do
 	gem 'action_mailer_cache_delivery'
   gem 'timecop'
 end
+
+gem 'rails_12factor', group: :production
