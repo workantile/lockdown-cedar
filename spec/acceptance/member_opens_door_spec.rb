@@ -56,4 +56,40 @@ feature 'Member opens door', %q{
     # Then the door should not open.
     expect(page).to have_content(@door_controller.error_response)
   end
+
+  scenario 'A non-member opens the door' do
+    # Given I am a non-member
+    rfid = "4321"
+
+    # When I put my rfid next to the reader
+    visit '/access/' + @door_controller.address + "/" + rfid
+
+    # Then the door should not open.
+    expect(page).to have_content(@door_controller.error_response)
+  end
+
+  scenario 'A supporting member opens the door' do
+    # Given I am a supporting member
+    member = FactoryBot.create(:supporter_member)
+
+    # When I put my rfid next to the reader
+    visit '/access/' + @door_controller.address + "/" + member.rfid
+
+    # Then the door should not open.
+    expect(page).to have_content(@door_controller.error_response)
+  end
+
+  scenario 'A supporting member opens the door on an all-members day' do
+    # Given I am a supporting member
+    member = FactoryBot.create(:supporter_member)
+
+    # And it is an all-members day
+    allow(AllMemberEvent).to receive(:event_happening?) { true }
+
+    # When I put my rfid next to the reader
+    visit '/access/' + @door_controller.address + "/" + member.rfid
+
+    # Then the door should not open.
+    expect(page).to have_content(@door_controller.success_response)
+  end
 end

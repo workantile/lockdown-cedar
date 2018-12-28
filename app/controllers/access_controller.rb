@@ -8,12 +8,13 @@ class AccessController < ApplicationController
 		end
 	end
 
-	def grant_access
-		@member = Member.find_by_key(params[:rfid])
-		if @member && @member.access_enabled?
+  def grant_access
+    @member = Member.find_by_key(params[:rfid])
+    @free_day = AllMemberEvent.event_happening? || Date.today.sunday?
+
+    if @member && should_grant_access?
 			@response = @door_controller.success_response
-      @free_day = AllMemberEvent.event_happening? || Date.today.sunday?
-			log_access
+  		log_access
 			send_email if @member.send_usage_email? && !@free_day
 		else
 			@response = @door_controller.error_response
@@ -41,4 +42,9 @@ class AccessController < ApplicationController
     @member.save
   end
 
+  def should_grant_access?
+    return true if @member.access_enabled? && @member.billing_plan != "supporter"
+    return true if @member.access_enabled? && @member.billing_plan == "supporter" && @free_day
+    return false
+  end
 end
