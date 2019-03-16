@@ -30,7 +30,7 @@ describe AccessController do
 	end
 
 	it "sees if the member should be granted access" do
-		expect(member).to receive(:access_enabled?)
+		expect(member).to receive(:access_enabled?).twice
 		get :show, :address => door_controller.address, :rfid => member.rfid
 	end
 
